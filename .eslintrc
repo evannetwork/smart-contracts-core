@@ -1,0 +1,17 @@
+{
+  "env": {
+    "node": true,
+    "browser": true,
+    "amd": true
+  },
+  "parserOptions": {
+    "ecmaVersion": 8
+  },
+  "globals": {
+    "Primus": true
+  },
+  "extends": "eslint:recommended",
+  "rules": {
+    "semi-style": 0
+  }
+}

@@ -12,12 +12,24 @@
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   See the License for the specific language governing permissions and
   limitations under the License.
+
+  
 */
+
+// but usually you want your project contracts to load
+const project_contracts = '../../../build/contracts'
+
+//  or in deployments, you want to load the contracts from the contracts directory
+const deployed_contracts = '../../../contracts'
 
 exports['default'] = {
   smartContractsCore: (api) => {
     return {
+      compileContracts: false,
       additionalPaths: [],
+      // when a list is given, the contructor picks the first directory it finds contracts in,
+      // if nothing is found it falls back to the smart-contracts-core contracts
+      destinationPath:   [project_contracts , deployed_contracts]
     }
   }
 }

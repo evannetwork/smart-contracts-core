@@ -18,14 +18,15 @@
 
 pragma solidity 0.4.20;
 
-import "./ds-auth/auth.sol";
-import "./AbstractDescribed.sol";
 
+contract TestContract {
+    string public data;
 
-/// @title contract for holding a DBCP description
-/// @author contractus GmbH
-contract Described is AbstractDescribed, DSAuth {
-    function setContractDescription(bytes32 _contractDescription) public auth {
-        contractDescription = _contractDescription;
+    function TestContract(string newData) public {
+        setData(newData);
+    }
+
+    function setData(string newData) public {
+        data = newData;
     }
 }

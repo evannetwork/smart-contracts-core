@@ -12,6 +12,8 @@
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   See the License for the specific language governing permissions and
   limitations under the License.
+
+  
 */
 
 'use strict'
@@ -31,11 +33,13 @@ module.exports = class SolcInitializer extends Initializer {
   async initialize () {
     const solcLib = new Solc({
       api,
-      config: api.config.eth,
+      config: api.config.smartContractsCore,
       log: api.log
     })
     await solcLib.ensureCompiled(api.config.smartContractsCore.additionalPaths)
     api['solc'] = {
+      // destinationPath needed by getContracts
+      config: { destinationPath: solcLib.config.destinationPath },
       getContracts: solcLib.getContracts,
     }
   }

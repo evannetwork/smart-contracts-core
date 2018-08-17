@@ -2,6 +2,11 @@
 
 ## Next Version
 ### Features
+### Fixes
+### Deprecations
+
+## Version 1.0.3
+### Features
 - add configurable output path
 - add modified times check for files from additional paths
 - add interface `MailBoxInterface` for interacting with global mailbox contract

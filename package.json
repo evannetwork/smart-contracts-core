@@ -1,6 +1,6 @@
 {
   "license": "Apache-2.0",
-  "author": "evan.network GmbH",
+  "author": "evan GmbH",
   "dependencies": {
     "ens": "github:ethereum/ens#6c0cf08eab71b41d54ac516138d4e1f2c32ff5c9",
     "findup-sync": "^2.0.0",
@@ -28,5 +28,5 @@
   "scripts": {
     "build-docu": "node ./scripts/build-docu.js"
   },
-  "version": "0.9.0"
+  "version": "1.0.3"
 }

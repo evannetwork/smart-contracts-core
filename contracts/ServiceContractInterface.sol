@@ -21,24 +21,49 @@ pragma solidity 0.4.20;
 import "./BaseContractInterface.sol";
 import "./MultiShared.sol";
 
+
 contract ServiceContractInterface is BaseContractInterface, MultiShared {
     bytes32 public service;
     // total count of all threads
     uint256 public callCount;
     // all calls
-    mapping(uint256 => bytes32) public calls;
-    // [7] == 3 --> call 7 has 3 answers
-    mapping(uint256 => uint256) public answersCountPerCall;
-    // [7[1] == 0x123 --> second answer to mail 7 is 0x123
-    mapping(uint256 => mapping(uint256 => bytes32)) public answersPerCall;
-    // track owner of sharings
-    mapping(bytes32 => address) public multiSharingsOwner;
+    mapping(uint256 => Call) public calls;
+
+    struct Call {
+        bytes32 hash;
+        address owner;
+        uint created;
+        mapping(uint256 => Answer) answers;
+        uint256 answerCount;
+    }
+
+    struct Answer {
+        bytes32 hash;
+        address owner;
+        uint created;
+        uint256 parent;
+    }
 
     event ServiceContractEvent(uint indexed parentId, uint256 entryId);
 
     function setService(address _businessCenter, bytes32 hash) public;
-    function sendAnswer(bytes32 answerHash, uint256 callId) public;
+
+    function sendAnswer(bytes32 answerHash, uint256 callId, uint256 parentAnswer) public;
+
     function sendCall(bytes32 callHash) public;
-    function getAnswers(uint256 callId, uint256 offset) public constant returns (bytes32[10] page, uint256 totalCount);
-    function getCalls(uint256 offset) public constant returns (bytes32[10] page, bytes32[10] sharings, uint256 totalCount);
+
+    function getAnswers(uint256 callId, uint256 offset) public constant returns (
+            bytes32[10] hash,
+            address[10] owner,
+            uint[10] created,
+            uint256[10] parent,
+            uint256 totalCount);
+    
+    function getCalls(uint256 offset) public constant returns (
+            bytes32[10] hash,
+            address[10] owner,
+            uint[10] created,
+            uint256[10] answerCount,
+            bytes32[10] sharing,
+            uint256 totalCount);
 }

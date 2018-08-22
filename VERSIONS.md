@@ -12,6 +12,8 @@
 - add interface `MailBoxInterface` for interacting with global mailbox contract
 - add test contracts `TestContract` and `TestContractFactory` for automatic testing
 - add factory for `MultiSigWallet` contracts
+- change call and answer storage formate in `ServiceContract.sol` to structs
+- add more properties to result of `getCalls` and `getAnswers` in `ServiceContract.sol`
 
 ### Fixes
 - remove `MultiSigWallet` dependency by copying `.sol` file into contracts folder, to prevent `npm install` issues, when used as a subdependency

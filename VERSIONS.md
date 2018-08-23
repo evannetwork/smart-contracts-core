@@ -17,6 +17,7 @@
 
 ### Fixes
 - remove `MultiSigWallet` dependency by copying `.sol` file into contracts folder, to prevent `npm install` issues, when used as a subdependency
+- add cloning for config option in Solc module to avoid side effects
 
 ### Deprecations
 - deprecated rarely used (in edge-server) bin/compile.js

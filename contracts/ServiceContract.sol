@@ -12,7 +12,10 @@
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   See the License for the specific language governing permissions and
   limitations under the License.
+
+
 */
+
 pragma solidity 0.4.20;
 
 import "./BaseContract.sol";
@@ -30,7 +33,7 @@ contract ServiceContract is ServiceContractInterface, BaseContract {
         created = now;
     }
 
-    function sendAnswer(bytes32 answerHash, uint256 callId, uint256 parentAnswer) public {
+    function sendAnswer(bytes32 answerHash, uint256 callId, uint256 parentAnswer) public auth {
         uint256 answerNumber = calls[callId].answerCount++;
         calls[callId].answers[answerNumber].hash = answerHash;
         calls[callId].answers[answerNumber].owner = msg.sender;
@@ -39,7 +42,7 @@ contract ServiceContract is ServiceContractInterface, BaseContract {
         ServiceContractEvent(callId, answerNumber);
     }
     
-    function sendCall(bytes32 callHash) public {
+    function sendCall(bytes32 callHash) public auth {
         uint256 index = callCount++;
         calls[index].hash = callHash;
         calls[index].owner = msg.sender;

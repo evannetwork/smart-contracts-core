@@ -14,6 +14,7 @@
 - add factory for `MultiSigWallet` contracts
 - change call and answer storage formate in `ServiceContract.sol` to structs
 - add more properties to result of `getCalls` and `getAnswers` in `ServiceContract.sol`
+- add `registerFactory(address factoryId)` to `BusinessCenterInterface`
 
 ### Fixes
 - remove `MultiSigWallet` dependency by copying `.sol` file into contracts folder, to prevent `npm install` issues, when used as a subdependency

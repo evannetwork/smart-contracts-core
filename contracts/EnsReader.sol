@@ -16,25 +16,26 @@
   
 */
 
-pragma solidity ^0.4.0;
+pragma solidity 0.4.24;
 
 import "./AbstractENS.sol";
 import "./AbstractPublicResolver.sol";
 
 
 contract EnsReader {
-  // AbstractENS ens = AbstractENS($ENS_ADDRESS);
-  AbstractENS ens = AbstractENS(0x937bbC1d3874961CA38726E9cD07317ba81eD2e1);
-  // bytes32 rootDomain = $NAMEHASH_ROOT_DOMAIN;
-  // evan: 0x01713a3bd6dccc828bbc37b3f42f3bc5555b16438783fabea9faf8c2243a0370
-  // test: 0x04f740db81dc36c853ab4205bddd785f46e79ccedca351fc6dfcbd8cc9a33dd6
-  bytes32 rootDomain = 0x01713a3bd6dccc828bbc37b3f42f3bc5555b16438783fabea9faf8c2243a0370;
+    // AbstractENS ens = AbstractENS($ENS_ADDRESS);
+    AbstractENS ens = AbstractENS(0x937bbC1d3874961CA38726E9cD07317ba81eD2e1);
+    // bytes32 rootDomain = $NAMEHASH_ROOT_DOMAIN;
+    // evan: 0x01713a3bd6dccc828bbc37b3f42f3bc5555b16438783fabea9faf8c2243a0370
+    // test: 0x04f740db81dc36c853ab4205bddd785f46e79ccedca351fc6dfcbd8cc9a33dd6
+    bytes32 rootDomain = 0x01713a3bd6dccc828bbc37b3f42f3bc5555b16438783fabea9faf8c2243a0370;
 
-  function getAddr(bytes32 node) constant internal returns (address) {
-    return AbstractPublicResolver(ens.resolver(keccak256(rootDomain, node))).addr(keccak256(rootDomain, node));
-  }
+    function getAddr(bytes32 node) constant internal returns (address) {
+        return AbstractPublicResolver(ens.resolver(keccak256(abi.encodePacked(rootDomain, node))))
+            .addr(keccak256(abi.encodePacked(rootDomain, node)));
+    }
 
-  function setEns(address ensAddress) internal {
-    ens = AbstractENS(ensAddress);
-  }
+    function setEns(address ensAddress) internal {
+        ens = AbstractENS(ensAddress);
+    }
 }

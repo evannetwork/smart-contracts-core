@@ -16,16 +16,16 @@
   
 */
 
-pragma solidity ^0.4.0;
+pragma solidity 0.4.24;
 
 contract AbstractENS {
-    function owner(bytes32) constant returns(address);
-    function resolver(bytes32) constant returns(address);
-    function ttl(bytes32) constant returns(uint64);
-    function setOwner(bytes32, address);
-    function setSubnodeOwner(bytes32, bytes32, address);
-    function setResolver(bytes32, address);
-    function setTTL(bytes32, uint64);
+    function owner(bytes32) public constant returns(address);
+    function resolver(bytes32) public constant returns(address);
+    function ttl(bytes32) public constant returns(uint64);
+    function setOwner(bytes32, address) public;
+    function setSubnodeOwner(bytes32, bytes32, address) public;
+    function setResolver(bytes32, address) public;
+    function setTTL(bytes32, uint64) public;
 
     event Transfer(bytes32 indexed node, address newOwner);
     event NewOwner(bytes32 indexed node, bytes32 indexed label, address newOwner);

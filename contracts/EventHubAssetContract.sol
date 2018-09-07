@@ -16,7 +16,7 @@
   
 */
 
-pragma solidity ^0.4.0;
+pragma solidity 0.4.24;
 
 
 contract EventHubAssetContract {
@@ -25,7 +25,7 @@ contract EventHubAssetContract {
 
     event AssetContractEvent(address indexed sender, uint eventType, address indexed contractAddress, bytes32 indexed label);
 
-    function sendAssetContractEvent(uint eventType, address contractAddress, bytes32 label) {
-        AssetContractEvent(msg.sender, eventType, contractAddress, label);
+    function sendAssetContractEvent(uint eventType, address contractAddress, bytes32 label) public {
+        emit AssetContractEvent(msg.sender, eventType, contractAddress, label);
     }
 }

@@ -16,7 +16,7 @@
   
 */
 
-pragma solidity 0.4.20;
+pragma solidity 0.4.24;
 
 import "./BaseContractFactory.sol";
 import "./DSRolesPerContract.sol";
@@ -34,7 +34,7 @@ contract ServiceContractFactory is BaseContractFactory {
         super.registerContract(businessCenter, newContract, provider, contractType);
         newContract.setOwner(provider);
         roles.setOwner(newContract);
-        ContractCreated(keccak256("ServiceContract"), newContract);
+        emit ContractCreated(keccak256("ServiceContract"), newContract);
         return newContract;
     }
 

@@ -2,8 +2,11 @@
 
 ## Next Version
 ### Features
+- use `keccak256` instead of `sha3` for hashing
+
 ### Fixes
 ### Deprecations
+
 
 ## Version 1.0.3
 ### Features

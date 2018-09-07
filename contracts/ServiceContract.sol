@@ -25,7 +25,7 @@ import "./ServiceContractInterface.sol";
 
 contract ServiceContract is ServiceContractInterface, BaseContract {
     bytes32 public constant EVENTHUB_LABEL =
-        0xea14ea6d138254c1a2931c6a19f6888c7b52f512d165cfa428183a53dd9dfb8c; //web3.sha3('events')
+        0xea14ea6d138254c1a2931c6a19f6888c7b52f512d165cfa428183a53dd9dfb8c; //web3.utils.soliditySha3('events')
 
     function ServiceContract(address _provider, bytes32 _contractType, bytes32 _contractDescription, address ensAddress) public
             BaseContract(_provider, _contractType, _contractDescription, ensAddress) {

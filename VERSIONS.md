@@ -2,8 +2,7 @@
 
 ## Next Version
 ### Features
-### Fixes
-### Deprecations
+- use `keccak256` instead of `sha3` for hashing
 
 ## Version 1.1.0
 ### Fixes
@@ -20,6 +19,7 @@
 - add factory for `MultiSigWallet` contracts
 - change call and answer storage formate in `ServiceContract.sol` to structs
 - add more properties to result of `getCalls` and `getAnswers` in `ServiceContract.sol`
+- add `registerFactory(address factoryId)` to `BusinessCenterInterface`
 
 ### Fixes
 - remove `MultiSigWallet` dependency by copying `.sol` file into contracts folder, to prevent `npm install` issues, when used as a subdependency

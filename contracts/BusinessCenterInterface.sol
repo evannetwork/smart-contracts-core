@@ -47,6 +47,7 @@ contract BusinessCenterInterface is Owned {
     function migrateTo(address) public;
     function sendContractEvent(uint evetType, bytes32 contractType, address member) public;
     function getProfile(address account) public constant returns (bytes32);
+    function registerFactory(address factoryId) public;
     function setMyProfile(bytes32 profile) public;
     function setJoinSchema(JoinSchema) public;
 

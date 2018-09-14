@@ -28,7 +28,7 @@ contract DataContractInterface is BaseContractInterface {
     /// @notice add entries to a list
     /// @dev keep in mind that list do not provide a fixed order;
     /// they can be iterated, but deleting entries repositions items
-    /// @param keys sha3 hash of the list name
+    /// @param keys keccak256 hash of the list name
     /// @param values values to add to this list
     function addListEntries(bytes32[] keys, bytes32[] values) public;
 
@@ -51,47 +51,47 @@ contract DataContractInterface is BaseContractInterface {
     function init(bytes32 domain, bool allowConsumerInviteIn) public;
 
     /// @notice move a list entry from a list into one or multiple lists
-    /// @param key sha3 hash of the list name
+    /// @param key keccak256 hash of the list name
     /// @param index index of the element to delete
-    /// @param keys sha3 hashes of the list names
+    /// @param keys keccak256 hashes of the list names
     function moveListEntry(bytes32 key, uint256 index, bytes32[] keys) public;
 
     /// @notice remove a list entry from a list
     /// @dev moves last element from list into the slot where the deleted entry was placed
-    /// @param key sha3 hash of the list name
+    /// @param key keccak256 hash of the list name
     /// @param index index of the element to delete
     function removeListEntry(bytes32 key, uint256 index) public;
 
     /// @notice set a value of an entry in the contract
-    /// @param key sha3 hash of a key
+    /// @param key keccak256 hash of a key
     /// @param value value to set for this key
     function setEntry(bytes32 key, bytes32 value) public;
 
     /// @notice set a value of a mapping property in the contract
-    /// @param mappingHash sha3 hash of the mapping name
-    /// @param key sha3 hash of the mappings entry/property name
+    /// @param mappingHash keccak256 hash of the mapping name
+    /// @param key keccak256 hash of the mappings entry/property name
     /// @param value value to set for this key
     function setMappingValue(bytes32 mappingHash, bytes32 key, bytes32 value) public;
 
     /// @notice retrieve entry value for a key
-    /// @param key sha3 hash of a key
+    /// @param key keccak256 hash of a key
     /// @return value for this key
     function getEntry(bytes32 key) public constant returns(bytes32);
 
     /// @notice get number of elements in a list
-    /// @param key sha3 hash of the list name
+    /// @param key keccak256 hash of the list name
     /// @return number of elements
     function getListEntryCount(bytes32 key) public constant returns(uint256);
 
     /// @notice retrieve a single entry from a list
-    /// @param key sha3 hash of the list name
+    /// @param key keccak256 hash of the list name
     /// @param index index of the element to retrieve
     /// @return value for this list entry
     function getListEntry(bytes32 key, uint256 index) public constant returns(bytes32);
 
     /// @notice retrieve a single entry from a mapping
-    /// @param mappingHash sha3 hash of the mapping name
-    /// @param key sha3 hash of the mappings entry/property name
+    /// @param mappingHash keccak256 hash of the mapping name
+    /// @param key keccak256 hash of the mappings entry/property name
     /// @return value for this mapping entry
     function getMappingValue(bytes32 mappingHash, bytes32 key) public constant returns(bytes32);
 }

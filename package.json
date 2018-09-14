@@ -25,8 +25,12 @@
   "peerDependencies": {
     "actionhero": "^18.1.0"
   },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:evannetwork/smart-contracts-core.git"
+  },
   "scripts": {
     "build-docu": "node ./scripts/build-docu.js"
   },
-  "version": "1.0.3"
+  "version": "1.1.0"
 }

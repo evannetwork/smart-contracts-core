@@ -13,7 +13,7 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 
-  
+
 */
 
 pragma solidity 0.4.20;
@@ -33,22 +33,27 @@ contract ServiceContract is ServiceContractInterface, BaseContract {
         created = now;
     }
 
-    function sendAnswer(bytes32 answerHash, uint256 callId) public {
-        uint256 answerNumber = answersCountPerCall[callId]++;
-        answersPerCall[callId][answerNumber] = answerHash;
+    function sendAnswer(bytes32 answerHash, uint256 callId, uint256 parentAnswer) public auth {
+        uint256 answerNumber = calls[callId].answerCount++;
+        calls[callId].answers[answerNumber].hash = answerHash;
+        calls[callId].answers[answerNumber].owner = msg.sender;
+        calls[callId].answers[answerNumber].created = now;
+        calls[callId].answers[answerNumber].parent = parentAnswer;
         ServiceContractEvent(callId, answerNumber);
     }
     
-    function sendCall(bytes32 callHash) public {
+    function sendCall(bytes32 callHash) public auth {
         uint256 index = callCount++;
-        calls[index] = callHash;
-        multiSharingsOwner[bytes32(index)] = msg.sender;
+        calls[index].hash = callHash;
+        calls[index].owner = msg.sender;
+        calls[index].created = now;
         ServiceContractEvent(0, index);
     }
 
     function setMultiSharing(bytes32 sharingId, bytes32 _sharing) public auth {
         // allow only updates to own sharings
-        assert(multiSharingsOwner[sharingId] == msg.sender);
+        // sharing are created per call, so the call owner is the sharing owner
+        assert(calls[uint256(sharingId)].owner == msg.sender);
         multiSharings[sharingId] = _sharing;
     }
 
@@ -58,17 +63,34 @@ contract ServiceContract is ServiceContractInterface, BaseContract {
             uint(EventHubBusinessCenter.BusinessCenterEventType.Modified), contractType, msg.sender);
     }
 
-    function getAnswers(uint256 callId, uint256 offset) public constant returns (bytes32[10] page, uint256 totalCount) {
-        totalCount = answersCountPerCall[callId];
+    function getAnswers(uint256 callId, uint256 offset) public constant returns (
+            bytes32[10] hash,
+            address[10] owner,
+            uint[10] created,
+            uint256[10] parent,
+            uint256 totalCount) {
+        totalCount = calls[callId].answerCount;
         for (uint256 i = 0; i < 10; i++) {
-            page[i] = answersPerCall[callId][i + offset];
+            hash[i] = calls[callId].answers[i + offset].hash;
+            owner[i] = calls[callId].answers[i + offset].owner;
+            created[i] = calls[callId].answers[i + offset].created;
+            parent[i] = calls[callId].answers[i + offset].parent;
         }
     }
 
-    function getCalls(uint256 offset) public constant returns (bytes32[10] page, bytes32[10] sharings, uint256 totalCount) {
+    function getCalls(uint256 offset) public constant returns (
+            bytes32[10] hash,
+            address[10] owner,
+            uint[10] created,
+            uint256[10] answerCount,
+            bytes32[10] sharings,
+            uint256 totalCount) {
         totalCount = callCount;
         for (uint256 i = 0; i < 10; i++) {
-            page[i] = calls[i + offset];
+            hash[i] = calls[i + offset].hash;
+            owner[i] = calls[i + offset].owner;
+            created[i] = calls[i + offset].created;
+            answerCount[i] = calls[i + offset].answerCount;
             sharings[i] = multiSharings[bytes32(i + offset)];
         }
     }

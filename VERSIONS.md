@@ -5,6 +5,12 @@
 ### Fixes
 ### Deprecations
 
+## Version 1.1.0
+### Fixes
+- update hasing to `keccak256`
+- add `registerFactory(address factoryId)` to `BusinessCenterInterface`
+- add matching auth checks
+
 ## Version 1.0.3
 ### Features
 - add configurable output path

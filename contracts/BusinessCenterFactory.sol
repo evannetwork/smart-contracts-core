@@ -78,7 +78,7 @@ contract BusinessCenterFactory {
         roles.setRoleCapability(contractRole, nullAddress,
             bytes4(keccak256("registerContractMember(address,address,bytes32)")), true);
         roles.setRoleCapability(contractRole, nullAddress,
-            bytes4(keccak256("removeContractMember(address,address,bytes32)")), true);
+            bytes4(keccak256("removeContractMember(address,address)")), true);
         roles.setRoleCapability(contractRole, nullAddress,
             bytes4(keccak256("sendContractEvent(uint256,bytes32,address)")), true);
 

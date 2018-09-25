@@ -152,7 +152,7 @@ contract BusinessCenter is BusinessCenterInterface, EnsReader, DSAuth {
         var (index, okay) = userIndex.listIndexOf(contractTypeLabel, bytes32(_contract));
         assert(okay);
 
-        bytes32 label = keccak256(label, keccak256(bytes32(_member)));
+        bytes32 label = keccak256(MEMBER_LABEL, keccak256(bytes32(_member)));
         DataStoreIndex userIndex = DataStoreIndex(db.indexGet(label));
         db.indexMakeModerator(label);
         userIndex.listEntryRemove(contractInterface.contractType(), index);

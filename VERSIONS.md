@@ -1,4 +1,4 @@
-# smart-contracts
+# smart-contracts-core
 
 ## Next Version
 ### Features

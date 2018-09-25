@@ -110,6 +110,7 @@ contract BaseContract is BaseContractInterface, EnsReader {
         // if last bit is set, then invitee has set its known flag for msg.sender to true
         // assert((profile.getMappingValue(CONTACTS_LABEL, keccak256(msg.sender)) & 1) == 1);
 
+
         if (businessCenter != 0x0) {
             BusinessCenterInterface businessCenterInterface = BusinessCenterInterface(businessCenter);
             assert(businessCenterInterface.isMember(consumer));
@@ -132,7 +133,7 @@ contract BaseContract is BaseContractInterface, EnsReader {
         StateshiftEvent(uint(ConsumerState.Draft), consumer);
     }
 
-    function removeConsumer(address consumer, address businessCenter) auth {
+    function removeConsumer(address consumer) auth {
         assert(isConsumer(consumer));
 
         uint lastId = consumerCount--;
@@ -148,17 +149,5 @@ contract BaseContract is BaseContractInterface, EnsReader {
 
         DSRolesPerContract roles = DSRolesPerContract(authority);
         roles.setUserRole(consumer, MEMBER_ROLE, false);
-
-        if (businessCenter != 0x0) {
-            BusinessCenterInterface businessCenterInterface = BusinessCenterInterface(businessCenter);
-            assert(businessCenterInterface.isMember(consumer));
-            assert(!isConsumer(consumer));
-            businessCenterInterface.removeContractMember(this, consumer, contractType);
-        } else {
-            // trigger event from here if not attached to business businessCenter
-            EventHubBusinessCenter eventHub = EventHubBusinessCenter(getAddr(EVENTHUB_LABEL));
-            eventHub.sendContractEvent(
-                uint(EventHubBusinessCenter.BusinessCenterEventType.Cancel), contractType, this, consumer);
-        }
     }
 }

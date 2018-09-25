@@ -61,7 +61,7 @@ contract BaseContractInterface is Described, Shared {
     function changeContractState(ContractState) public;
     function isConsumer(address) public constant returns (bool);
     function inviteConsumer(address, address) public;
-    function removeConsumer(address, address) public;
+    function removeConsumer(address) public;
 
 
     modifier in_state(ContractState _state) {

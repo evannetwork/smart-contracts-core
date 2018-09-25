@@ -4,7 +4,6 @@
 ### Features
 - use `keccak256` instead of `sha3` for hashing
 - add `dst` argument to `lib/solc.js` functions to bypass config for destination path
-- add support for removing contract members the same way as inviting them
 
 ## Version 1.1.0
 ### Fixes

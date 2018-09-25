@@ -47,7 +47,7 @@ contract BaseContractFactory is BaseContractFactoryInterface {
         roles.setRoleCapability(ownerRole, nullAddress, 
             bytes4(keccak256("changeContractState(uint8)")), true);
         roles.setRoleCapability(ownerRole, nullAddress,
-            bytes4(keccak256("removeConsumer(address,address)")), true);
+            bytes4(keccak256("removeConsumer()")), true);
 
         // member           
         roles.setRoleCapability(memberRole, nullAddress, 

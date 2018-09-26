@@ -2,6 +2,11 @@
 
 ## Next Version
 ### Features
+### Fixes
+### Deprecations
+
+## Version 1.1.1
+### Fixes
 - use `keccak256` instead of `sha3` for hashing
 - add `dst` argument to `lib/solc.js` functions to bypass config for destination path
 

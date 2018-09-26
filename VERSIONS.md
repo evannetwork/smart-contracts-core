@@ -1,9 +1,14 @@
-# smart-contracts
+# smart-contracts-core
 
 ## Next Version
 ### Features
 ### Fixes
 ### Deprecations
+
+## Version 1.1.1
+### Fixes
+- use `keccak256` instead of `sha3` for hashing
+- add `dst` argument to `lib/solc.js` functions to bypass config for destination path
 
 ## Version 1.1.0
 ### Fixes
@@ -20,6 +25,7 @@
 - add factory for `MultiSigWallet` contracts
 - change call and answer storage formate in `ServiceContract.sol` to structs
 - add more properties to result of `getCalls` and `getAnswers` in `ServiceContract.sol`
+- add `registerFactory(address factoryId)` to `BusinessCenterInterface`
 
 ### Fixes
 - remove `MultiSigWallet` dependency by copying `.sol` file into contracts folder, to prevent `npm install` issues, when used as a subdependency

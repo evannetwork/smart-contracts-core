@@ -29,11 +29,11 @@ import "./ProfileIndexInterface.sol";
 
 contract BaseContract is BaseContractInterface, EnsReader {
     uint8 private constant MEMBER_ROLE = 1;
-    // web3.sha3('contacts')
+    // web3.utils.soliditySha3('contacts')
     bytes32 private constant CONTACTS_LABEL = 0x8417ef2e3e7bb6630d90a4cdcc188db4bcc27d6b2d8891b376ef771499bb4299;
-    // web3.sha3('eventhub')
+    // web3.utils.soliditySha3('eventhub')
     bytes32 private constant EVENTHUB_LABEL = 0xea14ea6d138254c1a2931c6a19f6888c7b52f512d165cfa428183a53dd9dfb8c;
-    // web3.sha3('profile')
+    // web3.utils.soliditySha3('profile')
     bytes32 private constant PROFILE_LABEL = 0xe3dd854eb9d23c94680b3ec632b9072842365d9a702ab0df7da8bc398ee52c7d;
 
     function BaseContract(address _provider, bytes32 _contractType, bytes32 _contractDescription, address ensAddress) {

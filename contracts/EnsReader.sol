@@ -31,7 +31,7 @@ contract EnsReader {
   bytes32 rootDomain = 0x01713a3bd6dccc828bbc37b3f42f3bc5555b16438783fabea9faf8c2243a0370;
 
   function getAddr(bytes32 node) constant internal returns (address) {
-    return AbstractPublicResolver(ens.resolver(sha3(rootDomain, node))).addr(sha3(rootDomain, node));
+    return AbstractPublicResolver(ens.resolver(keccak256(rootDomain, node))).addr(keccak256(rootDomain, node));
   }
 
   function setEns(address ensAddress) internal {

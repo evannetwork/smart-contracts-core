@@ -147,13 +147,14 @@ contract BusinessCenter is BusinessCenterInterface, EnsReader, DSAuth {
     function removeContractMember(address _contract, address _member, bytes32 _contractType) public auth {
         assert(isMember(_member) && isContract(_contract));
 
+        bytes32 label = keccak256(MEMBER_LABEL, keccak256(bytes32(_member)));
+        DataStoreIndex userIndex = DataStoreIndex(db.indexGet(label));
+
         BaseContractInterface contractInterface = BaseContractInterface(_contract);
         bytes32 contractTypeLabel = contractInterface.contractType();
         var (index, okay) = userIndex.listIndexOf(contractTypeLabel, bytes32(_contract));
         assert(okay);
 
-        bytes32 label = keccak256(MEMBER_LABEL, keccak256(bytes32(_member)));
-        DataStoreIndex userIndex = DataStoreIndex(db.indexGet(label));
         db.indexMakeModerator(label);
         userIndex.listEntryRemove(contractInterface.contractType(), index);
         userIndex.removeModeratorship();

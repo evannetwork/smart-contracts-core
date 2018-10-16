@@ -3,6 +3,10 @@
 ## Next Version
 ### Features
 ### Fixes
+- fix destinationPath handling for cases when output file doesn't exist
+- fix `removeContractMember`
+- add `dst` argument to contract compile functions
+
 ### Deprecations
 
 ## Version 1.1.1

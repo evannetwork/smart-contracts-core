@@ -42,6 +42,12 @@ contract BaseContract is BaseContractInterface, EnsReader {
         contractType = _contractType;
         contractDescription = _contractDescription;
         consumerState[_provider] = ConsumerState.Draft;
+
+        // add to internal consumer mapping
+        uint id = ++consumerCount;
+        consumer2index[_provider] = id;
+        index2consumer[id] = _provider;
+
         setEns(ensAddress);
     }
 

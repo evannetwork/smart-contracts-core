@@ -3,12 +3,19 @@
 ## Next Version
 ### Features
 ### Fixes
+- fix destinationPath handling for cases when output file doesn't exist
+- fix `removeContractMember`
+- add `dst` argument to contract compile functions
+- add provider (owner of new `BaseContract`) as a consumer to internal mappings, that reflect this state
+
 ### Deprecations
+
 
 ## Version 1.1.1
 ### Fixes
 - use `keccak256` instead of `sha3` for hashing
 - add `dst` argument to `lib/solc.js` functions to bypass config for destination path
+- add support for removing contract members the same way as inviting them
 
 ## Version 1.1.0
 ### Fixes

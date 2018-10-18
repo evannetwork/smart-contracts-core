@@ -3,12 +3,14 @@
 ## Next Version
 ### Features
 ### Fixes
+### Deprecations
+
+## Version 1.1.2
+### Fixes
 - fix destinationPath handling for cases when output file doesn't exist
 - fix `removeContractMember`
 - add `dst` argument to contract compile functions
 - add provider (owner of new `BaseContract`) as a consumer to internal mappings, that reflect this state
-
-### Deprecations
 
 
 ## Version 1.1.1

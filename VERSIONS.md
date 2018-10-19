@@ -2,6 +2,8 @@
 
 ## Next Version
 ### Features
+- add permissions to `TestDataContractFactory` for additional test for user management
+
 ### Fixes
 ### Deprecations
 

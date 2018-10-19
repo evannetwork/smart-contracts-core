@@ -5,6 +5,8 @@
 - add permissions to `TestDataContractFactory` for additional test for user management
 
 ### Fixes
+- fix `setUserRole` issue in `DSRolesPerContract`, that could produce invalid user indices when removing accounts from roles
+
 ### Deprecations
 
 ## Version 1.1.2
@@ -13,7 +15,6 @@
 - fix `removeContractMember`
 - add `dst` argument to contract compile functions
 - add provider (owner of new `BaseContract`) as a consumer to internal mappings, that reflect this state
-- fix `setUserRole` issue in `DSRolesPerContract`, that could produce invalid user indices when removing accounts from roles
 
 
 ## Version 1.1.1

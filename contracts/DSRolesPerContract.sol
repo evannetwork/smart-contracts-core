@@ -167,7 +167,11 @@ contract DSRolesPerContract is DSAuth, DSAuthority
             uint lastMember = role2userCount[role]--;
             index = role2user2index[role][who];
             delete role2user2index[role][who];
-            role2index2user[role][index] = role2index2user[role][lastMember];
+            address memberToMove = role2index2user[role][lastMember];
+            // move member to new index
+            role2index2user[role][index] = memberToMove;
+            // update index for this member
+            role2user2index[role][memberToMove] = index;
             delete role2index2user[role][lastMember];
         }
         if (enabled && (role + 1) > roleCount) {

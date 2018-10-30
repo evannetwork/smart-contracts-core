@@ -2,7 +2,11 @@
 
 ## Next Version
 ### Features
+- add permissions to `TestDataContractFactory` for additional test for user management
+
 ### Fixes
+- fix `setUserRole` issue in `DSRolesPerContract`, that could produce invalid user indices when removing accounts from roles
+
 ### Deprecations
 
 ## Version 1.1.2

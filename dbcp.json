@@ -6,7 +6,7 @@
       "files": [
         "compiled.js"
       ],
-      "origin": "QmV5v8RvkTqaD77WHMUvRZuVWSBJrg5hTe48kqqgEDjStu",
+      "origin": "QmbMXzdP4bxesASZYXNBtLtDQhweCDUEbq7b168tjzaYm3",
       "type": "library"
     },
     "description": "evan.network core smart contracts",
@@ -26,7 +26,8 @@
       "1.0.2": "QmczvqMdpetAwatCZ17K8QiatYe5rYhEkDn4TYnT2DUGzh",
       "1.0.3": "QmcGifgJud7vafAomACpNpXQF4YtzsraP6pMi6h9NR4vzN",
       "1.1.0": "QmQowz1BzwmVhEFRwtUbBtKYhHUmH1gfs8dPVkw6zi4AUL",
-      "1.1.2": "QmVkayXnodCNDgpChw6v8QzUMknQemWQwL55ht2tpCVjMf"
-    }
+      "1.1.2": "Qmd1qXMqLEo9ZYQ8QkMTpqU5A4RN4p5Q7QSgAAHzta2t3W"
+    },
+    "dbcpVersion": 1
   }
 }

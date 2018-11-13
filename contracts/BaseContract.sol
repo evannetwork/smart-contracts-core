@@ -42,6 +42,12 @@ contract BaseContract is BaseContractInterface, EnsReader {
         contractType = _contractType;
         contractDescription = _contractDescription;
         consumerState[_provider] = ConsumerState.Draft;
+
+        // add to internal consumer mapping
+        uint id = ++consumerCount;
+        consumer2index[_provider] = id;
+        index2consumer[id] = _provider;
+
         setEns(ensAddress);
     }
 
@@ -132,7 +138,7 @@ contract BaseContract is BaseContractInterface, EnsReader {
         emit StateshiftEvent(uint(ConsumerState.Draft), consumer);
     }
 
-    function removeConsumer(address consumer) public auth {
+    function removeConsumer(address consumer, address businessCenter) public auth {
         assert(isConsumer(consumer));
 
         uint lastId = consumerCount--;
@@ -148,5 +154,17 @@ contract BaseContract is BaseContractInterface, EnsReader {
 
         DSRolesPerContract roles = DSRolesPerContract(authority);
         roles.setUserRole(consumer, MEMBER_ROLE, false);
+
+        if (businessCenter != 0x0) {
+            BusinessCenterInterface businessCenterInterface = BusinessCenterInterface(businessCenter);
+            assert(businessCenterInterface.isMember(consumer));
+            assert(!isConsumer(consumer));
+            businessCenterInterface.removeContractMember(this, consumer, contractType);
+        } else {
+            // trigger event from here if not attached to business businessCenter
+            EventHubBusinessCenter eventHub = EventHubBusinessCenter(getAddr(EVENTHUB_LABEL));
+            eventHub.sendContractEvent(
+                uint(EventHubBusinessCenter.BusinessCenterEventType.Cancel), contractType, this, consumer);
+        }
     }
 }

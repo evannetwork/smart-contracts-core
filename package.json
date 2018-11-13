@@ -33,5 +33,5 @@
     "build-contracts": "node ./scripts/build-contracts.js",
     "build-docu": "node ./scripts/build-docu.js"
   },
-  "version": "1.0.3"
+  "version": "1.1.2"
 }

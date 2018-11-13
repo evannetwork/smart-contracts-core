@@ -43,7 +43,7 @@ contract BusinessCenterInterface is Owned {
 
     function registerContract(address _contract, address _provider, bytes32 _contractType) public;
     function registerContractMember(address _contract, address _member, bytes32 _contractType) public;
-    function removeContractMember(address _contract, address _member) public;
+    function removeContractMember(address _contract, address _member, bytes32 _contractType) public;
     function migrateTo(address) public;
     function sendContractEvent(uint evetType, bytes32 contractType, address member) public;
     function getProfile(address account) public constant returns (bytes32);

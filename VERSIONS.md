@@ -1,14 +1,35 @@
-# smart-contracts
+# smart-contracts-core
 
 ## Next Version
 ### Features
-- use `keccak256` instead of `sha3` for hashing
+- add permissions to `TestDataContractFactory` for additional test for user management
 
 ### Fixes
+- fix `setUserRole` issue in `DSRolesPerContract`, that could produce invalid user indices when removing accounts from roles
+
 ### Deprecations
 - use solc 0.4.24 as compiler version
 - contracts have been updated accordingly to match solc 0.4.24
 
+## Version 1.1.2
+### Fixes
+- fix destinationPath handling for cases when output file doesn't exist
+- fix `removeContractMember`
+- add `dst` argument to contract compile functions
+- add provider (owner of new `BaseContract`) as a consumer to internal mappings, that reflect this state
+
+
+## Version 1.1.1
+### Fixes
+- use `keccak256` instead of `sha3` for hashing
+- add `dst` argument to `lib/solc.js` functions to bypass config for destination path
+- add support for removing contract members the same way as inviting them
+
+## Version 1.1.0
+### Fixes
+- update hasing to `keccak256`
+- add `registerFactory(address factoryId)` to `BusinessCenterInterface`
+- add matching auth checks
 
 ## Version 1.0.3
 ### Features

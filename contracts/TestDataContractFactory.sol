@@ -53,6 +53,8 @@ contract TestDataContractFactory is BaseContractFactory {
 
         // role 2 permission
         roles.setRoleCapability(ownerRole, 0, bytes4(keccak256("init(bytes32,bool)")), true);
+        roles.setRoleCapability(ownerRole, 0, bytes4(keccak256("setOwner(address)")), true);
+        roles.setRoleCapability(ownerRole, 0, bytes4(keccak256("removeConsumer(address,address)")), true);
         roles.setRoleCapability(ownerRole, 0, bytes4(keccak256("moveListEntry(bytes32,uint256,bytes32[])")), true);
         roles.setRoleCapability(ownerRole, 0, bytes4(keccak256("removeListEntry(bytes32,uint256)")), true);
 

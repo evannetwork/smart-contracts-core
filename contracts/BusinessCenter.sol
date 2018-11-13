@@ -146,8 +146,11 @@ contract BusinessCenter is BusinessCenterInterface, EnsReader, DSAuth {
     }
 
     // will be called from a base contract
-    function removeContractMember(address _contract, address _member) public auth {
+    function removeContractMember(address _contract, address _member, bytes32 _contractType) public auth {
         assert(isMember(_member) && isContract(_contract));
+
+        bytes32 label = keccak256(MEMBER_LABEL, keccak256(bytes32(_member)));
+        DataStoreIndex userIndex = DataStoreIndex(db.indexGet(label));
 
         BaseContractInterface contractInterface = BaseContractInterface(_contract);
         bytes32 contractTypeLabel = contractInterface.contractType();
@@ -156,11 +159,13 @@ contract BusinessCenter is BusinessCenterInterface, EnsReader, DSAuth {
         (index, okay) = userIndex.listIndexOf(contractTypeLabel, bytes32(_contract));
         assert(okay);
 
-        bytes32 label = keccak256(abi.encodePacked(label, keccak256(abi.encodePacked(bytes32(_member)))));
-        DataStoreIndex userIndex = DataStoreIndex(db.indexGet(label));
         db.indexMakeModerator(label);
         userIndex.listEntryRemove(contractInterface.contractType(), index);
         userIndex.removeModeratorship();
+
+        // notify about removed member
+        getEventHub().sendContractEvent(
+            uint(EventHubBusinessCenter.BusinessCenterEventType.Cancel), _contractType, _contract, _member);
     }
 
     function migrateTo(address newBc) public auth {

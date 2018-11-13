@@ -16,7 +16,7 @@
   
 */
 
-pragma solidity 0.4.24;
+pragma solidity ^0.4.24;
 
 contract BaseContractFactoryInterface {
   uint public VERSION_ID;

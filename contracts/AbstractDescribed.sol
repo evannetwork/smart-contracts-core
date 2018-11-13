@@ -16,7 +16,7 @@
   
 */
 
-pragma solidity 0.4.24;
+pragma solidity ^0.4.24;
 
 
 /// @title abstract contract for holding a DBCP description

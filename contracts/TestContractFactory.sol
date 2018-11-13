@@ -16,7 +16,7 @@
   
 */
 
-pragma solidity 0.4.20;
+pragma solidity 0.4.24;
 
 import "./TestContract.sol";
 
@@ -26,7 +26,7 @@ contract TestContractFactory {
 
     function createContract(string data) public returns (address) {
         TestContract newContract = new TestContract(data);
-        ContractCreated(keccak256("TestContractFactory"), newContract);
+        emit ContractCreated(keccak256("TestContractFactory"), newContract);
         return newContract;
     }
 }

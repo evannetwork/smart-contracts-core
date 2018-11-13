@@ -16,7 +16,7 @@
   
 */
 
-pragma solidity 0.4.20;
+pragma solidity 0.4.24;
 
 
 /// @title triggering data contract events
@@ -38,6 +38,6 @@ contract EventHubDataContract {
     /// @param updateType type update (set / remove)
     /// @param updated number of updated elments in addListEntry, index of removed entry in removeListEntry
     function sendDataContractEvent(bytes32 propertyType, bytes32[] propertyKeys, bytes32 updateType, uint256 updated) public {
-        DataContractEvent(msg.sender, propertyType, propertyKeys, updateType, updated);
+        emit DataContractEvent(msg.sender, propertyType, propertyKeys, updateType, updated);
     }
 }

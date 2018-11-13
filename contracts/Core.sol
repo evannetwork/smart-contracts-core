@@ -16,7 +16,7 @@
   
 */
 
-pragma solidity ^0.4.0;
+pragma solidity 0.4.24;
 
 // empty contract for keeping filename -> contract name behavior
 contract Core {}
@@ -24,11 +24,11 @@ contract Core {}
 contract Owned {
     address public owner;
 
-    function Owned() {
+    constructor() public {
         owner = msg.sender;
     }
 
-    function transferOwnership(address newOwner) only_owner {
+    function transferOwnership(address newOwner) public only_owner {
         owner = newOwner;
     }
 
@@ -40,27 +40,27 @@ contract Owned {
 }
 
 contract OwnedMortal is Owned {
-    function kill() only_owner {
-        suicide(owner);
+    function kill() public only_owner {
+        selfdestruct(owner);
     }
 }
 
 contract OwnedModerated is Owned {
     mapping(address => bool) public moderators;
 
-    function addModerator(address newModerator) only_owner {
+    function addModerator(address newModerator) public only_owner {
         moderators[newModerator] = true;
     }
 
-    function removeModerator(address newModerator) only_owner {
+    function removeModerator(address newModerator) public only_owner {
         delete moderators[newModerator];
     }
 
-    function removeModeratorship() only_owner_or_moderator {
+    function removeModeratorship() public only_owner_or_moderator {
         delete moderators[msg.sender];
     }
 
-    function transferModeratorship(address newModerator) only_owner_or_moderator {
+    function transferModeratorship(address newModerator) public only_owner_or_moderator {
         delete moderators[msg.sender];
         moderators[newModerator] = true;
     }

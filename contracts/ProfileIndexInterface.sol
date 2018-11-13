@@ -16,7 +16,7 @@
   
 */
 
-pragma solidity 0.4.20;
+pragma solidity 0.4.24;
 
 import "./DataStoreIndexInterface.sol";
 
@@ -27,26 +27,26 @@ interface ProfileIndexInterface {
      * @param account accountid for profile
      * @return hash of the label
      */
-    function getProfile(address account) public constant returns (address);
+    function getProfile(address account) external constant returns (address);
 
     /**@dev transfers ownership of storage to another contract
      * @param newProfileIndex new profile index to hand over storage to
      */
-    function migrateTo(address newProfileIndex) public;
+    function migrateTo(address newProfileIndex) external;
 
     /**@dev sets a hash for a given container label
      * @param _address contract address that holds the information.
      */
-    function setMyProfile(address _address) public;
+    function setMyProfile(address _address) external;
 
     /**@dev sets a profile for a given account
      * @param account account to set profile for
      * @param profile contract address that holds the information.
      */
-    function setProfile(address account, address profile) public;
+    function setProfile(address account, address profile) external;
 
     /**@dev returns the global db for migration purposes
      * @return global db
      */    
-    function getStorage() public constant returns (DataStoreIndexInterface);
+    function getStorage() external constant returns (DataStoreIndexInterface);
 }

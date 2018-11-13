@@ -16,33 +16,33 @@
   
 */
 
-pragma solidity 0.4.20;
+pragma solidity 0.4.24;
 
 
 interface DataStoreIndexInterface {
-    function containerGet(bytes32 key) public constant returns (bytes32);
+    function containerGet(bytes32 key) external constant returns (bytes32);
 
-    function containerHas(bytes32 key) public constant returns (bool);
+    function containerHas(bytes32 key) external constant returns (bool);
 
-    function containerRemove(bytes32 key) public;
+    function containerRemove(bytes32 key) external;
 
-    function containerSet(bytes32 key, bytes32 value) public;
+    function containerSet(bytes32 key, bytes32 value) external;
 
-    function indexGet(bytes32 key) public constant returns (DataStoreIndexInterface);
+    function indexGet(bytes32 key) external constant returns (DataStoreIndexInterface);
 
-    function indexMakeModerator(bytes32 key) public;
+    function indexMakeModerator(bytes32 key) external;
 
-    function listEntryAdd(bytes32 containerName, bytes32 value) public;
+    function listEntryAdd(bytes32 containerName, bytes32 value) external;
 
-    function listEntryRemove(bytes32 containerNames, uint index) public;
+    function listEntryRemove(bytes32 containerNames, uint index) external;
 
-    function listEntryUpdate(bytes32 containerNames, uint index, bytes32 value) public;
+    function listEntryUpdate(bytes32 containerNames, uint index, bytes32 value) external;
 
-    function listEntryGet(bytes32 containerName, uint index) public constant returns(bytes32);
+    function listEntryGet(bytes32 containerName, uint index) external constant returns(bytes32);
 
-    function listIndexOf(bytes32 containerName, bytes32 value) public constant returns(uint index, bool okay);
+    function listIndexOf(bytes32 containerName, bytes32 value) external constant returns(uint index, bool okay);
 
-    function listLastModified(bytes32 containerName) public constant returns(uint);
+    function listLastModified(bytes32 containerName) external constant returns(uint);
 
-    function listLength(bytes32 containerName) public constant returns(uint);
+    function listLength(bytes32 containerName) external constant returns(uint);
 }

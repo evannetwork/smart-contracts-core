@@ -14,7 +14,7 @@
 
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-pragma solidity 0.4.20;
+pragma solidity 0.4.24;
 
 import "./ds-auth/auth.sol";
 
@@ -111,8 +111,8 @@ contract DSRolesPerContract is DSAuth, DSAuthority
         if( isUserRoot(caller) || isCapabilityPublic(nullAddress, sig) ) {
             return true;
         } else {
-            var has_roles = getUserRoles(caller);
-            var needs_one_of = getCapabilityRoles(nullAddress, sig);
+            bytes32 has_roles = getUserRoles(caller);
+            bytes32 needs_one_of = getCapabilityRoles(nullAddress, sig);
             return bytes32(0) != has_roles & needs_one_of;
         }
     }
@@ -125,8 +125,8 @@ contract DSRolesPerContract is DSAuth, DSAuthority
         if( isUserRoot(caller) || isOperationCapabilityPublic(nullAddress, operation) ) {
             return true;
         } else {
-            var has_roles = getUserRoles(caller);
-            var needs_one_of = getOperationCapabilityRoles(nullAddress, operation);
+            bytes32 has_roles = getUserRoles(caller);
+            bytes32 needs_one_of = getOperationCapabilityRoles(nullAddress, operation);
             return bytes32(0) != has_roles & needs_one_of;
         }
     }
@@ -177,7 +177,7 @@ contract DSRolesPerContract is DSAuth, DSAuthority
         if (enabled && (role + 1) > roleCount) {
             roleCount = role + 1;
         }
-        var last_roles = _user_roles[who];
+        bytes32 last_roles = _user_roles[who];
         bytes32 shifted = bytes32(uint256(uint256(2) ** uint256(role)));
         if( enabled ) {
             _user_roles[who] = last_roles | shifted;
@@ -204,7 +204,7 @@ contract DSRolesPerContract is DSAuth, DSAuthority
         public
         auth
     {
-        var last_roles = _capability_roles[sig];
+        bytes32 last_roles = _capability_roles[sig];
         bytes32 shifted = bytes32(uint256(uint256(2) ** uint256(role)));
         if( enabled ) {
             _capability_roles[sig] = last_roles | shifted;
@@ -218,7 +218,7 @@ contract DSRolesPerContract is DSAuth, DSAuthority
         public
         auth
     {
-        var last_roles = _operation_capability_roles[operation];
+        bytes32 last_roles = _operation_capability_roles[operation];
         bytes32 shifted = bytes32(uint256(uint256(2) ** uint256(role)));
         if( enabled ) {
             _operation_capability_roles[operation] = last_roles | shifted;

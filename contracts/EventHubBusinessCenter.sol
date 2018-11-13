@@ -16,7 +16,7 @@
   
 */
 
-pragma solidity 0.4.20;
+pragma solidity 0.4.24;
 
 
 contract EventHubBusinessCenter {
@@ -45,10 +45,10 @@ contract EventHubBusinessCenter {
     event MemberEvent(address sender, uint eventType, address indexed member);
 
     function sendContractEvent(uint eventType, bytes32 contractType, address contractAddress, address member) public {
-        ContractEvent(msg.sender, eventType, contractType, contractAddress, member);
+        emit ContractEvent(msg.sender, eventType, contractType, contractAddress, member);
     }
 
     function sendMemberEvent(uint eventType, address member) public {
-        MemberEvent(msg.sender, eventType, member);
+        emit MemberEvent(msg.sender, eventType, member);
     }
 }

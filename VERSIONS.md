@@ -4,6 +4,8 @@
 ### Features
 ### Fixes
 ### Deprecations
+- use solc 0.4.24 as compiler version
+- contracts have been updated accordingly to match solc 0.4.24
 
 ## Version 1.1.3
 ### Features
@@ -11,6 +13,7 @@
 
 ### Fixes
 - fix `setUserRole` issue in `DSRolesPerContract`, that could produce invalid user indices when removing accounts from roles
+
 
 ## Version 1.1.2
 ### Fixes

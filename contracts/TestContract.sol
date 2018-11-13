@@ -16,13 +16,13 @@
   
 */
 
-pragma solidity 0.4.20;
+pragma solidity 0.4.24;
 
 
 contract TestContract {
     string public data;
 
-    function TestContract(string newData) public {
+    constructor(string newData) public {
         setData(newData);
     }
 

@@ -16,7 +16,7 @@
   
 */
 
-pragma solidity 0.4.20;
+pragma solidity 0.4.24;
 
 import "./ds-auth/auth.sol";
 import "./MultiShared.sol";

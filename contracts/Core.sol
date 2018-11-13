@@ -16,7 +16,7 @@
   
 */
 
-pragma solidity 0.4.24;
+pragma solidity ^0.4.24;
 
 // empty contract for keeping filename -> contract name behavior
 contract Core {}

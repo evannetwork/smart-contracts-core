@@ -22,7 +22,7 @@ library ClaimHolderLibrary {
         mapping (uint256 => bytes32[]) byTopic;
         mapping (uint256 => mapping ( bytes32 => uint256 )) topicIdbyClaimId;
         mapping (bytes32 => bool) approvedClaims;
-        mapping (uint256 => uint256) creationDates;
+        mapping (bytes32 => uint256) creationDates;
     }
 
 
@@ -206,7 +206,7 @@ library ClaimHolderLibrary {
     function claimCreationDate(Claims storage _claims, bytes32 _claimId)
         public
         view
-        returns (bool)
+        returns (uint256)
     {
         return _claims.creationDates[_claimId];
     }

@@ -2,6 +2,7 @@
 
 ## Next Version
 ### Features
+- add ERC725/735 compliant Claims and Identity contracts
 ### Fixes
 ### Deprecations
 - use solc 0.4.24 as compiler version

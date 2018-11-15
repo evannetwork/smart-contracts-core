@@ -3,6 +3,8 @@
 ## Next Version
 ### Features
 - add ERC725/735 compliant Claims and Identity contracts
+- include bytecode within compiled.js files for `claims/OriginIdentity.sol:OriginIdentity`
+
 ### Fixes
 ### Deprecations
 - use solc 0.4.24 as compiler version

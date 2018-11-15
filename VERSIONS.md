@@ -2,6 +2,8 @@
 
 ## Next Version
 ### Features
+- add `TicketVendorInterface`
+
 ### Fixes
 ### Deprecations
 - use solc 0.4.24 as compiler version

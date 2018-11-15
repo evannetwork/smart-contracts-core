@@ -138,7 +138,7 @@ contract BaseContract is BaseContractInterface, EnsReader {
         emit StateshiftEvent(uint(ConsumerState.Draft), consumer);
     }
 
-    function removeConsumer(address consumer, address businessCenter) auth {
+    function removeConsumer(address consumer, address businessCenter) public auth {
         assert(isConsumer(consumer));
 
         uint lastId = consumerCount--;

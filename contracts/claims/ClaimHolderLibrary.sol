@@ -23,6 +23,7 @@ library ClaimHolderLibrary {
         mapping (uint256 => mapping ( bytes32 => uint256 )) topicIdbyClaimId;
         mapping (bytes32 => bool) approvedClaims;
         mapping (bytes32 => uint256) creationDates;
+        mapping (bytes32 => uint256) expiringDates;
     }
 
 
@@ -173,6 +174,24 @@ library ClaimHolderLibrary {
     }
 
 
+    function setClaimExpirationDate(
+        KeyHolderLibrary.KeyHolderData storage _keyHolderData,
+        Claims storage _claims,
+        bytes32 _claimId,
+        uint256 _expirationDate
+    )
+        public
+        returns (bool success)
+    {
+        require(_claims.byId[_claimId].issuer != address(0), "No claim exists");
+
+        if (msg.sender != address(this) && msg.sender != _claims.byId[_claimId].issuer) {
+            require(KeyHolderLibrary.keyHasPurpose(_keyHolderData, keccak256(abi.encodePacked(msg.sender)), 1), "Sender does not have management key");
+        }
+
+        _claims.expiringDates[_claimId] = _expirationDate;
+    }
+    
     function getClaim(Claims storage _claims, bytes32 _claimId)
         public
         view
@@ -209,6 +228,14 @@ library ClaimHolderLibrary {
         returns (uint256)
     {
         return _claims.creationDates[_claimId];
+    }
+
+    function claimExpirationDate(Claims storage _claims, bytes32 _claimId)
+        public
+        view
+        returns (uint256)
+    {
+        return _claims.expiringDates[_claimId];
     }
 
     function getBytes(bytes _str, uint256 _offset, uint256 _length)

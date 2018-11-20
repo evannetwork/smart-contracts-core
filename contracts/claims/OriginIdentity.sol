@@ -6,4 +6,10 @@ import "./ClaimHolder.sol";
 // own identity for use in signing attestations.
 
 
-contract OriginIdentity is ClaimHolder {}
+contract OriginIdentity is ClaimHolder {
+	uint public VERSION_ID;
+	
+    constructor() public {
+        VERSION_ID = 2;
+    }
+}

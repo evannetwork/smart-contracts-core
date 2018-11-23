@@ -16,7 +16,7 @@
   
 */
 
-pragma solidity ^0.4.0;
+pragma solidity ^0.4.24;
 
 import "./Core.sol";
 
@@ -25,14 +25,14 @@ contract DataStoreList is Owned {
     uint public lastModified;
     mapping(uint => bytes32) data;
 
-    function add(bytes32 value) only_owner {
+    function add(bytes32 value) public only_owner {
         uint index = length++;
         data[index] = value;
         lastModified = now;
     }
 
-    function remove(uint index) only_owner {
-        var lastIndex = --length;
+    function remove(uint index) public only_owner {
+        uint lastIndex = --length;
         if (lastIndex != 0) {
             data[index] = data[lastIndex];
         }
@@ -40,17 +40,17 @@ contract DataStoreList is Owned {
         lastModified = now;
     }
 
-    function update(uint index, bytes32 value) only_owner {
+    function update(uint index, bytes32 value) public only_owner {
         assert(index <= length);
         data[index] = value;
         lastModified = now;
     }
 
-    function get(uint index) constant returns(bytes32) {
+    function get(uint index) public constant returns(bytes32) {
         return data[index];
     }
 
-    function indexOf(bytes32 value) constant returns(uint index, bool okay) {
+    function indexOf(bytes32 value) public constant returns(uint index, bool okay) {
         okay = false;
         for (uint256 i = 0; i < length; i++) {
             if (data[i] == value) {

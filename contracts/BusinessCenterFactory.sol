@@ -16,7 +16,7 @@
   
 */
 
-pragma solidity 0.4.20;
+pragma solidity ^0.4.24;
 
 import "./BusinessCenter.sol";
 import "./DSRolesPerContract.sol";
@@ -38,7 +38,7 @@ contract BusinessCenterFactory {
         newBusinessCenter.setOwner(msg.sender);
         roles.setAuthority(roles);
         roles.setOwner(msg.sender);
-        ContractCreated(newBusinessCenter);
+        emit ContractCreated(newBusinessCenter);
         return newBusinessCenter;
     }
 

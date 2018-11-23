@@ -16,7 +16,7 @@
   
 */
 
-pragma solidity 0.4.20;
+pragma solidity ^0.4.24;
 
 import "./BaseContractFactory.sol";
 import "./BaseContractInterface.sol";
@@ -43,7 +43,7 @@ contract DataContractFactory is BaseContractFactory {
         newContract.setOwner(provider);
         roles.setAuthority(roles);
         roles.setOwner(provider);
-        ContractCreated(keccak256("DataContract"), newContract);
+        emit ContractCreated(keccak256("DataContract"), newContract);
         return newContract;
     }
 
@@ -67,74 +67,74 @@ contract DataContractFactory is BaseContractFactory {
 
         // role 2 operation permission
         // subcontracts
-        roles.setRoleOperationCapability(memberRole, 0, keccak256(keccak256(
+        roles.setRoleOperationCapability(memberRole, 0, keccak256(abi.encodePacked(keccak256(abi.encodePacked(
             dc.LISTENTRY_LABEL(),
-            keccak256("subcontracts")), dc.SET_LABEL()), true);
-        roles.setRoleOperationCapability(ownerRole, 0, keccak256(keccak256(
+            keccak256(abi.encodePacked("subcontracts")))), dc.SET_LABEL())), true);
+        roles.setRoleOperationCapability(ownerRole, 0, keccak256(abi.encodePacked(keccak256(abi.encodePacked(
             dc.LISTENTRY_LABEL(),
-            keccak256("subcontracts")), dc.REMOVE_LABEL()), true);
+            keccak256(abi.encodePacked("subcontracts")))), dc.REMOVE_LABEL())), true);
         // assets, states
-        roles.setRoleOperationCapability(memberRole, 0, keccak256(keccak256(
+        roles.setRoleOperationCapability(memberRole, 0, keccak256(abi.encodePacked(keccak256(abi.encodePacked(
             dc.LISTENTRY_LABEL(),
-            keccak256("assets")), dc.SET_LABEL()), true);
-        roles.setRoleOperationCapability(memberRole, 0, keccak256(keccak256(
+            keccak256(abi.encodePacked("assets")))), dc.SET_LABEL())), true);
+        roles.setRoleOperationCapability(memberRole, 0, keccak256(abi.encodePacked(keccak256(abi.encodePacked(
             dc.LISTENTRY_LABEL(),
-            keccak256("states")), dc.SET_LABEL()), true);
+            keccak256(abi.encodePacked("states")))), dc.SET_LABEL())), true);
 
         // contract states
-        roles.setRoleOperationCapability(ownerRole, 0, keccak256(keccak256(
+        roles.setRoleOperationCapability(ownerRole, 0, keccak256(abi.encodePacked(keccak256(abi.encodePacked(
             dc.CONTRACTSTATE_LABEL(),
-            BaseContractInterface.ContractState.Initial),
-            BaseContractInterface.ContractState.Draft), true);
-        roles.setRoleOperationCapability(ownerRole, 0, keccak256(keccak256(
+            BaseContractInterface.ContractState.Initial)),
+            BaseContractInterface.ContractState.Draft)), true);
+        roles.setRoleOperationCapability(ownerRole, 0, keccak256(abi.encodePacked(keccak256(abi.encodePacked(
             dc.CONTRACTSTATE_LABEL(),
-            BaseContractInterface.ContractState.Draft),
-            BaseContractInterface.ContractState.PendingApproval), true);
-        roles.setRoleOperationCapability(ownerRole, 0, keccak256(keccak256(
+            BaseContractInterface.ContractState.Draft)),
+            BaseContractInterface.ContractState.PendingApproval)), true);
+        roles.setRoleOperationCapability(ownerRole, 0, keccak256(abi.encodePacked(keccak256(abi.encodePacked(
             dc.CONTRACTSTATE_LABEL(),
-            BaseContractInterface.ContractState.PendingApproval),
-            BaseContractInterface.ContractState.Draft), true);
-        roles.setRoleOperationCapability(ownerRole, 0, keccak256(keccak256(
+            BaseContractInterface.ContractState.PendingApproval)),
+            BaseContractInterface.ContractState.Draft)), true);
+        roles.setRoleOperationCapability(ownerRole, 0, keccak256(abi.encodePacked(keccak256(abi.encodePacked(
             dc.CONTRACTSTATE_LABEL(),
-            BaseContractInterface.ContractState.PendingApproval),
-            BaseContractInterface.ContractState.Approved), true);
-        roles.setRoleOperationCapability(ownerRole, 0, keccak256(keccak256(
+            BaseContractInterface.ContractState.PendingApproval)),
+            BaseContractInterface.ContractState.Approved)), true);
+        roles.setRoleOperationCapability(ownerRole, 0, keccak256(abi.encodePacked(keccak256(abi.encodePacked(
             dc.CONTRACTSTATE_LABEL(),
-            BaseContractInterface.ContractState.Approved),
-            BaseContractInterface.ContractState.Active), true);
-        roles.setRoleOperationCapability(ownerRole, 0, keccak256(keccak256(
+            BaseContractInterface.ContractState.Approved)),
+            BaseContractInterface.ContractState.Active)), true);
+        roles.setRoleOperationCapability(ownerRole, 0, keccak256(abi.encodePacked(keccak256(abi.encodePacked(
             dc.CONTRACTSTATE_LABEL(),
-            BaseContractInterface.ContractState.Approved),
-            BaseContractInterface.ContractState.Terminated), true);
-        roles.setRoleOperationCapability(ownerRole, 0, keccak256(keccak256(
+            BaseContractInterface.ContractState.Approved)),
+            BaseContractInterface.ContractState.Terminated)), true);
+        roles.setRoleOperationCapability(ownerRole, 0, keccak256(abi.encodePacked(keccak256(abi.encodePacked(
             dc.CONTRACTSTATE_LABEL(),
-            BaseContractInterface.ContractState.Active),
-            BaseContractInterface.ContractState.VerifyTerminated), true);
-        roles.setRoleOperationCapability(ownerRole, 0, keccak256(keccak256(
+            BaseContractInterface.ContractState.Active)),
+            BaseContractInterface.ContractState.VerifyTerminated)), true);
+        roles.setRoleOperationCapability(ownerRole, 0, keccak256(abi.encodePacked(keccak256(abi.encodePacked(
             dc.CONTRACTSTATE_LABEL(),
-            BaseContractInterface.ContractState.VerifyTerminated),
-            BaseContractInterface.ContractState.Terminated), true);
-        roles.setRoleOperationCapability(ownerRole, 0, keccak256(keccak256(
+            BaseContractInterface.ContractState.VerifyTerminated)),
+            BaseContractInterface.ContractState.Terminated)), true);
+        roles.setRoleOperationCapability(ownerRole, 0, keccak256(abi.encodePacked(keccak256(abi.encodePacked(
             dc.CONTRACTSTATE_LABEL(),
-            BaseContractInterface.ContractState.VerifyTerminated),
-            BaseContractInterface.ContractState.Active), true);
+            BaseContractInterface.ContractState.VerifyTerminated)),
+            BaseContractInterface.ContractState.Active)), true);
 
         // member states (own)
-        roles.setRoleOperationCapability(memberRole, 0, keccak256(keccak256(
-            dc.OWNSTATE_LABEL(), BaseContractInterface.ConsumerState.Draft),
-            BaseContractInterface.ConsumerState.Rejected), true);
-        roles.setRoleOperationCapability(memberRole, 0, keccak256(keccak256(
-            dc.OWNSTATE_LABEL(), BaseContractInterface.ConsumerState.Draft),
-            BaseContractInterface.ConsumerState.Active), true);
-        roles.setRoleOperationCapability(memberRole, 0, keccak256(keccak256(
+        roles.setRoleOperationCapability(memberRole, 0, keccak256(abi.encodePacked(keccak256(abi.encodePacked(
+            dc.OWNSTATE_LABEL(), BaseContractInterface.ConsumerState.Draft)),
+            BaseContractInterface.ConsumerState.Rejected)), true);
+        roles.setRoleOperationCapability(memberRole, 0, keccak256(abi.encodePacked(keccak256(abi.encodePacked(
+            dc.OWNSTATE_LABEL(), BaseContractInterface.ConsumerState.Draft)),
+            BaseContractInterface.ConsumerState.Active)), true);
+        roles.setRoleOperationCapability(memberRole, 0, keccak256(abi.encodePacked(keccak256(abi.encodePacked(
             dc.OWNSTATE_LABEL(),
-            BaseContractInterface.ConsumerState.Active),
-            BaseContractInterface.ConsumerState.Terminated), true);
+            BaseContractInterface.ConsumerState.Active)),
+            BaseContractInterface.ConsumerState.Terminated)), true);
 
         // member states (other members)
-        roles.setRoleOperationCapability(ownerRole, 0, keccak256(keccak256(keccak256(
-            dc.OTHERSSTATE_LABEL(), BaseContractInterface.ConsumerState.Initial),
-            BaseContractInterface.ConsumerState.Draft), memberRole), true);
+        roles.setRoleOperationCapability(ownerRole, 0, keccak256(abi.encodePacked(keccak256(abi.encodePacked(keccak256(abi.encodePacked(
+            dc.OTHERSSTATE_LABEL(), BaseContractInterface.ConsumerState.Initial)),
+            BaseContractInterface.ConsumerState.Draft)), memberRole)), true);
 
         return roles;
     }

@@ -5,12 +5,24 @@
 ### Fixes
 ### Deprecations
 
+## Version 1.2.0
+### Features
+- add ERC725/735 compliant Claims and Identity contracts
+- include bytecode within compiled.js files for `claims/OriginIdentity.sol:OriginIdentity`
+- add `TicketVendorInterface`
+
+### Deprecations
+- use solc 0.4.24 as compiler version
+- contracts have been updated accordingly to match solc 0.4.24
+- make compiler versions upward compatible (`^solc 0.4.24`)
+
 ## Version 1.1.3
 ### Features
 - add permissions to `TestDataContractFactory` for additional test for user management
 
 ### Fixes
 - fix `setUserRole` issue in `DSRolesPerContract`, that could produce invalid user indices when removing accounts from roles
+
 
 ## Version 1.1.2
 ### Fixes

@@ -16,7 +16,7 @@
   
 */
 
-pragma solidity ^0.4.15;
+pragma solidity ^0.4.24;
 
 import "./DSRolesPerContract.sol";
 import "./MultiSigWallet.sol";
@@ -41,7 +41,7 @@ contract MultiSigWalletFactory {
         roles.setOwner(manager);
 
         // wrap up creation
-        ContractCreated(keccak256("MultiSigWallet"), newContract);
+        emit ContractCreated(keccak256("MultiSigWallet"), newContract);
         return newContract;
     }
 }

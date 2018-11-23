@@ -16,14 +16,14 @@
   
 */
 
-pragma solidity ^0.4.0;
+pragma solidity ^0.4.24;
 
 import "./DataStoreContainer.sol";
 
 contract DataStoreContainerString is DataStoreContainer {
     string public containerData;
 
-    function DataStoreContainerString(string newType, string newData) DataStoreContainer(newType) {
+    constructor(string newType, string newData) public DataStoreContainer(newType) {
         containerData = newData;
     }
 }

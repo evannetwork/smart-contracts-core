@@ -16,7 +16,7 @@
   
 */
 
-pragma solidity 0.4.20;
+pragma solidity ^0.4.24;
 
 import "./BaseContractInterface.sol";
 import "./BusinessCenterInterface.sol";
@@ -51,7 +51,7 @@ contract BusinessCenter is BusinessCenterInterface, EnsReader, DSAuth {
     bytes32 public rootDomain;
     DataStoreIndex public db;
 
-    function BusinessCenter(bytes32 domain, address ensAddress) public {
+    constructor(bytes32 domain, address ensAddress) public {
         VERSION_ID = 2;
         rootDomain = domain;
         setEns(ensAddress);
@@ -107,7 +107,9 @@ contract BusinessCenter is BusinessCenterInterface, EnsReader, DSAuth {
     }
 
     function cancel() public auth {
-        var (memberIndex, okay) = db.listIndexOf(MEMBER_LABEL, keccak256(bytes32(msg.sender)));
+        uint memberIndex;
+        bool okay;
+        (memberIndex, okay) = db.listIndexOf(MEMBER_LABEL, keccak256(abi.encodePacked(bytes32(msg.sender))));
         assert(okay);        
         db.listEntryRemove(MEMBER_LABEL, memberIndex);
         setMyProfile(bytes32(0));
@@ -132,7 +134,7 @@ contract BusinessCenter is BusinessCenterInterface, EnsReader, DSAuth {
     // used when inviting new members or when a new contract is created
     function registerContractMember(address _contract, address _member, bytes32 _contractType) public auth {
         // set address in members index
-        bytes32 label = keccak256(MEMBER_LABEL, keccak256(bytes32(_member)));
+        bytes32 label = keccak256(abi.encodePacked(MEMBER_LABEL, keccak256(abi.encodePacked(bytes32(_member)))));
         DataStoreIndex userIndex = DataStoreIndex(db.indexGet(label));
         db.indexMakeModerator(label);
         userIndex.listEntryAdd(_contractType, bytes32(_contract));
@@ -147,12 +149,14 @@ contract BusinessCenter is BusinessCenterInterface, EnsReader, DSAuth {
     function removeContractMember(address _contract, address _member, bytes32 _contractType) public auth {
         assert(isMember(_member) && isContract(_contract));
 
-        bytes32 label = keccak256(MEMBER_LABEL, keccak256(bytes32(_member)));
+        bytes32 label = keccak256(abi.encodePacked(MEMBER_LABEL, keccak256(abi.encodePacked(bytes32(_member)))));
         DataStoreIndex userIndex = DataStoreIndex(db.indexGet(label));
 
         BaseContractInterface contractInterface = BaseContractInterface(_contract);
         bytes32 contractTypeLabel = contractInterface.contractType();
-        var (index, okay) = userIndex.listIndexOf(contractTypeLabel, bytes32(_contract));
+        uint index;
+        bool okay;
+        (index, okay) = userIndex.listIndexOf(contractTypeLabel, bytes32(_contract));
         assert(okay);
 
         db.indexMakeModerator(label);
@@ -185,7 +189,7 @@ contract BusinessCenter is BusinessCenterInterface, EnsReader, DSAuth {
     }
 
     function getMyIndex() public constant returns (DataStoreIndex) {
-        bytes32 keyForMemberIndex = keccak256(MEMBER_LABEL, keccak256(bytes32(msg.sender)));
+        bytes32 keyForMemberIndex = keccak256(abi.encodePacked(MEMBER_LABEL, keccak256(abi.encodePacked(bytes32(msg.sender)))));
         return DataStoreIndex(db.indexGet(keyForMemberIndex));
     }
 
@@ -199,21 +203,23 @@ contract BusinessCenter is BusinessCenterInterface, EnsReader, DSAuth {
 
     // check if an address is a member
     function isMember(address _member) public constant returns (bool) {
-        var (, memberOkay) = db.listIndexOf(MEMBER_LABEL, keccak256(bytes32(_member)));
+        bool memberOkay;
+        (, memberOkay) = db.listIndexOf(MEMBER_LABEL, keccak256(abi.encodePacked(bytes32(_member))));
         return memberOkay;
     }
 
     // check if an address is a contract
     function isContract(address _contract) public constant returns (bool) {
-        var (, contractOkay) = db.listIndexOf(CONTRACT_LABEL, bytes32(_contract));
+        bool contractOkay;
+        (, contractOkay) = db.listIndexOf(CONTRACT_LABEL, bytes32(_contract));
         return contractOkay;
     }
 
     function addMember(address newMember) private {
         assert(!isMember(newMember));
-        db.listEntryAdd(MEMBER_LABEL, keccak256(bytes32(newMember)));
+        db.listEntryAdd(MEMBER_LABEL, keccak256(abi.encodePacked(bytes32(newMember))));
 
-        bytes32 keyForMemberIndex = keccak256(MEMBER_LABEL, keccak256(bytes32(newMember)));
+        bytes32 keyForMemberIndex = keccak256(abi.encodePacked(MEMBER_LABEL, keccak256(abi.encodePacked(bytes32(newMember)))));
 
         // create user index for own db
         DataStoreIndex localUserIndex;
@@ -249,6 +255,6 @@ contract BusinessCenter is BusinessCenterInterface, EnsReader, DSAuth {
     }
 
     function getMembersAddressIndex(address member) private constant returns(DataStoreIndex) {
-        return DataStoreIndex(address(db.containerGet(keccak256(MEMBER_LABEL, bytes32(member)))));
+        return DataStoreIndex(address(db.containerGet(keccak256(abi.encodePacked(MEMBER_LABEL, bytes32(member))))));
     }
 }

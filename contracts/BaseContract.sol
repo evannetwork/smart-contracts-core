@@ -16,7 +16,7 @@
   
 */
 
-pragma solidity 0.4.20;
+pragma solidity ^0.4.24;
 
 import "./BaseContractInterface.sol";
 import "./BusinessCenterInterface.sol";
@@ -36,7 +36,7 @@ contract BaseContract is BaseContractInterface, EnsReader {
     // web3.utils.soliditySha3('profile')
     bytes32 private constant PROFILE_LABEL = 0xe3dd854eb9d23c94680b3ec632b9072842365d9a702ab0df7da8bc398ee52c7d;
 
-    function BaseContract(address _provider, bytes32 _contractType, bytes32 _contractDescription, address ensAddress) {
+    constructor(address _provider, bytes32 _contractType, bytes32 _contractDescription, address ensAddress) public {
         contractState = ContractState.Draft;
         created = now;
         contractType = _contractType;
@@ -51,11 +51,11 @@ contract BaseContract is BaseContractInterface, EnsReader {
         setEns(ensAddress);
     }
 
-    function getProvider() constant returns (address provider) {
+    function getProvider() public constant returns (address provider) {
         return owner;
     }
 
-    function changeConsumerState(address consumer, ConsumerState state) auth {
+    function changeConsumerState(address consumer, ConsumerState state) public auth {
         ConsumerState currentState = consumerState[consumer];
         if (msg.sender == consumer) {
             if (currentState == ConsumerState.Initial && state == ConsumerState.Draft ||
@@ -63,7 +63,7 @@ contract BaseContract is BaseContractInterface, EnsReader {
                     currentState == ConsumerState.Draft && state == ConsumerState.Rejected ||
                     state == ConsumerState.Terminated) {
                 consumerState[msg.sender] = state;
-                StateshiftEvent(uint(state), msg.sender);
+                emit StateshiftEvent(uint(state), msg.sender);
             } else {
                 assert(false);
             }
@@ -72,27 +72,27 @@ contract BaseContract is BaseContractInterface, EnsReader {
             if (currentState == ConsumerState.Initial && state == ConsumerState.Draft ||
                     state == ConsumerState.Terminated) {
                 consumerState[consumer] = state;
-                StateshiftEvent(uint(state), consumer);
+                emit StateshiftEvent(uint(state), consumer);
             } else {
                 assert(false);
             }
         }
     }
 
-    function changeContractState(ContractState newState) auth {
+    function changeContractState(ContractState newState) public auth {
         contractState = newState;
-        StateshiftEvent(uint(newState), msg.sender);
+        emit StateshiftEvent(uint(newState), msg.sender);
     }
 
-    function isConsumer(address consumer) constant returns (bool) {
+    function isConsumer(address consumer) public constant returns (bool) {
         return consumer2index[consumer] != 0;
     }
 
-    function getConsumerState(address consumer) constant returns (ConsumerState state) {
+    function getConsumerState(address consumer) public constant returns (ConsumerState state) {
         return consumerState[consumer];
     }
 
-    function getMyState() constant returns (ConsumerState state) {
+    function getMyState() public constant returns (ConsumerState state) {
         if (msg.sender == owner) {
             return ConsumerState.Active;
         } else {
@@ -100,7 +100,7 @@ contract BaseContract is BaseContractInterface, EnsReader {
         }
     }
 
-    function inviteConsumer(address consumer, address businessCenter) {
+    function inviteConsumer(address consumer, address businessCenter) public {
         // throw if not owner and not allowConsumerInvite
         assert(msg.sender == owner || allowConsumerInvite);
 
@@ -110,9 +110,9 @@ contract BaseContract is BaseContractInterface, EnsReader {
         // thow if member and allowConsumerInvite disabled
         assert(msg.sender == owner || !isConsumer(msg.sender) || allowConsumerInvite);
 
-        // throw if invitee doesn't know contact / blocks this user
-        ProfileIndexInterface pIndex = ProfileIndexInterface(getAddr(PROFILE_LABEL));
-        DataContractInterface profile = DataContractInterface(pIndex.getProfile(consumer));
+        // --> disabled for now // throw if invitee doesn't know contact / blocks this user
+        // ProfileIndexInterface pIndex = ProfileIndexInterface(getAddr(PROFILE_LABEL));
+        // DataContractInterface profile = DataContractInterface(pIndex.getProfile(consumer));
         // if last bit is set, then invitee has set its known flag for msg.sender to true
         // assert((profile.getMappingValue(CONTACTS_LABEL, keccak256(msg.sender)) & 1) == 1);
 
@@ -135,10 +135,10 @@ contract BaseContract is BaseContractInterface, EnsReader {
         // update permissions
         DSRolesPerContract roles = DSRolesPerContract(authority);
         roles.setUserRole(consumer, MEMBER_ROLE, true);
-        StateshiftEvent(uint(ConsumerState.Draft), consumer);
+        emit StateshiftEvent(uint(ConsumerState.Draft), consumer);
     }
 
-    function removeConsumer(address consumer, address businessCenter) auth {
+    function removeConsumer(address consumer, address businessCenter) public auth {
         assert(isConsumer(consumer));
 
         uint lastId = consumerCount--;

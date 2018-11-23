@@ -16,7 +16,7 @@
   
 */
 
-pragma solidity 0.4.20;
+pragma solidity ^0.4.24;
 import "./BaseContract.sol";
 import "./DataContractInterface.sol";
 import "./DSRolesPerContract.sol";
@@ -61,7 +61,7 @@ contract DataContract is DataContractInterface, BaseContract {
     /// @param _contractType bytes32 representation of the contracts type
     /// @param _contractDescription DBCP definition of the contract
     /// @param _ensAddress address of the ENS contract
-    function DataContract(
+    constructor(
         address _provider,
         bytes32 _contractType,
         bytes32 _contractDescription,
@@ -78,18 +78,18 @@ contract DataContract is DataContractInterface, BaseContract {
     function addListEntries(bytes32[] keys, bytes32[] values) public auth {
         for (uint256 i = 0; i < keys.length; i++) {
             // create key for list ('$KEY.listentry')
-            bytes32 listKey = keccak256(LISTENTRY_LABEL, keys[i]);
+            bytes32 listKey = keccak256(abi.encodePacked(LISTENTRY_LABEL, keys[i]));
             DSRolesPerContract roles = DSRolesPerContract(authority);
             // check permission ('set.$KEY.listentry')
-            assert(roles.canCallOperation(msg.sender, nullAddress, keccak256(listKey, SET_LABEL)));
+            assert(roles.canCallOperation(msg.sender, nullAddress, keccak256(abi.encodePacked(listKey, SET_LABEL))));
             // get count ('listcount.$KEY.listentry')
-            bytes32 listCountKey = keccak256(listKey, COUNT_LABEL);
+            bytes32 listCountKey = keccak256(abi.encodePacked(listKey, COUNT_LABEL));
             uint256 listEntryCount = uint256(hashMapping[listCountKey]);
             uint256 index;
             for (uint256 j = 0; j < values.length; j++) {
                 // set entry ('$INDEX.$KEY.listentry')
                 index = listEntryCount++;
-                hashMapping[keccak256(listKey, index)] = values[j];
+                hashMapping[keccak256(abi.encodePacked(listKey, index))] = values[j];
             }
             // update count
             hashMapping[listCountKey] = bytes32(listEntryCount);
@@ -105,10 +105,10 @@ contract DataContract is DataContractInterface, BaseContract {
         DSRolesPerContract roles = DSRolesPerContract(authority);
         if (msg.sender == targetMember) {
             assert(roles.canCallOperation(msg.sender, nullAddress,
-                keccak256(keccak256(OWNSTATE_LABEL, consumerState[targetMember]), newState)));
+                keccak256(abi.encodePacked(keccak256(abi.encodePacked(OWNSTATE_LABEL, consumerState[targetMember])), newState))));
         } else {
             assert(roles.canCallOperation(msg.sender, nullAddress,
-                keccak256(keccak256(OTHERSSTATE_LABEL, consumerState[targetMember]), newState)));
+                keccak256(abi.encodePacked(keccak256(abi.encodePacked(OTHERSSTATE_LABEL, consumerState[targetMember])), newState))));
         }
         super.changeConsumerState(targetMember, newState);
     }
@@ -120,7 +120,7 @@ contract DataContract is DataContractInterface, BaseContract {
     function changeContractState(ContractState newState) public {
         DSRolesPerContract roles = DSRolesPerContract(authority);
         assert(roles.canCallOperation(msg.sender, nullAddress,
-            keccak256(keccak256(CONTRACTSTATE_LABEL, contractState), newState)));
+            keccak256(abi.encodePacked(keccak256(abi.encodePacked(CONTRACTSTATE_LABEL, contractState)), newState))));
         super.changeContractState(newState);
     }
 
@@ -149,20 +149,20 @@ contract DataContract is DataContractInterface, BaseContract {
     /// @param index index of the element to delete
     function removeListEntry(bytes32 key, uint256 index) public auth {
         // create key for list ('$KEY.listentry')
-        bytes32 listKey = keccak256(LISTENTRY_LABEL, key);
+        bytes32 listKey = keccak256(abi.encodePacked(LISTENTRY_LABEL, key));
         DSRolesPerContract roles = DSRolesPerContract(authority);
         // check permission
-        assert(roles.canCallOperation(msg.sender, nullAddress, keccak256(listKey, REMOVE_LABEL)));
+        assert(roles.canCallOperation(msg.sender, nullAddress, keccak256(abi.encodePacked(listKey, REMOVE_LABEL))));
         // get count ('listcount.$KEY.listentry')
-        bytes32 listCountKey = keccak256(listKey, COUNT_LABEL);
+        bytes32 listCountKey = keccak256(abi.encodePacked(listKey, COUNT_LABEL));
         uint256 listEntryCount = uint256(hashMapping[listCountKey]);
         assert(index < listEntryCount);
         uint256 lastIndex = listEntryCount - 1;
         hashMapping[listCountKey] = bytes32(lastIndex);
         if (lastIndex != 0) {
-            hashMapping[keccak256(listKey, index)] = hashMapping[keccak256(listKey, lastIndex)];
+            hashMapping[keccak256(abi.encodePacked(listKey, index))] = hashMapping[keccak256(abi.encodePacked(listKey, lastIndex))];
         }
-        delete hashMapping[keccak256(listKey, lastIndex)];
+        delete hashMapping[keccak256(abi.encodePacked(listKey, lastIndex))];
     }
 
     /// @notice set a value of an entry in the contract
@@ -170,10 +170,10 @@ contract DataContract is DataContractInterface, BaseContract {
     /// @param value value to set for this key
     function setEntry(bytes32 key, bytes32 value) public auth {
         // create key for entry
-        bytes32 entryKey = keccak256(ENTRY_LABEL, key);
+        bytes32 entryKey = keccak256(abi.encodePacked(ENTRY_LABEL, key));
         DSRolesPerContract roles = DSRolesPerContract(authority);
         // check permission
-        assert(roles.canCallOperation(msg.sender, nullAddress, keccak256(entryKey, SET_LABEL)));
+        assert(roles.canCallOperation(msg.sender, nullAddress, keccak256(abi.encodePacked(entryKey, SET_LABEL))));
         // set entry
         hashMapping[entryKey] = value;
     }
@@ -184,13 +184,13 @@ contract DataContract is DataContractInterface, BaseContract {
     /// @param value value to set for this key
     function setMappingValue(bytes32 mappingHash, bytes32 key, bytes32 value) public auth {
         // create key for mapping ('$KEY.listentry')
-        bytes32 mappingKey = keccak256(MAPPINGENTRY_LABEL, mappingHash);
+        bytes32 mappingKey = keccak256(abi.encodePacked(MAPPINGENTRY_LABEL, mappingHash));
         DSRolesPerContract roles = DSRolesPerContract(authority);
         // check permission ('set.$KEY.listentry')
-        assert(roles.canCallOperation(msg.sender, nullAddress, keccak256(mappingKey, SET_LABEL)));
+        assert(roles.canCallOperation(msg.sender, nullAddress, keccak256(abi.encodePacked(mappingKey, SET_LABEL))));
 
         // set value
-        hashMapping[keccak256(mappingKey, key)] = value;
+        hashMapping[keccak256(abi.encodePacked(mappingKey, key))] = value;
     }
 
     /// @notice retrieve entry value for a key
@@ -198,7 +198,7 @@ contract DataContract is DataContractInterface, BaseContract {
     /// @return value for this key
     function getEntry(bytes32 key) public constant returns(bytes32) {
         // return entry
-        return hashMapping[keccak256(ENTRY_LABEL, key)];
+        return hashMapping[keccak256(abi.encodePacked(ENTRY_LABEL, key))];
     }
 
     /// @notice get number of elements in a list
@@ -206,7 +206,7 @@ contract DataContract is DataContractInterface, BaseContract {
     /// @return number of elements
     function getListEntryCount(bytes32 key) public constant returns(uint256) {
         // return entry ('listcount.$KEY.listentry')
-        return uint256(hashMapping[keccak256(keccak256(LISTENTRY_LABEL, key), COUNT_LABEL)]);
+        return uint256(hashMapping[keccak256(abi.encodePacked(keccak256(abi.encodePacked(LISTENTRY_LABEL, key)), COUNT_LABEL))]);
     }
 
     /// @notice retrieve a single entry from a list
@@ -215,7 +215,7 @@ contract DataContract is DataContractInterface, BaseContract {
     /// @return value for this list entry
     function getListEntry(bytes32 key, uint256 index) public constant returns(bytes32) {
         // return entry ('$INDEX.$KEY.listentry')
-        return hashMapping[keccak256(keccak256(LISTENTRY_LABEL, key), index)];
+        return hashMapping[keccak256(abi.encodePacked(keccak256(abi.encodePacked(LISTENTRY_LABEL, key)), index))];
     }
 
     /// @notice retrieve a single entry from a mapping
@@ -224,6 +224,6 @@ contract DataContract is DataContractInterface, BaseContract {
     /// @return value for this mapping entry
     function getMappingValue(bytes32 mappingHash, bytes32 key) public constant returns(bytes32) {
         // return entry ('$KEY.$MAPPING.listentry')
-        return hashMapping[keccak256(keccak256(MAPPINGENTRY_LABEL, mappingHash), key)];
+        return hashMapping[keccak256(abi.encodePacked(keccak256(abi.encodePacked(MAPPINGENTRY_LABEL, mappingHash)), key))];
     }
 }

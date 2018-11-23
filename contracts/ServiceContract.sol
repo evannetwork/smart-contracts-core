@@ -16,7 +16,7 @@
 
 */
 
-pragma solidity 0.4.20;
+pragma solidity ^0.4.24;
 
 import "./BaseContract.sol";
 import "./EventHubBusinessCenter.sol";
@@ -27,7 +27,7 @@ contract ServiceContract is ServiceContractInterface, BaseContract {
     bytes32 public constant EVENTHUB_LABEL =
         0xea14ea6d138254c1a2931c6a19f6888c7b52f512d165cfa428183a53dd9dfb8c; //web3.utils.soliditySha3('events')
 
-    function ServiceContract(address _provider, bytes32 _contractType, bytes32 _contractDescription, address ensAddress) public
+    constructor(address _provider, bytes32 _contractType, bytes32 _contractDescription, address ensAddress) public
             BaseContract(_provider, _contractType, _contractDescription, ensAddress) {
         contractState = ContractState.Draft;
         created = now;
@@ -39,7 +39,7 @@ contract ServiceContract is ServiceContractInterface, BaseContract {
         calls[callId].answers[answerNumber].owner = msg.sender;
         calls[callId].answers[answerNumber].created = now;
         calls[callId].answers[answerNumber].parent = parentAnswer;
-        ServiceContractEvent(callId, answerNumber);
+        emit ServiceContractEvent(callId, answerNumber);
     }
     
     function sendCall(bytes32 callHash) public auth {
@@ -47,7 +47,7 @@ contract ServiceContract is ServiceContractInterface, BaseContract {
         calls[index].hash = callHash;
         calls[index].owner = msg.sender;
         calls[index].created = now;
-        ServiceContractEvent(0, index);
+        emit ServiceContractEvent(0, index);
     }
 
     function setMultiSharing(bytes32 sharingId, bytes32 _sharing) public auth {

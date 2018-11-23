@@ -16,12 +16,12 @@
   
 */
 
-pragma solidity ^0.4.0;
+pragma solidity ^0.4.24;
 
 contract BaseContractFactoryInterface {
   uint public VERSION_ID;
 
   event ContractCreated(bytes32 contractInfo, address newAddress);
 
-  function createContract(address businessCenter, address provider, bytes32 contractDescription, address ensAddress) returns (address);
+  function createContract(address businessCenter, address provider, bytes32 contractDescription, address ensAddress) public returns (address);
 }

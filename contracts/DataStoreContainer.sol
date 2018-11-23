@@ -16,14 +16,14 @@
   
 */
 
-pragma solidity ^0.4.0;
+pragma solidity ^0.4.24;
 
 import "./Core.sol";
 
 contract DataStoreContainer is Owned {
     string public containerType;
 
-    function DataStoreContainer(string newType) {
+    constructor(string newType) public {
         containerType = newType;
     }
 }

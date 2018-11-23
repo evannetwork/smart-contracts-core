@@ -16,12 +16,12 @@
   
 */
 
-pragma solidity ^0.4.0;
+pragma solidity ^0.4.24;
 
 contract EventHubMailBox {
   event MailEvent(address indexed sender, address indexed recipient, uint256 mailId);
 
-  function sendMailEvent(address recipient, uint256 mailId) {
-    MailEvent(msg.sender, recipient, mailId);
+  function sendMailEvent(address recipient, uint256 mailId) public {
+      emit MailEvent(msg.sender, recipient, mailId);
   }
 }

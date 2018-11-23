@@ -16,26 +16,26 @@
   
 */
 
-pragma solidity ^0.4.0;
+pragma solidity ^0.4.24;
 
 import "./Core.sol";
 
 contract DataStoreMap is OwnedModerated {
     mapping(bytes32 => bytes32) data;
 
-    function remove(bytes32 key) only_owner_or_moderator {
+    function remove(bytes32 key) public only_owner_or_moderator {
         delete data[key];
     }
     
-    function set(bytes32 key, bytes32 value) only_owner_or_moderator {
+    function set(bytes32 key, bytes32 value) public only_owner_or_moderator {
         data[key] = value;
     }
 
-    function get(bytes32 key) constant returns (bytes32) {
+    function get(bytes32 key) public constant returns (bytes32) {
         return data[key];
     }
 
-    function has(bytes32 key) constant returns (bool) {
+    function has(bytes32 key) public constant returns (bool) {
         return data[key] != 0x0;
     }
 }

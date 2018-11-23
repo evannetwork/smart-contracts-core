@@ -16,7 +16,7 @@
   
 */
 
-pragma solidity ^0.4.0;
+pragma solidity ^0.4.24;
 
 import "./DataStoreMap.sol";
 import "./DataStoreIndexInterface.sol";
@@ -27,70 +27,70 @@ contract DataStoreIndex is DataStoreIndexInterface, OwnedModerated {
     DataStoreMap containers;
     uint lastModified;
 
-    function DataStoreIndex(DataStoreMap data) {
+    constructor(DataStoreMap data) public {
         // --> upgrade
         containers = data;
         lastModified = now;
     }
 
-    function containerGet(bytes32 key) constant returns (bytes32) {
+    function containerGet(bytes32 key) public constant returns (bytes32) {
         return containers.get(key);
     }
 
-    function containerHas(bytes32 key) constant returns (bool) {
+    function containerHas(bytes32 key) public constant returns (bool) {
         return containers.has(key);
     }
 
-    function containerRemove(bytes32 key) only_owner_or_moderator {
+    function containerRemove(bytes32 key) public only_owner_or_moderator {
         containers.remove(key);
     }
 
-    function containerSet(bytes32 key, bytes32 value) only_owner_or_moderator {
+    function containerSet(bytes32 key, bytes32 value) public only_owner_or_moderator {
         containers.set(key, value);
     }
 
-    function indexGet(bytes32 key) constant returns (DataStoreIndexInterface) {
+    function indexGet(bytes32 key) public constant returns (DataStoreIndexInterface) {
         DataStoreIndexInterface index = DataStoreIndexInterface(address(containers.get(key)));
         return index;
     }
 
-    function indexMakeModerator(bytes32 key) only_owner_or_moderator {
+    function indexMakeModerator(bytes32 key) public only_owner_or_moderator {
         DataStoreIndex index = DataStoreIndex(address(containers.get(key)));
         index.addModerator(msg.sender);
     }
 
-    function listEntryAdd(bytes32 containerName, bytes32 value) only_owner_or_moderator {
+    function listEntryAdd(bytes32 containerName, bytes32 value) public only_owner_or_moderator {
         DataStoreList list = listEnsure(containerName);
         list.add(value);
         lastModified = now;
     }
 
-    function listEntryRemove(bytes32 containerNames, uint index) only_owner_or_moderator {
+    function listEntryRemove(bytes32 containerNames, uint index) public only_owner_or_moderator {
         DataStoreList(getContainerAddress(containerNames)).remove(index);
         lastModified = now;
     }
 
-    function listEntryUpdate(bytes32 containerNames, uint index, bytes32 value) only_owner_or_moderator {
+    function listEntryUpdate(bytes32 containerNames, uint index, bytes32 value) public only_owner_or_moderator {
         DataStoreList(getContainerAddress(containerNames)).update(index, value);
         lastModified = now;
     }
 
-    function listEntryGet(bytes32 containerName, uint index) constant returns(bytes32) {
+    function listEntryGet(bytes32 containerName, uint index) public constant returns(bytes32) {
         return DataStoreList(getContainerAddress(containerName)).get(index);
     }
 
-    function listIndexOf(bytes32 containerName, bytes32 value) constant returns(uint index, bool okay) {
+    function listIndexOf(bytes32 containerName, bytes32 value) public constant returns(uint index, bool okay) {
         address listAddress = getContainerAddress(containerName);
         if (listAddress != 0x0) {
           return DataStoreList(listAddress).indexOf(value);
         }
     }
 
-    function listLastModified(bytes32 containerName) constant returns(uint) {
+    function listLastModified(bytes32 containerName) public constant returns(uint) {
         return DataStoreList(getContainerAddress(containerName)).lastModified();
     }
 
-    function listLength(bytes32 containerName) constant returns(uint) {
+    function listLength(bytes32 containerName) public constant returns(uint) {
         address addr = getContainerAddress(containerName);
         if (addr == 0x0) {
             return 0;

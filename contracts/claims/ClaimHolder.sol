@@ -60,12 +60,20 @@ contract ClaimHolder is KeyHolder, ERC735 {
         return ClaimHolderLibrary.approveClaim(keyHolderData, claims, _claimId);
     }
 
+    function setClaimDescription(bytes32 _claimId, bytes32 _description) public returns (bool success) {
+        return ClaimHolderLibrary.setClaimDescription(keyHolderData, claims, _claimId, _description);
+    }
+
     function setClaimExpirationDate(bytes32 _claimId, uint256 _expirationDate) public returns (bool success) {
         return ClaimHolderLibrary.setClaimExpirationDate(keyHolderData, claims, _claimId, _expirationDate);
     }
 
     function getClaimExpirationDate(bytes32 _claimId) public returns (uint256 timestamp) {
         return ClaimHolderLibrary.claimExpirationDate(claims, _claimId);
+    }
+
+    function getClaimDescription(bytes32 _claimId) public returns (bytes32 description) {
+        return ClaimHolderLibrary.claimDescription(claims, _claimId);
     }
 
     function claimCreationDate(bytes32 _claimId) public returns (uint256 timestamp) {

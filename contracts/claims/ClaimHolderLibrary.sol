@@ -23,6 +23,7 @@ library ClaimHolderLibrary {
         mapping (uint256 => mapping ( bytes32 => uint256 )) topicIdbyClaimId;
         mapping (bytes32 => bool) approvedClaims;
         mapping (bytes32 => uint256) creationDates;
+        mapping (bytes32 => bytes32) descriptions;
         mapping (bytes32 => uint256) expiringDates;
     }
 
@@ -40,7 +41,7 @@ library ClaimHolderLibrary {
         public
         returns (bytes32 claimRequestId)
     {
-        // commented out because check maeks no sense, therfore the foreing identity has to add the current executor as claim signer key
+        // commented out because check makes no sense, therfore the foreing identity has to add the current executor as claim signer key
         /*if (msg.sender != address(this)) {
             require(KeyHolderLibrary.keyHasPurpose(_keyHolderData, keccak256(abi.encodePacked(msg.sender)), 3), "Sender does not have claim signer key");
         }*/
@@ -174,6 +175,24 @@ library ClaimHolderLibrary {
     }
 
 
+    function setClaimDescription(
+        KeyHolderLibrary.KeyHolderData storage _keyHolderData,
+        Claims storage _claims,
+        bytes32 _claimId,
+        bytes32 _description
+    )
+        public
+        returns (bool success)
+    {
+        require(_claims.byId[_claimId].issuer != address(0), "No claim exists");
+
+        if (msg.sender != address(this) && msg.sender != _claims.byId[_claimId].issuer) {
+            require(KeyHolderLibrary.keyHasPurpose(_keyHolderData, keccak256(abi.encodePacked(msg.sender)), 1), "Sender does not have management key");
+        }
+
+        _claims.descriptions[_claimId] = _description;
+    }
+
     function setClaimExpirationDate(
         KeyHolderLibrary.KeyHolderData storage _keyHolderData,
         Claims storage _claims,
@@ -228,6 +247,14 @@ library ClaimHolderLibrary {
         returns (uint256)
     {
         return _claims.creationDates[_claimId];
+    }
+
+    function claimDescription(Claims storage _claims, bytes32 _claimId)
+        public
+        view
+        returns (bytes32)
+    {
+        return _claims.descriptions[_claimId];
     }
 
     function claimExpirationDate(Claims storage _claims, bytes32 _claimId)

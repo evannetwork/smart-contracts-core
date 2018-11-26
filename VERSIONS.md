@@ -2,8 +2,11 @@
 
 ## Next Version
 ### Features
+- add description to claims
+
 ### Fixes
 ### Deprecations
+
 
 ## Version 1.2.0
 ### Features
@@ -15,6 +18,7 @@
 - use solc 0.4.24 as compiler version
 - contracts have been updated accordingly to match solc 0.4.24
 - make compiler versions upward compatible (`^solc 0.4.24`)
+
 
 ## Version 1.1.3
 ### Features
@@ -38,11 +42,13 @@
 - add `dst` argument to `lib/solc.js` functions to bypass config for destination path
 - add support for removing contract members the same way as inviting them
 
+
 ## Version 1.1.0
 ### Fixes
 - update hasing to `keccak256`
 - add `registerFactory(address factoryId)` to `BusinessCenterInterface`
 - add matching auth checks
+
 
 ## Version 1.0.3
 ### Features

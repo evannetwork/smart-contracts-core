@@ -32,6 +32,25 @@ contract ClaimHolder is KeyHolder, ERC735 {
         );
     }
 
+    function addClaimWithMetadata(
+        uint256 _topic,
+        uint256 _scheme,
+        address _issuer,
+        bytes _signature,
+        bytes _data,
+        string _uri,
+        uint256 _expirationDate,
+        bytes32 _description
+        )
+        public
+        returns (bytes32 claimRequestId)
+    {
+        bytes32 claimId = addClaim(_topic, _scheme, _issuer, _signature, _data, _uri);
+        require(this.setClaimExpirationDate(claimId, _expirationDate));
+        require(this.setClaimDescription(claimId, _description));
+        return claimId;
+    }
+
     function addClaims(
         uint256[] _topic,
         address[] _issuer,

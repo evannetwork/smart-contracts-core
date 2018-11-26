@@ -191,6 +191,7 @@ library ClaimHolderLibrary {
         }
 
         _claims.descriptions[_claimId] = _description;
+        return true;
     }
 
     function setClaimExpirationDate(
@@ -209,6 +210,7 @@ library ClaimHolderLibrary {
         }
 
         _claims.expiringDates[_claimId] = _expirationDate;
+        return true;
     }
     
     function getClaim(Claims storage _claims, bytes32 _claimId)

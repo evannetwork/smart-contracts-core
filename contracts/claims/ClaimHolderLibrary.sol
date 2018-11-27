@@ -23,6 +23,7 @@ library ClaimHolderLibrary {
         mapping (uint256 => mapping ( bytes32 => uint256 )) topicIdbyClaimId;
         mapping (bytes32 => bool) approvedClaims;
         mapping (bytes32 => uint256) creationDates;
+        mapping (bytes32 => uint256) creationBlocks;
         mapping (bytes32 => bytes32) descriptions;
         mapping (bytes32 => uint256) expiringDates;
     }
@@ -62,6 +63,7 @@ library ClaimHolderLibrary {
         }
 
         _claims.creationDates[claimId] = now;
+        _claims.creationBlocks[claimId] = block.number;
 
         _claims.byId[claimId].topic = _topic;
         _claims.byId[claimId].scheme = _scheme;
@@ -241,6 +243,14 @@ library ClaimHolderLibrary {
         returns (bool)
     {
         return _claims.approvedClaims[_claimId];
+    }
+
+    function claimCreationBlock(Claims storage _claims, bytes32 _claimId)
+        public
+        view
+        returns (uint256)
+    {
+        return _claims.creationBlocks[_claimId];
     }
 
     function claimCreationDate(Claims storage _claims, bytes32 _claimId)

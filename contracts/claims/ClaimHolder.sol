@@ -95,6 +95,10 @@ contract ClaimHolder is KeyHolder, ERC735 {
         return ClaimHolderLibrary.claimDescription(claims, _claimId);
     }
 
+    function claimCreationBlock(bytes32 _claimId) public returns (uint256 block) {
+        return ClaimHolderLibrary.claimCreationBlock(claims, _claimId);
+    }
+
     function claimCreationDate(bytes32 _claimId) public returns (uint256 timestamp) {
         return ClaimHolderLibrary.claimCreationDate(claims, _claimId);
     }

@@ -42,24 +42,11 @@ library ClaimHolderLibrary {
         public
         returns (bytes32 claimRequestId)
     {
-        // commented out because check makes no sense, therfore the foreing identity has to add the current executor as claim signer key
-        /*if (msg.sender != address(this)) {
-            require(KeyHolderLibrary.keyHasPurpose(_keyHolderData, keccak256(abi.encodePacked(msg.sender)), 3), "Sender does not have claim signer key");
-        }*/
-
-        bytes32 claimId = keccak256(abi.encodePacked(_issuer, _topic));
+        bytes32 claimId = keccak256(abi.encodePacked(_issuer, _topic, now));
 
         if (_claims.byId[claimId].issuer != _issuer) {
             _claims.byTopic[_topic].push(claimId);
-            _claims.topicIdbyClaimId[_topic][claimId] = _claims.byTopic[_topic].length -1;
-        } else {
-            if(keccak256(_claims.byId[claimId].signature) != keccak256(_signature) || keccak256(_claims.byId[claimId].uri) != keccak256(_uri)) {
-                if(_claims.approvedClaims[claimId]) {
-                    delete _claims.approvedClaims[claimId];
-                }
-            } else {
-                return claimId;
-            }
+            _claims.topicIdbyClaimId[_topic][claimId] = _claims.byTopic[_topic].length - 1;
         }
 
         _claims.creationDates[claimId] = now;

@@ -79,6 +79,16 @@ contract ClaimHolder is KeyHolder, ERC735 {
         return ClaimHolderLibrary.removeClaim(keyHolderData, claims, _claimId);
     }
 
+    function setClaimDescription(bytes32 _claimId, bytes32 _description) public returns (bool success) {
+        require(msg.sender == address(this));
+        return ClaimHolderLibrary.setClaimDescription(keyHolderData, claims, _claimId, _description);
+    }
+
+    function setClaimExpirationDate(bytes32 _claimId, uint256 _expirationDate) public returns (bool success) {
+        require(msg.sender == address(this));
+        return ClaimHolderLibrary.setClaimExpirationDate(keyHolderData, claims, _claimId, _expirationDate);
+    }
+
     function claimCreationBlock(bytes32 _claimId) public view returns (uint256 block) {
         return ClaimHolderLibrary.claimCreationBlock(claims, _claimId);
     }
@@ -120,13 +130,5 @@ contract ClaimHolder is KeyHolder, ERC735 {
 
     function isClaimApproved(bytes32 _claimId) public view returns (bool success) {
         return ClaimHolderLibrary.isClaimApproved(claims, _claimId);
-    }
-
-    function setClaimDescription(bytes32 _claimId, bytes32 _description) private returns (bool success) {
-        return ClaimHolderLibrary.setClaimDescription(keyHolderData, claims, _claimId, _description);
-    }
-
-    function setClaimExpirationDate(bytes32 _claimId, uint256 _expirationDate) private returns (bool success) {
-        return ClaimHolderLibrary.setClaimExpirationDate(keyHolderData, claims, _claimId, _expirationDate);
     }
 }

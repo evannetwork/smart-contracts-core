@@ -23,6 +23,8 @@ library ClaimHolderLibrary {
         mapping (uint256 => mapping ( bytes32 => uint256 )) topicIdbyClaimId;
         mapping (bytes32 => bool) approvedClaims;
         mapping (bytes32 => uint256) creationDates;
+        mapping (bytes32 => uint256) creationBlocks;
+        mapping (bytes32 => bytes32) descriptions;
         mapping (bytes32 => uint256) expiringDates;
     }
 
@@ -40,27 +42,15 @@ library ClaimHolderLibrary {
         public
         returns (bytes32 claimRequestId)
     {
-        // commented out because check maeks no sense, therfore the foreing identity has to add the current executor as claim signer key
-        /*if (msg.sender != address(this)) {
-            require(KeyHolderLibrary.keyHasPurpose(_keyHolderData, keccak256(abi.encodePacked(msg.sender)), 3), "Sender does not have claim signer key");
-        }*/
-
-        bytes32 claimId = keccak256(abi.encodePacked(_issuer, _topic));
+        bytes32 claimId = keccak256(abi.encodePacked(_issuer, _topic, now));
 
         if (_claims.byId[claimId].issuer != _issuer) {
             _claims.byTopic[_topic].push(claimId);
-            _claims.topicIdbyClaimId[_topic][claimId] = _claims.byTopic[_topic].length -1;
-        } else {
-            if(keccak256(_claims.byId[claimId].signature) != keccak256(_signature) || keccak256(_claims.byId[claimId].uri) != keccak256(_uri)) {
-                if(_claims.approvedClaims[claimId]) {
-                    delete _claims.approvedClaims[claimId];
-                }
-            } else {
-                return claimId;
-            }
+            _claims.topicIdbyClaimId[_topic][claimId] = _claims.byTopic[_topic].length - 1;
         }
 
         _claims.creationDates[claimId] = now;
+        _claims.creationBlocks[claimId] = block.number;
 
         _claims.byId[claimId].topic = _topic;
         _claims.byId[claimId].scheme = _scheme;
@@ -174,6 +164,25 @@ library ClaimHolderLibrary {
     }
 
 
+    function setClaimDescription(
+        KeyHolderLibrary.KeyHolderData storage _keyHolderData,
+        Claims storage _claims,
+        bytes32 _claimId,
+        bytes32 _description
+    )
+        public
+        returns (bool success)
+    {
+        require(_claims.byId[_claimId].issuer != address(0), "No claim exists");
+
+        if (msg.sender != address(this) && msg.sender != _claims.byId[_claimId].issuer) {
+            require(KeyHolderLibrary.keyHasPurpose(_keyHolderData, keccak256(abi.encodePacked(msg.sender)), 1), "Sender does not have management key");
+        }
+
+        _claims.descriptions[_claimId] = _description;
+        return true;
+    }
+
     function setClaimExpirationDate(
         KeyHolderLibrary.KeyHolderData storage _keyHolderData,
         Claims storage _claims,
@@ -190,6 +199,7 @@ library ClaimHolderLibrary {
         }
 
         _claims.expiringDates[_claimId] = _expirationDate;
+        return true;
     }
     
     function getClaim(Claims storage _claims, bytes32 _claimId)
@@ -222,12 +232,28 @@ library ClaimHolderLibrary {
         return _claims.approvedClaims[_claimId];
     }
 
+    function claimCreationBlock(Claims storage _claims, bytes32 _claimId)
+        public
+        view
+        returns (uint256)
+    {
+        return _claims.creationBlocks[_claimId];
+    }
+
     function claimCreationDate(Claims storage _claims, bytes32 _claimId)
         public
         view
         returns (uint256)
     {
         return _claims.creationDates[_claimId];
+    }
+
+    function claimDescription(Claims storage _claims, bytes32 _claimId)
+        public
+        view
+        returns (bytes32)
+    {
+        return _claims.descriptions[_claimId];
     }
 
     function claimExpirationDate(Claims storage _claims, bytes32 _claimId)

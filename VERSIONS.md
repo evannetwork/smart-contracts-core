@@ -5,6 +5,18 @@
 ### Fixes
 ### Deprecations
 
+
+## Version 1.3.0
+### Features
+- add description to claims
+- add `addClaimWithMetadata` function to claims for setting claim and metadata at the same time
+- add creation block data to claim information
+- claims are not overwritten anymore, but a new claim is created per set call
+
+### Fixes
+### Deprecations
+
+
 ## Version 1.2.0
 ### Features
 - add ERC725/735 compliant Claims and Identity contracts
@@ -15,6 +27,7 @@
 - use solc 0.4.24 as compiler version
 - contracts have been updated accordingly to match solc 0.4.24
 - make compiler versions upward compatible (`^solc 0.4.24`)
+
 
 ## Version 1.1.3
 ### Features
@@ -38,11 +51,13 @@
 - add `dst` argument to `lib/solc.js` functions to bypass config for destination path
 - add support for removing contract members the same way as inviting them
 
+
 ## Version 1.1.0
 ### Fixes
 - update hasing to `keccak256`
 - add `registerFactory(address factoryId)` to `BusinessCenterInterface`
 - add matching auth checks
+
 
 ## Version 1.0.3
 ### Features

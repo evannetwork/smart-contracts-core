@@ -6,7 +6,7 @@
       "files": [
         "compiled.js"
       ],
-      "origin": "QmQAXdCfjRxTYaRqyRKkNWMr1CztaUDVquayzSirr8YbU3",
+      "origin": "QmQfQpj1nLkcfxA44h9uZwmUBp1JHGVprhkULrDcXM9xnN",
       "type": "library"
     },
     "description": "evan.network core smart contracts",
@@ -16,7 +16,7 @@
       "contractus",
       "library"
     ],
-    "version": "1.2.0",
+    "version": "1.3.0",
     "versions": {
       "0.1.0": "QmQ576qcoH4GXKRTYq3xqYJR62Lhf5665ySTj6YyENMZPJ",
       "0.9.0": "QmNfBLnAM4DctyNxg7CbE4mtYdmQfTN9bVGx8x12nMvjUD",
@@ -27,7 +27,8 @@
       "1.0.3": "QmcGifgJud7vafAomACpNpXQF4YtzsraP6pMi6h9NR4vzN",
       "1.1.0": "QmQowz1BzwmVhEFRwtUbBtKYhHUmH1gfs8dPVkw6zi4AUL",
       "1.1.2": "Qmd1qXMqLEo9ZYQ8QkMTpqU5A4RN4p5Q7QSgAAHzta2t3W",
-      "1.1.3": "QmPvKkvZtrSPjbaB6ziijYrJPVj4kSRCXzWsDG9oZvHfCv"
+      "1.1.3": "QmPvKkvZtrSPjbaB6ziijYrJPVj4kSRCXzWsDG9oZvHfCv",
+      "1.2.0": "QmYM8xrDAyvLXe9pvnof8w3nu8C7VAynaoLR5C3xCbFrro"
     },
     "dbcpVersion": 1
   }

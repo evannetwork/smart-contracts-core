@@ -2,6 +2,12 @@
 
 ## Next Version
 ### Features
+### Fixes
+### Deprecations
+
+
+## Version 1.3.0
+### Features
 - add description to claims
 - add `addClaimWithMetadata` function to claims for setting claim and metadata at the same time
 - add creation block data to claim information

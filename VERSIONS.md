@@ -2,6 +2,8 @@
 
 ## Next Version
 ### Features
+- add `PayableRegistrar`, that allows to by domain names with EVEs
+
 ### Fixes
 ### Deprecations
 

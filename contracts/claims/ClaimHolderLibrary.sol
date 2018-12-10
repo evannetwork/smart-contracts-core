@@ -27,6 +27,7 @@ library ClaimHolderLibrary {
         mapping (bytes32 => bytes32) descriptions;
         mapping (bytes32 => uint256) expiringDates;
         mapping (bytes32 => bool) rejectedClaims;
+        mapping (bytes32 => bytes32) rejectReason;
     }
 
 
@@ -140,7 +141,8 @@ library ClaimHolderLibrary {
     function rejectClaim(
         KeyHolderLibrary.KeyHolderData storage _keyHolderData,
         Claims storage _claims,
-        bytes32 _claimId
+        bytes32 _claimId,
+        bytes32 _rejectReason
     )
         public
         returns (bool success)
@@ -153,6 +155,7 @@ library ClaimHolderLibrary {
         }
 
         _claims.rejectedClaims[_claimId] = true;
+        _claims.rejectReason[_claimId] = _rejectReason;
         _claims.approvedClaims[_claimId] = false;
         return true;
     }
@@ -256,9 +259,13 @@ library ClaimHolderLibrary {
     function isClaimRejected(Claims storage _claims, bytes32 _claimId)
         public
         view
-        returns (bool)
+        returns (
+            bool rejected,
+            bytes32 rejectReason
+        )
     {
-        return _claims.rejectedClaims[_claimId];
+        rejected = _claims.rejectedClaims[_claimId];
+        rejectReason = _claims.rejectReason[_claimId];
     }
 
     function claimCreationBlock(Claims storage _claims, bytes32 _claimId)

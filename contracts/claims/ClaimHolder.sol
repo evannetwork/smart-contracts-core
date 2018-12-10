@@ -79,8 +79,8 @@ contract ClaimHolder is KeyHolder, ERC735 {
         return ClaimHolderLibrary.removeClaim(keyHolderData, claims, _claimId);
     }
 
-    function rejectClaim(bytes32 _claimId) public returns (bool success) {
-        return ClaimHolderLibrary.rejectClaim(keyHolderData, claims, _claimId);
+    function rejectClaim(bytes32 _claimId, bytes32 _rejectReason) public returns (bool success) {
+        return ClaimHolderLibrary.rejectClaim(keyHolderData, claims, _claimId, _rejectReason);
     }
 
     function setClaimDescription(bytes32 _claimId, bytes32 _description) public returns (bool success) {
@@ -136,7 +136,14 @@ contract ClaimHolder is KeyHolder, ERC735 {
         return ClaimHolderLibrary.isClaimApproved(claims, _claimId);
     }
 
-    function isClaimRejected(bytes32 _claimId) public view returns (bool success) {
+    function isClaimRejected(bytes32 _claimId) 
+        public 
+        view 
+        returns (
+            bool rejected,
+            bytes32 rejectReason
+        )
+    {
         return ClaimHolderLibrary.isClaimRejected(claims, _claimId);
     }
 }

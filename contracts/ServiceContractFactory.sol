@@ -48,8 +48,8 @@ contract ServiceContractFactory is BaseContractFactory {
         roles.setRoleCapability(memberRole, msg.sender,
             bytes4(keccak256("addService(address,string,string,string)")), true);
         // members do not have explicit role permissions, so these actions are public
-        roles.setPublicCapability(0, bytes4(keccak256("sendAnswer(bytes32,uint256)")), true);
-        roles.setPublicCapability(0, bytes4(keccak256("sendCall(bytes32,bytes32)")), true);
+        roles.setPublicCapability(0, bytes4(keccak256("sendAnswer(bytes32,uint256,uint256)")), true);
+        roles.setPublicCapability(0, bytes4(keccak256("sendCall(bytes32)")), true);
         roles.setPublicCapability(0, bytes4(keccak256("setMultiSharing(bytes32,bytes32)")), true);
 
         return roles;

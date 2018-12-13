@@ -23,13 +23,13 @@ pragma solidity ^0.4.16;
 contract owned {
     address public owner;
 
-    function owned()  public {
-        owner = msg.sender;
-    }
-
     modifier onlyOwner {
         require(msg.sender == owner);
         _;
+    }
+
+    function owned()  public {
+        owner = msg.sender;
     }
 
     function transferOwnership(address newOwner) onlyOwner  public {
@@ -121,25 +121,6 @@ contract Congress is owned {
     }
 
     /**
-     * Remove member
-     *
-     * @notice Remove membership from `targetMember`
-     *
-     * @param targetMember ethereum address to be removed
-     */
-    function removeMember(address targetMember) onlyOwner public {
-        require(memberId[targetMember] != 0);
-
-        for (uint i = memberId[targetMember]; i<members.length-1; i++){
-            members[i] = members[i+1];
-        }
-        delete members[members.length-1];
-        members.length--;
-        // remove address from id lookup
-        delete memberId[targetMember];
-    }
-
-    /**
      * Change voting rules
      *
      * Make so that proposals need to be discussed for at least `minutesForDebate/60` hours,
@@ -159,6 +140,44 @@ contract Congress is owned {
         majorityMargin = marginOfVotesForMajority;
 
         emit ChangeOfRules(minimumQuorum, debatingPeriodInMinutes, majorityMargin);
+    }
+
+    /**
+     * Finish vote
+     *
+     * Count the votes proposal #`proposalNumber` and execute it if approved
+     *
+     * @param proposalNumber proposal number
+     * @param transactionBytecode optional: if the transaction contained a bytecode, you need to send it
+     */
+    function executeProposal(uint proposalNumber, bytes transactionBytecode) public {
+        Proposal storage p = proposals[proposalNumber];
+
+        require(now > p.minExecutionDate                                            // If it is past the voting deadline
+            && !p.executed                                                         // and it has not already been executed
+            && p.proposalHash == keccak256(p.recipient, p.amount, transactionBytecode)  // and the supplied code matches the proposal
+            && p.numberOfVotes >= minimumQuorum);                                  // and a minimum quorum has been reached...
+
+        // ...then execute result
+
+        if (p.currentResult > majorityMargin) {
+            // Proposal passed; execute the transaction
+            p.executed = true; // Avoid recursive calling
+
+            // proposals, that are tx with 0 Wei to zero address and without additional input,
+            // are handled as description votes and don't have to be executed
+            if (p.proposalHash != keccak256(address(0), 0, "")) {
+                require(p.recipient.call.value(p.amount)(transactionBytecode));
+            }
+
+            p.proposalPassed = true;
+        } else {
+            // Proposal failed
+            p.proposalPassed = false;
+        }
+
+        // Fire Events
+        emit ProposalTallied(proposalNumber, p.currentResult, p.numberOfVotes, p.proposalPassed);
     }
 
     /**
@@ -220,24 +239,22 @@ contract Congress is owned {
     }
 
     /**
-     * Check if a proposal code matches
+     * Remove member
      *
-     * @param proposalNumber ID number of the proposal to query
-     * @param beneficiary who to send the ether to
-     * @param weiAmount amount of ether to send
-     * @param transactionBytecode bytecode of transaction
+     * @notice Remove membership from `targetMember`
+     *
+     * @param targetMember ethereum address to be removed
      */
-    function checkProposalCode(
-        uint proposalNumber,
-        address beneficiary,
-        uint weiAmount,
-        bytes transactionBytecode
-    )
-        constant public
-        returns (bool codeChecksOut)
-    {
-        Proposal storage p = proposals[proposalNumber];
-        return p.proposalHash == keccak256(beneficiary, weiAmount, transactionBytecode);
+    function removeMember(address targetMember) onlyOwner public {
+        require(memberId[targetMember] != 0);
+
+        for (uint i = memberId[targetMember]; i<members.length-1; i++){
+            members[i] = members[i+1];
+        }
+        delete members[members.length-1];
+        members.length--;
+        // remove address from id lookup
+        delete memberId[targetMember];
     }
 
     /**
@@ -273,44 +290,23 @@ contract Congress is owned {
     }
 
     /**
-     * Finish vote
+     * Check if a proposal code matches
      *
-     * Count the votes proposal #`proposalNumber` and execute it if approved
-     *
-     * @param proposalNumber proposal number
-     * @param transactionBytecode optional: if the transaction contained a bytecode, you need to send it
+     * @param proposalNumber ID number of the proposal to query
+     * @param beneficiary who to send the ether to
+     * @param weiAmount amount of ether to send
+     * @param transactionBytecode bytecode of transaction
      */
-    function executeProposal(uint proposalNumber, bytes transactionBytecode) public {
+    function checkProposalCode(
+        uint proposalNumber,
+        address beneficiary,
+        uint weiAmount,
+        bytes transactionBytecode
+    )
+        constant public
+        returns (bool codeChecksOut)
+    {
         Proposal storage p = proposals[proposalNumber];
-
-        require(now > p.minExecutionDate                                            // If it is past the voting deadline
-            && !p.executed                                                         // and it has not already been executed
-            && p.proposalHash == keccak256(p.recipient, p.amount, transactionBytecode)  // and the supplied code matches the proposal
-            && p.numberOfVotes >= minimumQuorum);                                  // and a minimum quorum has been reached...
-
-        // ...then execute result
-
-        if (p.currentResult > majorityMargin) {
-            // Proposal passed; execute the transaction
-            p.executed = true; // Avoid recursive calling
-
-            // proposals, that are tx with 0 Wei to zero address and without additional input,
-            // are handled as description votes and don't have to be executed
-            if (p.proposalHash != keccak256(address(0), 0, "")) {
-                require(p.recipient.call.value(p.amount)(transactionBytecode));
-            }
-
-            p.proposalPassed = true;
-        } else {
-            // Proposal failed
-            p.proposalPassed = false;
-        }
-
-        // Fire Events
-        emit ProposalTallied(proposalNumber, p.currentResult, p.numberOfVotes, p.proposalPassed);
-    }
-
-    function nao() public view returns(uint256) {
-        return now;
+        return p.proposalHash == keccak256(beneficiary, weiAmount, transactionBytecode);
     }
 }

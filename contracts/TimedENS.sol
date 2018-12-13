@@ -144,7 +144,7 @@ contract TimedENS is AbstractENS {
 
     /// @notice     sets duration, that keeps the owner of an expired node after its expiration
     /// @param      newValidPostExipireWindow  new value to set
-    function setValidPostExipireWindow(int256 newValidPostExipireWindow) public only_owner(0) {
+    function setValidPostExpireWindow(int256 newValidPostExipireWindow) public only_owner(0) {
         validPostExipireWindow = newValidPostExipireWindow;
     }
 

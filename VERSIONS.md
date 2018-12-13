@@ -2,7 +2,8 @@
 
 ## Next Version
 ### Features
-- add `PayableRegistrar`, that allows to by domain names with EVEs
+- add `PayableRegistrar`, that allows to by domain names with EVEs for limited time frames
+- add `TimedENS`, that allows to register domains for limited time frames
 
 ### Fixes
 ### Deprecations

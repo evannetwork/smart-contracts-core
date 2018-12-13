@@ -29,17 +29,20 @@
 pragma solidity ^0.4.24;
 
 import "./Core.sol";
-import "./ENS.sol";
+import "./TimedENS.sol";
 
-
-/**
- * A registrar that allocates subdomains to the first person to claim them.
- */
+/// @title registrar that allocates subdomains to the first person to claim them, extended with support for parent nodes and time limited uptime
+/// @author evan GmbH
+/// @dev based upon ENS from https://github.com/ensdomains/ens/blob/master/contracts/FIFSRegistrar.sol
 contract PayableRegistrar is Owned {
+    TimedENS public ens;
     uint256 public price;
-    ENS public ens;
     bytes32 public rootNode;
+    uint256 public validDuration = 52 weeks;
+    int256 public validPreExipireWindow = -8 weeks;
 
+    // @notice     permits modifications only by the owner of the specified node
+    // @param      label  node to check
     modifier only_label_owner(bytes32 label) {
         address currentOwner = ens.owner(keccak256(abi.encodePacked(rootNode, label)));
         require(currentOwner == 0 || currentOwner == msg.sender || this.owner() == msg.sender);
@@ -47,33 +50,87 @@ contract PayableRegistrar is Owned {
         _;
     }
 
-    /**
-     * Constructor.
-     * @param ensAddr The address of the ENS registry.
-     * @param node The node that this registrar administers.
-     */
-    constructor(ENS ensAddr, bytes32 node, uint256 newPrice) public Owned() {
+    /// @notice     constructor
+    /// @param      ensAddr   address of the ENS registry
+    /// @param      node      node that this registrar administers
+    /// @param      newPrice  price for registering domains
+    constructor(TimedENS ensAddr, bytes32 node, uint256 newPrice) public Owned() {
         ens = ensAddr;
         rootNode = node;
         price = newPrice;
     }
 
-    /**
-     * Register a name, or change the owner of an existing registration.
-     * @param label The hash of the label to register.
-     * @param owner The address of the new owner.
-     */
+    /// @notice     claim current funds this contract
+    /// @dev        only callable by owner
+    function claimFunds() public only_owner {
+        this.owner().transfer(this.balance);
+    }
+
+    /// @notice     register a name, or change the owner of an existing registration
+    /// @param      label  hash of the label to register
+    /// @param      owner  address of the new owner
     function register(bytes32 label, address owner) public payable only_label_owner(label) {
+        bytes32 fullHash = keccak256(abi.encodePacked(rootNode, label));
+        // get valid time for registered node
+        uint256 oldValidUntil = ens.validUntil(fullHash);
+
+        require(
+          // hash has never been claimed
+          oldValidUntil == 0 ||
+          // sender is current owner and node is about to expire or already expired
+          // --> ens owner considers post expiration, so owner matches until expiration plus protection
+          // --> is alive with pre expiration returns false from beginning of expiration until fully expired
+          // ==> overlapping timeframe is from begging of pre expiration until end of post expiration protection
+          ens.owner(fullHash) == msg.sender && !ens.isAlive(fullHash, validPreExipireWindow) ||
+          // sender is any user, node is fully expired (everyone can buy it)
+          // --> ens owner considers post expiration owner protection
+          ens.owner(fullHash) == address(0) ||
+          // owner of registrar calls function
+          this.owner() == msg.sender
+        );
+
+        // make sender owner of subnode
         ens.setSubnodeOwner(rootNode, label, owner);
+
+        // if oldValidUntil is expired, start anew. otherwise extend duration
+        if (oldValidUntil < now) {
+          oldValidUntil = now;
+        }
+        ens.setValidUntil(fullHash, oldValidUntil + validDuration);
+
+        // refund given tx value if owner called
         if (msg.sender == this.owner()) {
           owner.transfer(msg.value);
         }
     }
 
-    function claimFunds() public only_owner {
-      this.owner().transfer(this.balance);
+    /// @notice     register a permanent domain, can only be doen by registar 
+    /// @param      label  hash of the label to register
+    /// @param      owner  address of the new owner
+    function registerPermanent(bytes32 label, address owner) public only_owner {
+        // make owner the owner of subnode and set duration to permanent
+        ens.setSubnodeOwner(rootNode, label, owner);
+        // ens.setValidUntil(keccak256(abi.encodePacked(rootNode, label)), 0);
     }
+
+    /// @notice     set price for registering domains
+    /// @param      newPrice  price to set
     function setPrice(uint256 newPrice) public only_owner {
-      price = newPrice;
+        price = newPrice;
+    }
+
+    /// @notice     set duration, that a registered domain is owner
+    /// @param      newValidDuration  new duration to set
+    function setValidDuration(uint256 newValidDuration) public only_owner {
+        validDuration = newValidDuration;
+    }
+
+    /// @notice     set timeframe in which a node ownership can be extended before expiration
+    /// @dev        as this refers to a timewindows BEFORE node resolution timeout, this value is
+    ///             negative
+    /// @param      newValidPreExipireWindow  timeframe in which a node ownership can be extended
+    function setValidPreExipireWindow(int256 newValidPreExipireWindow) public only_owner {
+        require(newValidPreExipireWindow <= 0);
+        validPreExipireWindow = newValidPreExipireWindow;
     }
 }

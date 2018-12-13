@@ -18,7 +18,7 @@ library KeyHolderLibrary {
     struct KeyHolderData {
         uint256 executionNonce;
         mapping (bytes32 => Key) keys;
-        mapping (uint256 => bytes32[]) keysByPurpose;
+        mapping (uint256 => bytes32[])keysByPurpose;
         mapping (uint256 => Execution) executions;
     }
 

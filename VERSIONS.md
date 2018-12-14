@@ -5,6 +5,10 @@
 ### Fixes
 ### Deprecations
 
+## Version 1.4.0
+### Features
+- add `PayableRegistrar`, that allows to by domain names with EVEs for limited time frames
+- add `TimedENS`, that allows to register domains for limited time frames
 
 ## Version 1.3.0
 ### Features
@@ -12,6 +16,7 @@
 - add `addClaimWithMetadata` function to claims for setting claim and metadata at the same time
 - add creation block data to claim information
 - claims are not overwritten anymore, but a new claim is created per set call
+- add `Congress.sol` for holding votes on-chain
 
 ### Fixes
 ### Deprecations

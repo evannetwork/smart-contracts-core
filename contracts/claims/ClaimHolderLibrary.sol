@@ -26,6 +26,8 @@ library ClaimHolderLibrary {
         mapping (bytes32 => uint256) creationBlocks;
         mapping (bytes32 => bytes32) descriptions;
         mapping (bytes32 => uint256) expiringDates;
+        mapping (bytes32 => bool) rejectedClaims;
+        mapping (bytes32 => bytes32) rejectReason;
     }
 
 
@@ -136,6 +138,28 @@ library ClaimHolderLibrary {
         return true;
     }
 
+    function rejectClaim(
+        KeyHolderLibrary.KeyHolderData storage _keyHolderData,
+        Claims storage _claims,
+        bytes32 _claimId,
+        bytes32 _rejectReason
+    )
+        public
+        returns (bool success)
+    {
+
+        require(_claims.byId[_claimId].issuer != address(0), "No claim exists");
+        require(_claims.rejectedClaims[_claimId] == false, "Claim already rejected");
+        if (msg.sender != address(this) && msg.sender != _claims.byId[_claimId].issuer) {
+            require(KeyHolderLibrary.keyHasPurpose(_keyHolderData, keccak256(abi.encodePacked(msg.sender)), 1), "Sender does not have management key");
+        }
+
+        _claims.rejectedClaims[_claimId] = true;
+        _claims.rejectReason[_claimId] = _rejectReason;
+        _claims.approvedClaims[_claimId] = false;
+        return true;
+    }
+
     function approveClaim(
         KeyHolderLibrary.KeyHolderData storage _keyHolderData,
         Claims storage _claims,
@@ -146,7 +170,7 @@ library ClaimHolderLibrary {
     {
 
         require(_claims.byId[_claimId].issuer != address(0), "No claim exists");
-
+        require(_claims.rejectedClaims[_claimId] == false, "Claim already rejected");
         if (msg.sender != address(this) && msg.sender != _claims.byId[_claimId].issuer) {
             require(KeyHolderLibrary.keyHasPurpose(_keyHolderData, keccak256(abi.encodePacked(msg.sender)), 1), "Sender does not have management key");
         }
@@ -230,6 +254,18 @@ library ClaimHolderLibrary {
         returns (bool)
     {
         return _claims.approvedClaims[_claimId];
+    }
+
+    function isClaimRejected(Claims storage _claims, bytes32 _claimId)
+        public
+        view
+        returns (
+            bool rejected,
+            bytes32 rejectReason
+        )
+    {
+        rejected = _claims.rejectedClaims[_claimId];
+        rejectReason = _claims.rejectReason[_claimId];
     }
 
     function claimCreationBlock(Claims storage _claims, bytes32 _claimId)

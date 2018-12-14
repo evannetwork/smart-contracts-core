@@ -4,6 +4,7 @@
 ### Features
 - add `PayableRegistrar`, that allows to by domain names with EVEs for limited time frames
 - add `TimedENS`, that allows to register domains for limited time frames
+- add contracts for creating claims for contracts
 
 ### Fixes
 ### Deprecations

@@ -2,12 +2,16 @@
 
 ## Next Version
 ### Features
-- add `PayableRegistrar`, that allows to by domain names with EVEs for limited time frames
-- add `TimedENS`, that allows to register domains for limited time frames
 - add contracts for creating claims for contracts
 
 ### Fixes
 ### Deprecations
+
+
+## Version 1.4.0
+### Features
+- add `PayableRegistrar`, that allows to by domain names with EVEs for limited time frames
+- add `TimedENS`, that allows to register domains for limited time frames
 
 
 ## Version 1.3.0

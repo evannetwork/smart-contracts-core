@@ -23,8 +23,9 @@ library ClaimsRegistryLibrary {
     event ClaimApproved(bytes32 identity, bytes32 indexed claimId, uint256 indexed topic, uint256 scheme, address indexed issuer, bytes signature, bytes data, string uri);
 
     struct Identity {
-      address owner;
       Claims claims;
+      address link;
+      address owner;
     }
 
     struct Identities {

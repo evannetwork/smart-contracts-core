@@ -16,12 +16,15 @@
 
 pragma solidity ^0.4.24;
 
+import "../Core.sol";
+
+
 /// @title UserRegistry
 /// @dev Used to keep registry of user identifies
 /// @author Matt Liu <matt@originprotocol.com>, Josh Fraser <josh@originprotocol.com>, Stan James <stan@originprotocol.com>
 
 
-contract V00_UserRegistry {
+contract V00_UserRegistry is Owned {
     /*
     * Events
     */
@@ -45,6 +48,15 @@ contract V00_UserRegistry {
     {
         users[msg.sender] = _identity;
         emit NewUser(msg.sender, _identity);
+    }
+
+    /// @dev registerOtherAccount(): Add another user to the registry, this can only be done by registry owner
+    function registerOtherAccount(address _identity, address _otherAccount) only_owner
+        public
+    {
+        require(users[_otherAccount] == 0);
+        users[_otherAccount] = _identity;
+        emit NewUser(_otherAccount, _identity);
     }
 
     /// @dev clearUser(): Remove user from the registry

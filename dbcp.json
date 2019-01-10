@@ -9,11 +9,16 @@
       "origin": "QmdXjdqM5sah2XAXy1HaV93xkpAKn3d9txYGQk62fFc1yZ",
       "type": "library"
     },
+    "dbcpVersion": 2,
     "description": "evan.network core smart contracts",
+    "license": {
+      "file": "https://ipfs.evan.network/ipns/QmT1FwnYyURjLj7nKMwEuTPUBc5uJ6z1zAVsYnKfUL1X1q/Apache-2.0.txt",
+      "type": "Apache-2.0"
+    },
     "name": "smartcontracts",
     "tags": [
-      "dapp",
       "contractus",
+      "dapp",
       "library"
     ],
     "version": "1.4.0",
@@ -30,7 +35,6 @@
       "1.1.3": "QmPvKkvZtrSPjbaB6ziijYrJPVj4kSRCXzWsDG9oZvHfCv",
       "1.2.0": "QmYM8xrDAyvLXe9pvnof8w3nu8C7VAynaoLR5C3xCbFrro",
       "1.4.0": "QmUP1frXGUS6X7P4PKuXVhp6XtBCH5uv8KDwHdLDJjTeFf"
-    },
-    "dbcpVersion": 1
+    }
   }
 }

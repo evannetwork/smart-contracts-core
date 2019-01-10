@@ -5,7 +5,9 @@
 - add contracts for creating claims for contracts
 
 ### Fixes
-### Deprecations
+- remove `OriginIdentity`, as `ClaimHolder` is used for identities
+
+###`Deprecations
 
 
 ## Version 1.4.0

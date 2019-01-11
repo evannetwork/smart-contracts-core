@@ -11,7 +11,6 @@
 - remove `OriginIdentity`, as `ClaimHolder` is used for identities
 
 ### Deprecations
-- `KeyHolder` constructor now needs an address argument for settings its owner
 
 
 ## Version 1.4.0

@@ -3,12 +3,22 @@
 ## Next Version
 ### Features
 ### Fixes
-### Deprecations
+
+## Version 1.5.0
+### Features
+- add contracts for creating claims for contracts
+- add function for registering other users identities, that can be used by registry owner, can only be set this way if account to register doesn't already have an identity
+- add missing dbcpVersion to dbcp files
+- add licenses to dbcp files
+
+### Fixes
+- remove `OriginIdentity`, as `ClaimHolder` is used for identities
 
 ## Version 1.4.0
 ### Features
 - add `PayableRegistrar`, that allows to by domain names with EVEs for limited time frames
 - add `TimedENS`, that allows to register domains for limited time frames
+
 
 ## Version 1.3.0
 ### Features

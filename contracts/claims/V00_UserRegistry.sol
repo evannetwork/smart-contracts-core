@@ -1,11 +1,30 @@
+/*
+  Copyright (c) 2018-present evan GmbH.
+ 
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+ 
+      http://www.apache.org/licenses/LICENSE-2.0
+ 
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+*/
+
 pragma solidity ^0.4.24;
+
+import "../Core.sol";
+
 
 /// @title UserRegistry
 /// @dev Used to keep registry of user identifies
 /// @author Matt Liu <matt@originprotocol.com>, Josh Fraser <josh@originprotocol.com>, Stan James <stan@originprotocol.com>
 
 
-contract V00_UserRegistry {
+contract V00_UserRegistry is Owned {
     /*
     * Events
     */
@@ -29,6 +48,15 @@ contract V00_UserRegistry {
     {
         users[msg.sender] = _identity;
         emit NewUser(msg.sender, _identity);
+    }
+
+    /// @dev registerOtherAccount(): Add another user to the registry, this can only be done by registry owner
+    function registerOtherAccount(address _identity, address _otherAccount) only_owner
+        public
+    {
+        require(users[_otherAccount] == 0);
+        users[_otherAccount] = _identity;
+        emit NewUser(_otherAccount, _identity);
     }
 
     /// @dev clearUser(): Remove user from the registry

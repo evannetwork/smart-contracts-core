@@ -3,6 +3,10 @@
 ## Next Version
 ### Features
 ### Fixes
+### Deprecations
+
+## 1.5.1 Version
+### Fixes
 - Fix linking of libraries
 
 ## Version 1.5.0

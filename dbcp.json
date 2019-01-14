@@ -6,7 +6,7 @@
       "files": [
         "compiled.js"
       ],
-      "origin": "QmTNu2XaEe5YskWW5wBD2AsjFmdaxpqk3ZAesobi7o8W7H",
+      "origin": "QmVV5YnjcAX3QsPavxZPEvkGKPBfzuoYrR4RxTcFqyRzwP",
       "type": "library"
     },
     "dbcpVersion": 2,
@@ -21,7 +21,7 @@
       "dapp",
       "library"
     ],
-    "version": "1.5.2",
+    "version": "1.5.1",
     "versions": {
       "0.1.0": "QmQ576qcoH4GXKRTYq3xqYJR62Lhf5665ySTj6YyENMZPJ",
       "0.9.0": "QmNfBLnAM4DctyNxg7CbE4mtYdmQfTN9bVGx8x12nMvjUD",
@@ -36,7 +36,7 @@
       "1.2.0": "QmYM8xrDAyvLXe9pvnof8w3nu8C7VAynaoLR5C3xCbFrro",
       "1.4.0": "QmUP1frXGUS6X7P4PKuXVhp6XtBCH5uv8KDwHdLDJjTeFf",
       "1.5.0": "QmULwetWtmpeQD9fqqaKUoYXwEnw5fko2QP7UFExwcmhAr",
-      "1.5.1": "QmeC5PuwcedA35E3uMBXWGa9wUsZpRXpy6L2arh18fincQ"
+      "1.5.1": "QmUnCeyzDMDQXkUv53DDcmXmsX5SGxDHbkGhSRxUHtqGUR"
     }
   }
 }

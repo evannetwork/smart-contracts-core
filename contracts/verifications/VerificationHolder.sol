@@ -23,7 +23,11 @@ import "./KeyHolderLibrary.sol";
 
 contract VerificationHolder is KeyHolder, ERC735 {
 
-    VerificationHolderLibrary.Verifications claims;
+    VerificationHolderLibrary.Verifications verifications;
+
+    constructor(address _keyHolderOwner) public KeyHolder(_keyHolderOwner) {
+        // just run parent class constructor
+    }
 
     function addVerification(
         uint256 _topic,
@@ -34,11 +38,11 @@ contract VerificationHolder is KeyHolder, ERC735 {
         string _uri
     )
         public
-        returns (bytes32 claimRequestId)
+        returns (bytes32 verificationRequestId)
     {
         return VerificationHolderLibrary.addVerification(
             keyHolderData,
-            claims,
+            verifications,
             _topic,
             _scheme,
             _issuer,
@@ -59,7 +63,7 @@ contract VerificationHolder is KeyHolder, ERC735 {
     {
         VerificationHolderLibrary.addVerifications(
             keyHolderData,
-            claims,
+            verifications,
             _topic,
             _issuer,
             _signature,
@@ -79,45 +83,45 @@ contract VerificationHolder is KeyHolder, ERC735 {
         bytes32 _description
         )
         public
-        returns (bytes32 claimRequestId)
+        returns (bytes32 verificationRequestId)
     {
-        bytes32 claimId = addVerification(_topic, _scheme, _issuer, _signature, _data, _uri);
-        require(this.setVerificationExpirationDate(claimId, _expirationDate));
-        require(this.setVerificationDescription(claimId, _description));
-        return claimId;
+        bytes32 verificationId = addVerification(_topic, _scheme, _issuer, _signature, _data, _uri);
+        require(this.setVerificationExpirationDate(verificationId, _expirationDate));
+        require(this.setVerificationDescription(verificationId, _description));
+        return verificationId;
     }
 
-    function approveVerification(bytes32 _claimId) public returns (bool success) {
-        return VerificationHolderLibrary.approveVerification(keyHolderData, claims, _claimId);
+    function approveVerification(bytes32 _verificationId) public returns (bool success) {
+        return VerificationHolderLibrary.approveVerification(keyHolderData, verifications, _verificationId);
     }
 
-    function removeVerification(bytes32 _claimId) public returns (bool success) {
-        return VerificationHolderLibrary.removeVerification(keyHolderData, claims, _claimId);
+    function removeVerification(bytes32 _verificationId) public returns (bool success) {
+        return VerificationHolderLibrary.removeVerification(keyHolderData, verifications, _verificationId);
     }
 
-    function rejectVerification(bytes32 _claimId, bytes32 _rejectReason) public returns (bool success) {
-        return VerificationHolderLibrary.rejectVerification(keyHolderData, claims, _claimId, _rejectReason);
+    function rejectVerification(bytes32 _verificationId, bytes32 _rejectReason) public returns (bool success) {
+        return VerificationHolderLibrary.rejectVerification(keyHolderData, verifications, _verificationId, _rejectReason);
     }
 
-    function setVerificationDescription(bytes32 _claimId, bytes32 _description) public returns (bool success) {
+    function setVerificationDescription(bytes32 _verificationId, bytes32 _description) public returns (bool success) {
         require(msg.sender == address(this));
-        return VerificationHolderLibrary.setVerificationDescription(keyHolderData, claims, _claimId, _description);
+        return VerificationHolderLibrary.setVerificationDescription(keyHolderData, verifications, _verificationId, _description);
     }
 
-    function setVerificationExpirationDate(bytes32 _claimId, uint256 _expirationDate) public returns (bool success) {
+    function setVerificationExpirationDate(bytes32 _verificationId, uint256 _expirationDate) public returns (bool success) {
         require(msg.sender == address(this));
-        return VerificationHolderLibrary.setVerificationExpirationDate(keyHolderData, claims, _claimId, _expirationDate);
+        return VerificationHolderLibrary.setVerificationExpirationDate(keyHolderData, verifications, _verificationId, _expirationDate);
     }
 
-    function claimCreationBlock(bytes32 _claimId) public view returns (uint256 block) {
-        return VerificationHolderLibrary.claimCreationBlock(claims, _claimId);
+    function verificationCreationBlock(bytes32 _verificationId) public view returns (uint256 block) {
+        return VerificationHolderLibrary.verificationCreationBlock(verifications, _verificationId);
     }
 
-    function claimCreationDate(bytes32 _claimId) public view returns (uint256 timestamp) {
-        return VerificationHolderLibrary.claimCreationDate(claims, _claimId);
+    function verificationCreationDate(bytes32 _verificationId) public view returns (uint256 timestamp) {
+        return VerificationHolderLibrary.verificationCreationDate(verifications, _verificationId);
     }
 
-    function getVerification(bytes32 _claimId)
+    function getVerification(bytes32 _verificationId)
         public
         view
         returns(
@@ -129,30 +133,30 @@ contract VerificationHolder is KeyHolder, ERC735 {
             string uri
         )
     {
-        return VerificationHolderLibrary.getVerification(claims, _claimId);
+        return VerificationHolderLibrary.getVerification(verifications, _verificationId);
     }
 
-    function getVerificationDescription(bytes32 _claimId) public view returns (bytes32 description) {
-        return VerificationHolderLibrary.claimDescription(claims, _claimId);
+    function getVerificationDescription(bytes32 _verificationId) public view returns (bytes32 description) {
+        return VerificationHolderLibrary.verificationDescription(verifications, _verificationId);
     }
 
-    function getVerificationExpirationDate(bytes32 _claimId) public view returns (uint256 timestamp) {
-        return VerificationHolderLibrary.claimExpirationDate(claims, _claimId);
+    function getVerificationExpirationDate(bytes32 _verificationId) public view returns (uint256 timestamp) {
+        return VerificationHolderLibrary.verificationExpirationDate(verifications, _verificationId);
     }
 
     function getVerificationIdsByTopic(uint256 _topic)
         public
         view
-        returns(bytes32[] claimIds)
+        returns(bytes32[] verificationIds)
     {
-        return claims.byTopic[_topic];
+        return verifications.byTopic[_topic];
     }
 
-    function isVerificationApproved(bytes32 _claimId) public view returns (bool success) {
-        return VerificationHolderLibrary.isVerificationApproved(claims, _claimId);
+    function isVerificationApproved(bytes32 _verificationId) public view returns (bool success) {
+        return VerificationHolderLibrary.isVerificationApproved(verifications, _verificationId);
     }
 
-    function isVerificationRejected(bytes32 _claimId) 
+    function isVerificationRejected(bytes32 _verificationId) 
         public 
         view 
         returns (
@@ -160,6 +164,6 @@ contract VerificationHolder is KeyHolder, ERC735 {
             bytes32 rejectReason
         )
     {
-        return VerificationHolderLibrary.isVerificationRejected(claims, _claimId);
+        return VerificationHolderLibrary.isVerificationRejected(verifications, _verificationId);
     }
 }

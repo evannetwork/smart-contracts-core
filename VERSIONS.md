@@ -4,6 +4,7 @@
 ### Features
 ### Fixes
 ### Deprecations
+- `KeyHolder` constructor now needs an address argument for settings its owner
 
 ## 1.5.2 Version
 ### Fixes
@@ -15,7 +16,7 @@
 
 ## Version 1.5.0
 ### Features
-- add contracts for creating claims for contracts
+- add contracts for creating verifications for contracts
 - add function for registering other users identities, that can be used by registry owner, can only be set this way if account to register doesn't already have an identity
 - add missing dbcpVersion to dbcp files
 - add licenses to dbcp files
@@ -31,10 +32,10 @@
 
 ## Version 1.3.0
 ### Features
-- add description to claims
-- add `addVerificationWithMetadata` function to claims for setting claim and metadata at the same time
-- add creation block data to claim information
-- claims are not overwritten anymore, but a new claim is created per set call
+- add description to verifications
+- add `addVerificationWithMetadata` function to verifications for setting verification and metadata at the same time
+- add creation block data to verification information
+- verifications are not overwritten anymore, but a new verification is created per set call
 - add `Congress.sol` for holding votes on-chain
 
 ### Fixes
@@ -44,7 +45,7 @@
 ## Version 1.2.0
 ### Features
 - add ERC725/735 compliant Verifications and Identity contracts
-- include bytecode within compiled.js files for `claims/OriginIdentity.sol:OriginIdentity`
+- include bytecode within compiled.js files for `verifications/OriginIdentity.sol:OriginIdentity`
 - add `TicketVendorInterface`
 
 ### Deprecations

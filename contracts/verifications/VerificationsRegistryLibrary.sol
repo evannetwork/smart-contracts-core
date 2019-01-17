@@ -18,12 +18,12 @@ pragma solidity ^0.4.24;
 
 
 library VerificationsRegistryLibrary {
-    event VerificationAdded(bytes32 identity, bytes32 indexed claimId, uint256 indexed topic, uint256 scheme, address indexed issuer, bytes signature, bytes data, string uri);
-    event VerificationRemoved(bytes32 identity, bytes32 indexed claimId, uint256 indexed topic, uint256 scheme, address indexed issuer, bytes signature, bytes data, string uri);
-    event VerificationApproved(bytes32 identity, bytes32 indexed claimId, uint256 indexed topic, uint256 scheme, address indexed issuer, bytes signature, bytes data, string uri);
+    event VerificationAdded(bytes32 identity, bytes32 indexed verificationId, uint256 indexed topic, uint256 scheme, address indexed issuer, bytes signature, bytes data, string uri);
+    event VerificationRemoved(bytes32 identity, bytes32 indexed verificationId, uint256 indexed topic, uint256 scheme, address indexed issuer, bytes signature, bytes data, string uri);
+    event VerificationApproved(bytes32 identity, bytes32 indexed verificationId, uint256 indexed topic, uint256 scheme, address indexed issuer, bytes signature, bytes data, string uri);
 
     struct Identity {
-      Verifications claims;
+      Verifications verifications;
       address link;
       address owner;
     }
@@ -66,29 +66,29 @@ library VerificationsRegistryLibrary {
         string _uri
     )
         public
-        returns (bytes32 claimRequestId)
+        returns (bytes32 verificationRequestId)
     {
-        Verifications _claims = _identities.byId[_identity].claims;
-        bytes32 claimId = keccak256(abi.encodePacked(_issuer, _topic, now));
+        Verifications _verifications = _identities.byId[_identity].verifications;
+        bytes32 verificationId = keccak256(abi.encodePacked(_issuer, _topic, now));
 
-        if (_claims.byId[claimId].issuer != _issuer) {
-            _claims.byTopic[_topic].push(claimId);
-            _claims.topicIdbyVerificationId[_topic][claimId] = _claims.byTopic[_topic].length - 1;
+        if (_verifications.byId[verificationId].issuer != _issuer) {
+            _verifications.byTopic[_topic].push(verificationId);
+            _verifications.topicIdbyVerificationId[_topic][verificationId] = _verifications.byTopic[_topic].length - 1;
         }
 
-        _claims.creationDates[claimId] = now;
-        _claims.creationBlocks[claimId] = block.number;
+        _verifications.creationDates[verificationId] = now;
+        _verifications.creationBlocks[verificationId] = block.number;
 
-        _claims.byId[claimId].topic = _topic;
-        _claims.byId[claimId].scheme = _scheme;
-        _claims.byId[claimId].issuer = _issuer;
-        _claims.byId[claimId].signature = _signature;
-        _claims.byId[claimId].data = _data;
-        _claims.byId[claimId].uri = _uri;
+        _verifications.byId[verificationId].topic = _topic;
+        _verifications.byId[verificationId].scheme = _scheme;
+        _verifications.byId[verificationId].issuer = _issuer;
+        _verifications.byId[verificationId].signature = _signature;
+        _verifications.byId[verificationId].data = _data;
+        _verifications.byId[verificationId].uri = _uri;
 
         emit VerificationAdded(
             _identity,
-            claimId,
+            verificationId,
             _topic,
             _scheme,
             _issuer,
@@ -97,7 +97,7 @@ library VerificationsRegistryLibrary {
             _uri
         );
 
-        return claimId;
+        return verificationId;
     }
 
     function addVerifications(
@@ -111,7 +111,7 @@ library VerificationsRegistryLibrary {
     )
         public
     {
-        Verifications _claims = _identities.byId[_identity].claims;
+        Verifications _verifications = _identities.byId[_identity].verifications;
         uint offset = 0;
         for (uint16 i = 0; i < _topic.length; i++) {
             addVerification(
@@ -131,88 +131,88 @@ library VerificationsRegistryLibrary {
     function removeVerification(
         Identities storage _identities,
         bytes32 _identity,
-        bytes32 _claimId
+        bytes32 _verificationId
     )
         public
         returns (bool success)
     {
-        Verifications _claims = _identities.byId[_identity].claims;
-        require(_claims.byId[_claimId].issuer != address(0), "No claim exists");
+        Verifications _verifications = _identities.byId[_identity].verifications;
+        require(_verifications.byId[_verificationId].issuer != address(0), "No verification exists");
 
-        if (msg.sender != address(this) && msg.sender != _claims.byId[_claimId].issuer) {
+        if (msg.sender != address(this) && msg.sender != _verifications.byId[_verificationId].issuer) {
             require(msg.sender == _identities.byId[_identity].owner, "Sender does not have ownership of identity");
         }
 
         emit VerificationRemoved(
             _identity,
-            _claimId,
-            _claims.byId[_claimId].topic,
-            _claims.byId[_claimId].scheme,
-            _claims.byId[_claimId].issuer,
-            _claims.byId[_claimId].signature,
-            _claims.byId[_claimId].data,
-            _claims.byId[_claimId].uri
+            _verificationId,
+            _verifications.byId[_verificationId].topic,
+            _verifications.byId[_verificationId].scheme,
+            _verifications.byId[_verificationId].issuer,
+            _verifications.byId[_verificationId].signature,
+            _verifications.byId[_verificationId].data,
+            _verifications.byId[_verificationId].uri
         );
 
-        uint256 topic = _claims.byId[_claimId].topic;
-        uint256 lastIndex = _claims.byTopic[topic].length -1;
-        uint256 claimIndexAtTopic = _claims.topicIdbyVerificationId[topic][_claimId];
-        if (lastIndex != 0 && lastIndex != claimIndexAtTopic) {
-            _claims.byTopic[topic][claimIndexAtTopic] = _claims.byTopic[topic][lastIndex];
+        uint256 topic = _verifications.byId[_verificationId].topic;
+        uint256 lastIndex = _verifications.byTopic[topic].length -1;
+        uint256 verificationIndexAtTopic = _verifications.topicIdbyVerificationId[topic][_verificationId];
+        if (lastIndex != 0 && lastIndex != verificationIndexAtTopic) {
+            _verifications.byTopic[topic][verificationIndexAtTopic] = _verifications.byTopic[topic][lastIndex];
         }
-        delete _claims.byTopic[topic][lastIndex];
-        _claims.byTopic[topic].length = _claims.byTopic[topic].length--;
-        delete _claims.byId[_claimId];
+        delete _verifications.byTopic[topic][lastIndex];
+        _verifications.byTopic[topic].length = _verifications.byTopic[topic].length--;
+        delete _verifications.byId[_verificationId];
         return true;
     }
 
     function rejectVerification(
         Identities storage _identities,
         bytes32 _identity,
-        bytes32 _claimId,
+        bytes32 _verificationId,
         bytes32 _rejectReason
     )
         public
         returns (bool success)
     {
-        Verifications _claims = _identities.byId[_identity].claims;
-        require(_claims.byId[_claimId].issuer != address(0), "No claim exists");
-        require(_claims.rejectedVerifications[_claimId] == false, "Verification already rejected");
-        if (msg.sender != address(this) && msg.sender != _claims.byId[_claimId].issuer) {
+        Verifications _verifications = _identities.byId[_identity].verifications;
+        require(_verifications.byId[_verificationId].issuer != address(0), "No verification exists");
+        require(_verifications.rejectedVerifications[_verificationId] == false, "Verification already rejected");
+        if (msg.sender != address(this) && msg.sender != _verifications.byId[_verificationId].issuer) {
             require(msg.sender == _identities.byId[_identity].owner, "Sender does not have ownership of identity");
         }
 
-        _claims.rejectedVerifications[_claimId] = true;
-        _claims.rejectReason[_claimId] = _rejectReason;
-        _claims.approvedVerifications[_claimId] = false;
+        _verifications.rejectedVerifications[_verificationId] = true;
+        _verifications.rejectReason[_verificationId] = _rejectReason;
+        _verifications.approvedVerifications[_verificationId] = false;
         return true;
     }
 
     function approveVerification(
         Identities storage _identities,
         bytes32 _identity,
-        bytes32 _claimId
+        bytes32 _verificationId
     ) 
         public
         returns (bool success)
     {
-        Verifications _claims = _identities.byId[_identity].claims;
-        require(_claims.byId[_claimId].issuer != address(0), "No claim exists");
-        require(_claims.rejectedVerifications[_claimId] == false, "Verification already rejected");
-        if (msg.sender != address(this) && msg.sender != _claims.byId[_claimId].issuer) {
+        Verifications _verifications = _identities.byId[_identity].verifications;
+        require(_verifications.byId[_verificationId].issuer != address(0), "No verification exists");
+        require(_verifications.rejectedVerifications[_verificationId] == false, "Verification already rejected");
+        if (msg.sender != address(this) && msg.sender != _verifications.byId[_verificationId].issuer) {
             require(msg.sender == _identities.byId[_identity].owner, "Sender does not have ownership of identity");
         }
 
-        _claims.approvedVerifications[_claimId] = true;
+        _verifications.approvedVerifications[_verificationId] = true;
         emit VerificationApproved(
             _identity,
-            _claimId,
-            _claims.byId[_claimId].topic,
-            _claims.byId[_claimId].scheme,
-            _claims.byId[_claimId].issuer,
-            _claims.byId[_claimId].signature,
-            _claims.byId[_claimId].data,
-            _claims.byId[_claimId].uri
+            _verificationId,
+            _verifications.byId[_verificationId].topic,
+            _verifications.byId[_verificationId].scheme,
+            _verifications.byId[_verificationId].issuer,
+            _verifications.byId[_verificationId].signature,
+            _verifications.byId[_verificationId].data,
+            _verifications.byId[_verificationId].uri
         );
     }
 
@@ -220,44 +220,44 @@ library VerificationsRegistryLibrary {
     function setVerificationDescription(
         Identities storage _identities,
         bytes32 _identity,
-        bytes32 _claimId,
+        bytes32 _verificationId,
         bytes32 _description
     )
         public
         returns (bool success)
     {
-        Verifications _claims = _identities.byId[_identity].claims;
-        require(_claims.byId[_claimId].issuer != address(0), "No claim exists");
+        Verifications _verifications = _identities.byId[_identity].verifications;
+        require(_verifications.byId[_verificationId].issuer != address(0), "No verification exists");
 
-        if (msg.sender != address(this) && msg.sender != _claims.byId[_claimId].issuer) {
+        if (msg.sender != address(this) && msg.sender != _verifications.byId[_verificationId].issuer) {
             require(msg.sender == _identities.byId[_identity].owner, "Sender does not have ownership of identity");
         }
 
-        _claims.descriptions[_claimId] = _description;
+        _verifications.descriptions[_verificationId] = _description;
         return true;
     }
 
     function setVerificationExpirationDate(
         Identities storage _identities,
         bytes32 _identity,
-        bytes32 _claimId,
+        bytes32 _verificationId,
         uint256 _expirationDate
     )
         public
         returns (bool success)
     {
-        Verifications _claims = _identities.byId[_identity].claims;
-        require(_claims.byId[_claimId].issuer != address(0), "No claim exists");
+        Verifications _verifications = _identities.byId[_identity].verifications;
+        require(_verifications.byId[_verificationId].issuer != address(0), "No verification exists");
 
-        if (msg.sender != address(this) && msg.sender != _claims.byId[_claimId].issuer) {
+        if (msg.sender != address(this) && msg.sender != _verifications.byId[_verificationId].issuer) {
             require(msg.sender == _identities.byId[_identity].owner, "Sender does not have ownership of identity");
         }
 
-        _claims.expiringDates[_claimId] = _expirationDate;
+        _verifications.expiringDates[_verificationId] = _expirationDate;
         return true;
     }
     
-    function getVerification(Identities storage _identities, bytes32 _identity, bytes32 _claimId)
+    function getVerification(Identities storage _identities, bytes32 _identity, bytes32 _verificationId)
         public
         view
         returns(
@@ -269,27 +269,27 @@ library VerificationsRegistryLibrary {
           string uri
         )
     {
-        Verifications _claims = _identities.byId[_identity].claims;
+        Verifications _verifications = _identities.byId[_identity].verifications;
         return (
-            _claims.byId[_claimId].topic,
-            _claims.byId[_claimId].scheme,
-            _claims.byId[_claimId].issuer,
-            _claims.byId[_claimId].signature,
-            _claims.byId[_claimId].data,
-            _claims.byId[_claimId].uri
+            _verifications.byId[_verificationId].topic,
+            _verifications.byId[_verificationId].scheme,
+            _verifications.byId[_verificationId].issuer,
+            _verifications.byId[_verificationId].signature,
+            _verifications.byId[_verificationId].data,
+            _verifications.byId[_verificationId].uri
         );
     }
 
-    function isVerificationApproved(Identities storage _identities, bytes32 _identity, bytes32 _claimId)
+    function isVerificationApproved(Identities storage _identities, bytes32 _identity, bytes32 _verificationId)
         public
         view
         returns (bool)
     {
-        Verifications _claims = _identities.byId[_identity].claims;
-        return _claims.approvedVerifications[_claimId];
+        Verifications _verifications = _identities.byId[_identity].verifications;
+        return _verifications.approvedVerifications[_verificationId];
     }
 
-    function isVerificationRejected(Identities storage _identities, bytes32 _identity, bytes32 _claimId)
+    function isVerificationRejected(Identities storage _identities, bytes32 _identity, bytes32 _verificationId)
         public
         view
         returns (
@@ -297,45 +297,45 @@ library VerificationsRegistryLibrary {
             bytes32 rejectReason
         )
     {
-        Verifications _claims = _identities.byId[_identity].claims;
-        rejected = _claims.rejectedVerifications[_claimId];
-        rejectReason = _claims.rejectReason[_claimId];
+        Verifications _verifications = _identities.byId[_identity].verifications;
+        rejected = _verifications.rejectedVerifications[_verificationId];
+        rejectReason = _verifications.rejectReason[_verificationId];
     }
 
-    function claimCreationBlock(Identities storage _identities, bytes32 _identity, bytes32 _claimId)
+    function verificationCreationBlock(Identities storage _identities, bytes32 _identity, bytes32 _verificationId)
         public
         view
         returns (uint256)
     {
-        Verifications _claims = _identities.byId[_identity].claims;
-        return _claims.creationBlocks[_claimId];
+        Verifications _verifications = _identities.byId[_identity].verifications;
+        return _verifications.creationBlocks[_verificationId];
     }
 
-    function claimCreationDate(Identities storage _identities, bytes32 _identity, bytes32 _claimId)
+    function verificationCreationDate(Identities storage _identities, bytes32 _identity, bytes32 _verificationId)
         public
         view
         returns (uint256)
     {
-        Verifications _claims = _identities.byId[_identity].claims;
-        return _claims.creationDates[_claimId];
+        Verifications _verifications = _identities.byId[_identity].verifications;
+        return _verifications.creationDates[_verificationId];
     }
 
-    function claimDescription(Identities storage _identities, bytes32 _identity, bytes32 _claimId)
+    function verificationDescription(Identities storage _identities, bytes32 _identity, bytes32 _verificationId)
         public
         view
         returns (bytes32)
     {
-        Verifications _claims = _identities.byId[_identity].claims;
-        return _claims.descriptions[_claimId];
+        Verifications _verifications = _identities.byId[_identity].verifications;
+        return _verifications.descriptions[_verificationId];
     }
 
-    function claimExpirationDate(Identities storage _identities, bytes32 _identity, bytes32 _claimId)
+    function verificationExpirationDate(Identities storage _identities, bytes32 _identity, bytes32 _verificationId)
         public
         view
         returns (uint256)
     {
-        Verifications _claims = _identities.byId[_identity].claims;
-        return _claims.expiringDates[_claimId];
+        Verifications _verifications = _identities.byId[_identity].verifications;
+        return _verifications.expiringDates[_verificationId];
     }
 
     function getBytes(bytes _str, uint256 _offset, uint256 _length)

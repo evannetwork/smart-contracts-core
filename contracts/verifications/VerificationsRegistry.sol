@@ -32,7 +32,7 @@ contract VerificationsRegistry is IdentityHolder {
         string _uri
     )
         public
-        returns (bytes32 claimRequestId)
+        returns (bytes32 verificationRequestId)
     {
         return VerificationsRegistryLibrary.addVerification(
             identities,
@@ -79,35 +79,35 @@ contract VerificationsRegistry is IdentityHolder {
         bytes32 _description
         )
         public
-        returns (bytes32 claimRequestId)
+        returns (bytes32 verificationRequestId)
     {
-        bytes32 claimId = addVerification(_identity, _topic, _scheme, _issuer, _signature, _data, _uri);
-        require(VerificationsRegistryLibrary.setVerificationDescription(identities, _identity, claimId, _description));
-        require(VerificationsRegistryLibrary.setVerificationExpirationDate(identities, _identity, claimId, _expirationDate));
-        return claimId;
+        bytes32 verificationId = addVerification(_identity, _topic, _scheme, _issuer, _signature, _data, _uri);
+        require(VerificationsRegistryLibrary.setVerificationDescription(identities, _identity, verificationId, _description));
+        require(VerificationsRegistryLibrary.setVerificationExpirationDate(identities, _identity, verificationId, _expirationDate));
+        return verificationId;
     }
 
-    function approveVerification(bytes32 _identity, bytes32 _claimId) public returns (bool success) {
-        return VerificationsRegistryLibrary.approveVerification(identities, _identity, _claimId);
+    function approveVerification(bytes32 _identity, bytes32 _verificationId) public returns (bool success) {
+        return VerificationsRegistryLibrary.approveVerification(identities, _identity, _verificationId);
     }
 
-    function removeVerification(bytes32 _identity, bytes32 _claimId) public returns (bool success) {
-        return VerificationsRegistryLibrary.removeVerification(identities, _identity, _claimId);
+    function removeVerification(bytes32 _identity, bytes32 _verificationId) public returns (bool success) {
+        return VerificationsRegistryLibrary.removeVerification(identities, _identity, _verificationId);
     }
 
-    function rejectVerification(bytes32 _identity, bytes32 _claimId, bytes32 _rejectReason) public returns (bool success) {
-        return VerificationsRegistryLibrary.rejectVerification(identities, _identity, _claimId, _rejectReason);
+    function rejectVerification(bytes32 _identity, bytes32 _verificationId, bytes32 _rejectReason) public returns (bool success) {
+        return VerificationsRegistryLibrary.rejectVerification(identities, _identity, _verificationId, _rejectReason);
     }
 
-    function claimCreationBlock(bytes32 _identity, bytes32 _claimId) public view returns (uint256 block) {
-        return VerificationsRegistryLibrary.claimCreationBlock(identities, _identity, _claimId);
+    function verificationCreationBlock(bytes32 _identity, bytes32 _verificationId) public view returns (uint256 block) {
+        return VerificationsRegistryLibrary.verificationCreationBlock(identities, _identity, _verificationId);
     }
 
-    function claimCreationDate(bytes32 _identity, bytes32 _claimId) public view returns (uint256 timestamp) {
-        return VerificationsRegistryLibrary.claimCreationDate(identities, _identity, _claimId);
+    function verificationCreationDate(bytes32 _identity, bytes32 _verificationId) public view returns (uint256 timestamp) {
+        return VerificationsRegistryLibrary.verificationCreationDate(identities, _identity, _verificationId);
     }
 
-    function getVerification(bytes32 _identity, bytes32 _claimId)
+    function getVerification(bytes32 _identity, bytes32 _verificationId)
         public
         view
         returns(
@@ -119,30 +119,30 @@ contract VerificationsRegistry is IdentityHolder {
             string uri
         )
     {
-        return VerificationsRegistryLibrary.getVerification(identities, _identity, _claimId);
+        return VerificationsRegistryLibrary.getVerification(identities, _identity, _verificationId);
     }
 
-    function getVerificationDescription(bytes32 _identity, bytes32 _claimId) public view returns (bytes32 description) {
-        return VerificationsRegistryLibrary.claimDescription(identities, _identity, _claimId);
+    function getVerificationDescription(bytes32 _identity, bytes32 _verificationId) public view returns (bytes32 description) {
+        return VerificationsRegistryLibrary.verificationDescription(identities, _identity, _verificationId);
     }
 
-    function getVerificationExpirationDate(bytes32 _identity, bytes32 _claimId) public view returns (uint256 timestamp) {
-        return VerificationsRegistryLibrary.claimExpirationDate(identities, _identity, _claimId);
+    function getVerificationExpirationDate(bytes32 _identity, bytes32 _verificationId) public view returns (uint256 timestamp) {
+        return VerificationsRegistryLibrary.verificationExpirationDate(identities, _identity, _verificationId);
     }
 
     function getVerificationIdsByTopic(bytes32 _identity, uint256 _topic)
         public
         view
-        returns(bytes32[] claimIds)
+        returns(bytes32[] verificationIds)
     {
-        return identities.byId[_identity].claims.byTopic[_topic];
+        return identities.byId[_identity].verifications.byTopic[_topic];
     }
 
-    function isVerificationApproved(bytes32 _identity, bytes32 _claimId) public view returns (bool success) {
-        return VerificationsRegistryLibrary.isVerificationApproved(identities, _identity, _claimId);
+    function isVerificationApproved(bytes32 _identity, bytes32 _verificationId) public view returns (bool success) {
+        return VerificationsRegistryLibrary.isVerificationApproved(identities, _identity, _verificationId);
     }
 
-    function isVerificationRejected(bytes32 _identity, bytes32 _claimId) 
+    function isVerificationRejected(bytes32 _identity, bytes32 _verificationId) 
         public 
         view 
         returns (
@@ -150,6 +150,6 @@ contract VerificationsRegistry is IdentityHolder {
             bytes32 rejectReason
         )
     {
-        return VerificationsRegistryLibrary.isVerificationRejected(identities, _identity, _claimId);
+        return VerificationsRegistryLibrary.isVerificationRejected(identities, _identity, _verificationId);
     }
 }

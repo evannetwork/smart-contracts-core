@@ -19,10 +19,10 @@ pragma solidity ^0.4.24;
 
 contract ERC735 {
 
-    event VerificationRequested(uint256 indexed claimRequestId, uint256 indexed topic, uint256 scheme, address indexed issuer, bytes signature, bytes data, string uri);
-    event VerificationAdded(bytes32 indexed claimId, uint256 indexed topic, uint256 scheme, address indexed issuer, bytes signature, bytes data, string uri);
-    event VerificationRemoved(bytes32 indexed claimId, uint256 indexed topic, uint256 scheme, address indexed issuer, bytes signature, bytes data, string uri);
-    event VerificationChanged(bytes32 indexed claimId, uint256 indexed topic, uint256 scheme, address indexed issuer, bytes signature, bytes data, string uri);
+    event VerificationRequested(uint256 indexed verificationRequestId, uint256 indexed topic, uint256 scheme, address indexed issuer, bytes signature, bytes data, string uri);
+    event VerificationAdded(bytes32 indexed verificationId, uint256 indexed topic, uint256 scheme, address indexed issuer, bytes signature, bytes data, string uri);
+    event VerificationRemoved(bytes32 indexed verificationId, uint256 indexed topic, uint256 scheme, address indexed issuer, bytes signature, bytes data, string uri);
+    event VerificationChanged(bytes32 indexed verificationId, uint256 indexed topic, uint256 scheme, address indexed issuer, bytes signature, bytes data, string uri);
 
     struct Verification {
         uint256 topic;
@@ -33,8 +33,8 @@ contract ERC735 {
         string uri;
     }
 
-    function getVerification(bytes32 _claimId) public view returns(uint256 topic, uint256 scheme, address issuer, bytes signature, bytes data, string uri);
-    function getVerificationIdsByTopic(uint256 _topic) public view returns(bytes32[] claimIds);
-    function addVerification(uint256 _topic, uint256 _scheme, address issuer, bytes _signature, bytes _data, string _uri) public returns (bytes32 claimRequestId);
-    function removeVerification(bytes32 _claimId) public returns (bool success);
+    function getVerification(bytes32 _verificationId) public view returns(uint256 topic, uint256 scheme, address issuer, bytes signature, bytes data, string uri);
+    function getVerificationIdsByTopic(uint256 _topic) public view returns(bytes32[] verificationIds);
+    function addVerification(uint256 _topic, uint256 _scheme, address issuer, bytes _signature, bytes _data, string _uri) public returns (bytes32 verificationRequestId);
+    function removeVerification(bytes32 _verificationId) public returns (bool success);
 }

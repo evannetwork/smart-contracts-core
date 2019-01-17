@@ -20,9 +20,9 @@ import "./KeyHolderLibrary.sol";
 
 
 library VerificationHolderLibrary {
-    event VerificationAdded(bytes32 indexed claimId, uint256 indexed topic, uint256 scheme, address indexed issuer, bytes signature, bytes data, string uri);
-    event VerificationRemoved(bytes32 indexed claimId, uint256 indexed topic, uint256 scheme, address indexed issuer, bytes signature, bytes data, string uri);
-    event VerificationApproved(bytes32 indexed claimId, uint256 indexed topic, uint256 scheme, address indexed issuer, bytes signature, bytes data, string uri);
+    event VerificationAdded(bytes32 indexed verificationId, uint256 indexed topic, uint256 scheme, address indexed issuer, bytes signature, bytes data, string uri);
+    event VerificationRemoved(bytes32 indexed verificationId, uint256 indexed topic, uint256 scheme, address indexed issuer, bytes signature, bytes data, string uri);
+    event VerificationApproved(bytes32 indexed verificationId, uint256 indexed topic, uint256 scheme, address indexed issuer, bytes signature, bytes data, string uri);
 
     struct Verification {
         uint256 topic;
@@ -49,7 +49,7 @@ library VerificationHolderLibrary {
 
     function addVerification(
         KeyHolderLibrary.KeyHolderData storage _keyHolderData,
-        Verifications storage _claims,
+        Verifications storage _verifications,
         uint256 _topic,
         uint256 _scheme,
         address _issuer,
@@ -58,27 +58,27 @@ library VerificationHolderLibrary {
         string _uri
     )
         public
-        returns (bytes32 claimRequestId)
+        returns (bytes32 verificationRequestId)
     {
-        bytes32 claimId = keccak256(abi.encodePacked(_issuer, _topic, now));
+        bytes32 verificationId = keccak256(abi.encodePacked(_issuer, _topic, now));
 
-        if (_claims.byId[claimId].issuer != _issuer) {
-            _claims.byTopic[_topic].push(claimId);
-            _claims.topicIdbyVerificationId[_topic][claimId] = _claims.byTopic[_topic].length - 1;
+        if (_verifications.byId[verificationId].issuer != _issuer) {
+            _verifications.byTopic[_topic].push(verificationId);
+            _verifications.topicIdbyVerificationId[_topic][verificationId] = _verifications.byTopic[_topic].length - 1;
         }
 
-        _claims.creationDates[claimId] = now;
-        _claims.creationBlocks[claimId] = block.number;
+        _verifications.creationDates[verificationId] = now;
+        _verifications.creationBlocks[verificationId] = block.number;
 
-        _claims.byId[claimId].topic = _topic;
-        _claims.byId[claimId].scheme = _scheme;
-        _claims.byId[claimId].issuer = _issuer;
-        _claims.byId[claimId].signature = _signature;
-        _claims.byId[claimId].data = _data;
-        _claims.byId[claimId].uri = _uri;
+        _verifications.byId[verificationId].topic = _topic;
+        _verifications.byId[verificationId].scheme = _scheme;
+        _verifications.byId[verificationId].issuer = _issuer;
+        _verifications.byId[verificationId].signature = _signature;
+        _verifications.byId[verificationId].data = _data;
+        _verifications.byId[verificationId].uri = _uri;
 
         emit VerificationAdded(
-            claimId,
+            verificationId,
             _topic,
             _scheme,
             _issuer,
@@ -87,12 +87,12 @@ library VerificationHolderLibrary {
             _uri
         );
 
-        return claimId;
+        return verificationId;
     }
 
     function addVerifications(
         KeyHolderLibrary.KeyHolderData storage _keyHolderData,
-        Verifications storage _claims,
+        Verifications storage _verifications,
         uint256[] _topic,
         address[] _issuer,
         bytes _signature,
@@ -105,7 +105,7 @@ library VerificationHolderLibrary {
         for (uint16 i = 0; i < _topic.length; i++) {
             addVerification(
                 _keyHolderData,
-                _claims,
+                _verifications,
                 _topic[i],
                 1,
                 _issuer[i],
@@ -119,130 +119,130 @@ library VerificationHolderLibrary {
 
     function removeVerification(
         KeyHolderLibrary.KeyHolderData storage _keyHolderData,
-        Verifications storage _claims,
-        bytes32 _claimId
+        Verifications storage _verifications,
+        bytes32 _verificationId
     )
         public
         returns (bool success)
     {
 
-        require(_claims.byId[_claimId].issuer != address(0), "No claim exists");
+        require(_verifications.byId[_verificationId].issuer != address(0), "No verification exists");
 
-        if (msg.sender != address(this) && msg.sender != _claims.byId[_claimId].issuer) {
+        if (msg.sender != address(this) && msg.sender != _verifications.byId[_verificationId].issuer) {
             require(KeyHolderLibrary.keyHasPurpose(_keyHolderData, keccak256(abi.encodePacked(msg.sender)), 1), "Sender does not have management key");
         }
 
         emit VerificationRemoved(
-            _claimId,
-            _claims.byId[_claimId].topic,
-            _claims.byId[_claimId].scheme,
-            _claims.byId[_claimId].issuer,
-            _claims.byId[_claimId].signature,
-            _claims.byId[_claimId].data,
-            _claims.byId[_claimId].uri
+            _verificationId,
+            _verifications.byId[_verificationId].topic,
+            _verifications.byId[_verificationId].scheme,
+            _verifications.byId[_verificationId].issuer,
+            _verifications.byId[_verificationId].signature,
+            _verifications.byId[_verificationId].data,
+            _verifications.byId[_verificationId].uri
         );
 
-        uint256 topic = _claims.byId[_claimId].topic;
-        uint256 lastIndex = _claims.byTopic[topic].length -1;
-        uint256 claimIndexAtTopic = _claims.topicIdbyVerificationId[topic][_claimId];
-        if (lastIndex != 0 && lastIndex != claimIndexAtTopic) {
-            _claims.byTopic[topic][claimIndexAtTopic] = _claims.byTopic[topic][lastIndex];
+        uint256 topic = _verifications.byId[_verificationId].topic;
+        uint256 lastIndex = _verifications.byTopic[topic].length -1;
+        uint256 verificationIndexAtTopic = _verifications.topicIdbyVerificationId[topic][_verificationId];
+        if (lastIndex != 0 && lastIndex != verificationIndexAtTopic) {
+            _verifications.byTopic[topic][verificationIndexAtTopic] = _verifications.byTopic[topic][lastIndex];
         }
-        delete _claims.byTopic[topic][lastIndex];
-        _claims.byTopic[topic].length = _claims.byTopic[topic].length--;
-        delete _claims.byId[_claimId];
+        delete _verifications.byTopic[topic][lastIndex];
+        _verifications.byTopic[topic].length = _verifications.byTopic[topic].length--;
+        delete _verifications.byId[_verificationId];
         return true;
     }
 
     function rejectVerification(
         KeyHolderLibrary.KeyHolderData storage _keyHolderData,
-        Verifications storage _claims,
-        bytes32 _claimId,
+        Verifications storage _verifications,
+        bytes32 _verificationId,
         bytes32 _rejectReason
     )
         public
         returns (bool success)
     {
 
-        require(_claims.byId[_claimId].issuer != address(0), "No claim exists");
-        require(_claims.rejectedVerifications[_claimId] == false, "Verification already rejected");
-        if (msg.sender != address(this) && msg.sender != _claims.byId[_claimId].issuer) {
+        require(_verifications.byId[_verificationId].issuer != address(0), "No verification exists");
+        require(_verifications.rejectedVerifications[_verificationId] == false, "Verification already rejected");
+        if (msg.sender != address(this) && msg.sender != _verifications.byId[_verificationId].issuer) {
             require(KeyHolderLibrary.keyHasPurpose(_keyHolderData, keccak256(abi.encodePacked(msg.sender)), 1), "Sender does not have management key");
         }
 
-        _claims.rejectedVerifications[_claimId] = true;
-        _claims.rejectReason[_claimId] = _rejectReason;
-        _claims.approvedVerifications[_claimId] = false;
+        _verifications.rejectedVerifications[_verificationId] = true;
+        _verifications.rejectReason[_verificationId] = _rejectReason;
+        _verifications.approvedVerifications[_verificationId] = false;
         return true;
     }
 
     function approveVerification(
         KeyHolderLibrary.KeyHolderData storage _keyHolderData,
-        Verifications storage _claims,
-        bytes32 _claimId
+        Verifications storage _verifications,
+        bytes32 _verificationId
     ) 
         public
         returns (bool success)
     {
 
-        require(_claims.byId[_claimId].issuer != address(0), "No claim exists");
-        require(_claims.rejectedVerifications[_claimId] == false, "Verification already rejected");
-        if (msg.sender != address(this) && msg.sender != _claims.byId[_claimId].issuer) {
+        require(_verifications.byId[_verificationId].issuer != address(0), "No verification exists");
+        require(_verifications.rejectedVerifications[_verificationId] == false, "Verification already rejected");
+        if (msg.sender != address(this) && msg.sender != _verifications.byId[_verificationId].issuer) {
             require(KeyHolderLibrary.keyHasPurpose(_keyHolderData, keccak256(abi.encodePacked(msg.sender)), 1), "Sender does not have management key");
         }
 
-        _claims.approvedVerifications[_claimId] = true;
+        _verifications.approvedVerifications[_verificationId] = true;
         emit VerificationApproved(
-            _claimId,
-            _claims.byId[_claimId].topic,
-            _claims.byId[_claimId].scheme,
-            _claims.byId[_claimId].issuer,
-            _claims.byId[_claimId].signature,
-            _claims.byId[_claimId].data,
-            _claims.byId[_claimId].uri
+            _verificationId,
+            _verifications.byId[_verificationId].topic,
+            _verifications.byId[_verificationId].scheme,
+            _verifications.byId[_verificationId].issuer,
+            _verifications.byId[_verificationId].signature,
+            _verifications.byId[_verificationId].data,
+            _verifications.byId[_verificationId].uri
         );
     }
 
 
     function setVerificationDescription(
         KeyHolderLibrary.KeyHolderData storage _keyHolderData,
-        Verifications storage _claims,
-        bytes32 _claimId,
+        Verifications storage _verifications,
+        bytes32 _verificationId,
         bytes32 _description
     )
         public
         returns (bool success)
     {
-        require(_claims.byId[_claimId].issuer != address(0), "No claim exists");
+        require(_verifications.byId[_verificationId].issuer != address(0), "No verification exists");
 
-        if (msg.sender != address(this) && msg.sender != _claims.byId[_claimId].issuer) {
+        if (msg.sender != address(this) && msg.sender != _verifications.byId[_verificationId].issuer) {
             require(KeyHolderLibrary.keyHasPurpose(_keyHolderData, keccak256(abi.encodePacked(msg.sender)), 1), "Sender does not have management key");
         }
 
-        _claims.descriptions[_claimId] = _description;
+        _verifications.descriptions[_verificationId] = _description;
         return true;
     }
 
     function setVerificationExpirationDate(
         KeyHolderLibrary.KeyHolderData storage _keyHolderData,
-        Verifications storage _claims,
-        bytes32 _claimId,
+        Verifications storage _verifications,
+        bytes32 _verificationId,
         uint256 _expirationDate
     )
         public
         returns (bool success)
     {
-        require(_claims.byId[_claimId].issuer != address(0), "No claim exists");
+        require(_verifications.byId[_verificationId].issuer != address(0), "No verification exists");
 
-        if (msg.sender != address(this) && msg.sender != _claims.byId[_claimId].issuer) {
+        if (msg.sender != address(this) && msg.sender != _verifications.byId[_verificationId].issuer) {
             require(KeyHolderLibrary.keyHasPurpose(_keyHolderData, keccak256(abi.encodePacked(msg.sender)), 1), "Sender does not have management key");
         }
 
-        _claims.expiringDates[_claimId] = _expirationDate;
+        _verifications.expiringDates[_verificationId] = _expirationDate;
         return true;
     }
     
-    function getVerification(Verifications storage _claims, bytes32 _claimId)
+    function getVerification(Verifications storage _verifications, bytes32 _verificationId)
         public
         view
         returns(
@@ -255,24 +255,24 @@ library VerificationHolderLibrary {
         )
     {
         return (
-            _claims.byId[_claimId].topic,
-            _claims.byId[_claimId].scheme,
-            _claims.byId[_claimId].issuer,
-            _claims.byId[_claimId].signature,
-            _claims.byId[_claimId].data,
-            _claims.byId[_claimId].uri
+            _verifications.byId[_verificationId].topic,
+            _verifications.byId[_verificationId].scheme,
+            _verifications.byId[_verificationId].issuer,
+            _verifications.byId[_verificationId].signature,
+            _verifications.byId[_verificationId].data,
+            _verifications.byId[_verificationId].uri
         );
     }
 
-    function isVerificationApproved(Verifications storage _claims, bytes32 _claimId)
+    function isVerificationApproved(Verifications storage _verifications, bytes32 _verificationId)
         public
         view
         returns (bool)
     {
-        return _claims.approvedVerifications[_claimId];
+        return _verifications.approvedVerifications[_verificationId];
     }
 
-    function isVerificationRejected(Verifications storage _claims, bytes32 _claimId)
+    function isVerificationRejected(Verifications storage _verifications, bytes32 _verificationId)
         public
         view
         returns (
@@ -280,40 +280,40 @@ library VerificationHolderLibrary {
             bytes32 rejectReason
         )
     {
-        rejected = _claims.rejectedVerifications[_claimId];
-        rejectReason = _claims.rejectReason[_claimId];
+        rejected = _verifications.rejectedVerifications[_verificationId];
+        rejectReason = _verifications.rejectReason[_verificationId];
     }
 
-    function claimCreationBlock(Verifications storage _claims, bytes32 _claimId)
+    function verificationCreationBlock(Verifications storage _verifications, bytes32 _verificationId)
         public
         view
         returns (uint256)
     {
-        return _claims.creationBlocks[_claimId];
+        return _verifications.creationBlocks[_verificationId];
     }
 
-    function claimCreationDate(Verifications storage _claims, bytes32 _claimId)
+    function verificationCreationDate(Verifications storage _verifications, bytes32 _verificationId)
         public
         view
         returns (uint256)
     {
-        return _claims.creationDates[_claimId];
+        return _verifications.creationDates[_verificationId];
     }
 
-    function claimDescription(Verifications storage _claims, bytes32 _claimId)
+    function verificationDescription(Verifications storage _verifications, bytes32 _verificationId)
         public
         view
         returns (bytes32)
     {
-        return _claims.descriptions[_claimId];
+        return _verifications.descriptions[_verificationId];
     }
 
-    function claimExpirationDate(Verifications storage _claims, bytes32 _claimId)
+    function verificationExpirationDate(Verifications storage _verifications, bytes32 _verificationId)
         public
         view
         returns (uint256)
     {
-        return _claims.expiringDates[_claimId];
+        return _verifications.expiringDates[_verificationId];
     }
 
     function getBytes(bytes _str, uint256 _offset, uint256 _length)

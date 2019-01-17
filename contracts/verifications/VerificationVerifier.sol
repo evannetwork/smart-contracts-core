@@ -32,9 +32,9 @@ contract VerificationVerifier {
 
     function checkVerification(VerificationHolder _identity, uint256 topic)
         public
-        returns (bool claimValid)
+        returns (bool verificationValid)
     {
-        if (claimIsValid(_identity, topic)) {
+        if (verificationIsValid(_identity, topic)) {
             emit VerificationValid(_identity, topic);
             return true;
         } else {
@@ -43,10 +43,10 @@ contract VerificationVerifier {
         }
     }
 
-    function claimIsValid(VerificationHolder _identity, uint256 topic)
+    function verificationIsValid(VerificationHolder _identity, uint256 topic)
         public
         view
-        returns (bool claimValid)
+        returns (bool verificationValid)
     {
         uint256 foundTopic;
         uint256 scheme;
@@ -54,11 +54,11 @@ contract VerificationVerifier {
         bytes memory sig;
         bytes memory data;
 
-        // Construct claimId (identifier + claim type)
-        bytes32 claimId = keccak256(abi.encodePacked(trustedVerificationHolder, topic));
+        // Construct verificationId (identifier + verification type)
+        bytes32 verificationId = keccak256(abi.encodePacked(trustedVerificationHolder, topic));
 
-        // Fetch claim from user
-        ( foundTopic, scheme, issuer, sig, data, ) = _identity.getVerification(claimId);
+        // Fetch verification from user
+        ( foundTopic, scheme, issuer, sig, data, ) = _identity.getVerification(verificationId);
 
         bytes32 dataHash = keccak256(abi.encodePacked(_identity, topic, data));
         bytes32 prefixedHash = keccak256(abi.encodePacked("\x19Ethereum Signed Message:\n32", dataHash));
@@ -69,7 +69,7 @@ contract VerificationVerifier {
         // Take hash of recovered address
         bytes32 hashedAddr = keccak256(abi.encodePacked(recovered));
 
-        // Does the trusted identifier have they key which signed the user's claim?
+        // Does the trusted identifier have they key which signed the user's verification?
         return trustedVerificationHolder.keyHasPurpose(hashedAddr, 3);
     }
 

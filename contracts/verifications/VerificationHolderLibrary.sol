@@ -16,23 +16,15 @@
 
 pragma solidity ^0.4.24;
 
+import "./KeyHolderLibrary.sol";
 
-library ClaimsRegistryLibrary {
-    event ClaimAdded(bytes32 identity, bytes32 indexed claimId, uint256 indexed topic, uint256 scheme, address indexed issuer, bytes signature, bytes data, string uri);
-    event ClaimRemoved(bytes32 identity, bytes32 indexed claimId, uint256 indexed topic, uint256 scheme, address indexed issuer, bytes signature, bytes data, string uri);
-    event ClaimApproved(bytes32 identity, bytes32 indexed claimId, uint256 indexed topic, uint256 scheme, address indexed issuer, bytes signature, bytes data, string uri);
 
-    struct Identity {
-      Claims claims;
-      address link;
-      address owner;
-    }
+library VerificationHolderLibrary {
+    event VerificationAdded(bytes32 indexed claimId, uint256 indexed topic, uint256 scheme, address indexed issuer, bytes signature, bytes data, string uri);
+    event VerificationRemoved(bytes32 indexed claimId, uint256 indexed topic, uint256 scheme, address indexed issuer, bytes signature, bytes data, string uri);
+    event VerificationApproved(bytes32 indexed claimId, uint256 indexed topic, uint256 scheme, address indexed issuer, bytes signature, bytes data, string uri);
 
-    struct Identities {
-      mapping (bytes32 => Identity) byId;
-    }
-
-    struct Claim {
+    struct Verification {
         uint256 topic;
         uint256 scheme;
         address issuer; // msg.sender
@@ -41,23 +33,23 @@ library ClaimsRegistryLibrary {
         string uri;
     }
 
-    struct Claims {
-        mapping (bytes32 => Claim) byId;
+    struct Verifications {
+        mapping (bytes32 => Verification) byId;
         mapping (uint256 => bytes32[]) byTopic;
-        mapping (uint256 => mapping ( bytes32 => uint256 )) topicIdbyClaimId;
-        mapping (bytes32 => bool) approvedClaims;
+        mapping (uint256 => mapping ( bytes32 => uint256 )) topicIdbyVerificationId;
+        mapping (bytes32 => bool) approvedVerifications;
         mapping (bytes32 => uint256) creationDates;
         mapping (bytes32 => uint256) creationBlocks;
         mapping (bytes32 => bytes32) descriptions;
         mapping (bytes32 => uint256) expiringDates;
-        mapping (bytes32 => bool) rejectedClaims;
+        mapping (bytes32 => bool) rejectedVerifications;
         mapping (bytes32 => bytes32) rejectReason;
     }
 
 
-    function addClaim(
-        Identities storage _identities,
-        bytes32 _identity,
+    function addVerification(
+        KeyHolderLibrary.KeyHolderData storage _keyHolderData,
+        Verifications storage _claims,
         uint256 _topic,
         uint256 _scheme,
         address _issuer,
@@ -68,12 +60,11 @@ library ClaimsRegistryLibrary {
         public
         returns (bytes32 claimRequestId)
     {
-        Claims _claims = _identities.byId[_identity].claims;
         bytes32 claimId = keccak256(abi.encodePacked(_issuer, _topic, now));
 
         if (_claims.byId[claimId].issuer != _issuer) {
             _claims.byTopic[_topic].push(claimId);
-            _claims.topicIdbyClaimId[_topic][claimId] = _claims.byTopic[_topic].length - 1;
+            _claims.topicIdbyVerificationId[_topic][claimId] = _claims.byTopic[_topic].length - 1;
         }
 
         _claims.creationDates[claimId] = now;
@@ -86,8 +77,7 @@ library ClaimsRegistryLibrary {
         _claims.byId[claimId].data = _data;
         _claims.byId[claimId].uri = _uri;
 
-        emit ClaimAdded(
-            _identity,
+        emit VerificationAdded(
             claimId,
             _topic,
             _scheme,
@@ -100,9 +90,9 @@ library ClaimsRegistryLibrary {
         return claimId;
     }
 
-    function addClaims(
-        Identities storage _identities,
-        bytes32 _identity,
+    function addVerifications(
+        KeyHolderLibrary.KeyHolderData storage _keyHolderData,
+        Verifications storage _claims,
         uint256[] _topic,
         address[] _issuer,
         bytes _signature,
@@ -111,12 +101,11 @@ library ClaimsRegistryLibrary {
     )
         public
     {
-        Claims _claims = _identities.byId[_identity].claims;
         uint offset = 0;
         for (uint16 i = 0; i < _topic.length; i++) {
-            addClaim(
-                _identities,
-                _identity,
+            addVerification(
+                _keyHolderData,
+                _claims,
                 _topic[i],
                 1,
                 _issuer[i],
@@ -128,23 +117,22 @@ library ClaimsRegistryLibrary {
         }
     }
 
-    function removeClaim(
-        Identities storage _identities,
-        bytes32 _identity,
+    function removeVerification(
+        KeyHolderLibrary.KeyHolderData storage _keyHolderData,
+        Verifications storage _claims,
         bytes32 _claimId
     )
         public
         returns (bool success)
     {
-        Claims _claims = _identities.byId[_identity].claims;
+
         require(_claims.byId[_claimId].issuer != address(0), "No claim exists");
 
         if (msg.sender != address(this) && msg.sender != _claims.byId[_claimId].issuer) {
-            require(msg.sender == _identities.byId[_identity].owner, "Sender does not have ownership of identity");
+            require(KeyHolderLibrary.keyHasPurpose(_keyHolderData, keccak256(abi.encodePacked(msg.sender)), 1), "Sender does not have management key");
         }
 
-        emit ClaimRemoved(
-            _identity,
+        emit VerificationRemoved(
             _claimId,
             _claims.byId[_claimId].topic,
             _claims.byId[_claimId].scheme,
@@ -156,7 +144,7 @@ library ClaimsRegistryLibrary {
 
         uint256 topic = _claims.byId[_claimId].topic;
         uint256 lastIndex = _claims.byTopic[topic].length -1;
-        uint256 claimIndexAtTopic = _claims.topicIdbyClaimId[topic][_claimId];
+        uint256 claimIndexAtTopic = _claims.topicIdbyVerificationId[topic][_claimId];
         if (lastIndex != 0 && lastIndex != claimIndexAtTopic) {
             _claims.byTopic[topic][claimIndexAtTopic] = _claims.byTopic[topic][lastIndex];
         }
@@ -166,46 +154,45 @@ library ClaimsRegistryLibrary {
         return true;
     }
 
-    function rejectClaim(
-        Identities storage _identities,
-        bytes32 _identity,
+    function rejectVerification(
+        KeyHolderLibrary.KeyHolderData storage _keyHolderData,
+        Verifications storage _claims,
         bytes32 _claimId,
         bytes32 _rejectReason
     )
         public
         returns (bool success)
     {
-        Claims _claims = _identities.byId[_identity].claims;
+
         require(_claims.byId[_claimId].issuer != address(0), "No claim exists");
-        require(_claims.rejectedClaims[_claimId] == false, "Claim already rejected");
+        require(_claims.rejectedVerifications[_claimId] == false, "Verification already rejected");
         if (msg.sender != address(this) && msg.sender != _claims.byId[_claimId].issuer) {
-            require(msg.sender == _identities.byId[_identity].owner, "Sender does not have ownership of identity");
+            require(KeyHolderLibrary.keyHasPurpose(_keyHolderData, keccak256(abi.encodePacked(msg.sender)), 1), "Sender does not have management key");
         }
 
-        _claims.rejectedClaims[_claimId] = true;
+        _claims.rejectedVerifications[_claimId] = true;
         _claims.rejectReason[_claimId] = _rejectReason;
-        _claims.approvedClaims[_claimId] = false;
+        _claims.approvedVerifications[_claimId] = false;
         return true;
     }
 
-    function approveClaim(
-        Identities storage _identities,
-        bytes32 _identity,
+    function approveVerification(
+        KeyHolderLibrary.KeyHolderData storage _keyHolderData,
+        Verifications storage _claims,
         bytes32 _claimId
     ) 
         public
         returns (bool success)
     {
-        Claims _claims = _identities.byId[_identity].claims;
+
         require(_claims.byId[_claimId].issuer != address(0), "No claim exists");
-        require(_claims.rejectedClaims[_claimId] == false, "Claim already rejected");
+        require(_claims.rejectedVerifications[_claimId] == false, "Verification already rejected");
         if (msg.sender != address(this) && msg.sender != _claims.byId[_claimId].issuer) {
-            require(msg.sender == _identities.byId[_identity].owner, "Sender does not have ownership of identity");
+            require(KeyHolderLibrary.keyHasPurpose(_keyHolderData, keccak256(abi.encodePacked(msg.sender)), 1), "Sender does not have management key");
         }
 
-        _claims.approvedClaims[_claimId] = true;
-        emit ClaimApproved(
-            _identity,
+        _claims.approvedVerifications[_claimId] = true;
+        emit VerificationApproved(
             _claimId,
             _claims.byId[_claimId].topic,
             _claims.byId[_claimId].scheme,
@@ -217,47 +204,45 @@ library ClaimsRegistryLibrary {
     }
 
 
-    function setClaimDescription(
-        Identities storage _identities,
-        bytes32 _identity,
+    function setVerificationDescription(
+        KeyHolderLibrary.KeyHolderData storage _keyHolderData,
+        Verifications storage _claims,
         bytes32 _claimId,
         bytes32 _description
     )
         public
         returns (bool success)
     {
-        Claims _claims = _identities.byId[_identity].claims;
         require(_claims.byId[_claimId].issuer != address(0), "No claim exists");
 
         if (msg.sender != address(this) && msg.sender != _claims.byId[_claimId].issuer) {
-            require(msg.sender == _identities.byId[_identity].owner, "Sender does not have ownership of identity");
+            require(KeyHolderLibrary.keyHasPurpose(_keyHolderData, keccak256(abi.encodePacked(msg.sender)), 1), "Sender does not have management key");
         }
 
         _claims.descriptions[_claimId] = _description;
         return true;
     }
 
-    function setClaimExpirationDate(
-        Identities storage _identities,
-        bytes32 _identity,
+    function setVerificationExpirationDate(
+        KeyHolderLibrary.KeyHolderData storage _keyHolderData,
+        Verifications storage _claims,
         bytes32 _claimId,
         uint256 _expirationDate
     )
         public
         returns (bool success)
     {
-        Claims _claims = _identities.byId[_identity].claims;
         require(_claims.byId[_claimId].issuer != address(0), "No claim exists");
 
         if (msg.sender != address(this) && msg.sender != _claims.byId[_claimId].issuer) {
-            require(msg.sender == _identities.byId[_identity].owner, "Sender does not have ownership of identity");
+            require(KeyHolderLibrary.keyHasPurpose(_keyHolderData, keccak256(abi.encodePacked(msg.sender)), 1), "Sender does not have management key");
         }
 
         _claims.expiringDates[_claimId] = _expirationDate;
         return true;
     }
     
-    function getClaim(Identities storage _identities, bytes32 _identity, bytes32 _claimId)
+    function getVerification(Verifications storage _claims, bytes32 _claimId)
         public
         view
         returns(
@@ -269,7 +254,6 @@ library ClaimsRegistryLibrary {
           string uri
         )
     {
-        Claims _claims = _identities.byId[_identity].claims;
         return (
             _claims.byId[_claimId].topic,
             _claims.byId[_claimId].scheme,
@@ -280,16 +264,15 @@ library ClaimsRegistryLibrary {
         );
     }
 
-    function isClaimApproved(Identities storage _identities, bytes32 _identity, bytes32 _claimId)
+    function isVerificationApproved(Verifications storage _claims, bytes32 _claimId)
         public
         view
         returns (bool)
     {
-        Claims _claims = _identities.byId[_identity].claims;
-        return _claims.approvedClaims[_claimId];
+        return _claims.approvedVerifications[_claimId];
     }
 
-    function isClaimRejected(Identities storage _identities, bytes32 _identity, bytes32 _claimId)
+    function isVerificationRejected(Verifications storage _claims, bytes32 _claimId)
         public
         view
         returns (
@@ -297,44 +280,39 @@ library ClaimsRegistryLibrary {
             bytes32 rejectReason
         )
     {
-        Claims _claims = _identities.byId[_identity].claims;
-        rejected = _claims.rejectedClaims[_claimId];
+        rejected = _claims.rejectedVerifications[_claimId];
         rejectReason = _claims.rejectReason[_claimId];
     }
 
-    function claimCreationBlock(Identities storage _identities, bytes32 _identity, bytes32 _claimId)
+    function claimCreationBlock(Verifications storage _claims, bytes32 _claimId)
         public
         view
         returns (uint256)
     {
-        Claims _claims = _identities.byId[_identity].claims;
         return _claims.creationBlocks[_claimId];
     }
 
-    function claimCreationDate(Identities storage _identities, bytes32 _identity, bytes32 _claimId)
+    function claimCreationDate(Verifications storage _claims, bytes32 _claimId)
         public
         view
         returns (uint256)
     {
-        Claims _claims = _identities.byId[_identity].claims;
         return _claims.creationDates[_claimId];
     }
 
-    function claimDescription(Identities storage _identities, bytes32 _identity, bytes32 _claimId)
+    function claimDescription(Verifications storage _claims, bytes32 _claimId)
         public
         view
         returns (bytes32)
     {
-        Claims _claims = _identities.byId[_identity].claims;
         return _claims.descriptions[_claimId];
     }
 
-    function claimExpirationDate(Identities storage _identities, bytes32 _identity, bytes32 _claimId)
+    function claimExpirationDate(Verifications storage _claims, bytes32 _claimId)
         public
         view
         returns (uint256)
     {
-        Claims _claims = _identities.byId[_identity].claims;
         return _claims.expiringDates[_claimId];
     }
 

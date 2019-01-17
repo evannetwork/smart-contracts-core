@@ -21,7 +21,7 @@
 - add licenses to dbcp files
 
 ### Fixes
-- remove `OriginIdentity`, as `ClaimHolder` is used for identities
+- remove `OriginIdentity`, as `VerificationHolder` is used for identities
 
 ## Version 1.4.0
 ### Features
@@ -32,7 +32,7 @@
 ## Version 1.3.0
 ### Features
 - add description to claims
-- add `addClaimWithMetadata` function to claims for setting claim and metadata at the same time
+- add `addVerificationWithMetadata` function to claims for setting claim and metadata at the same time
 - add creation block data to claim information
 - claims are not overwritten anymore, but a new claim is created per set call
 - add `Congress.sol` for holding votes on-chain
@@ -43,7 +43,7 @@
 
 ## Version 1.2.0
 ### Features
-- add ERC725/735 compliant Claims and Identity contracts
+- add ERC725/735 compliant Verifications and Identity contracts
 - include bytecode within compiled.js files for `claims/OriginIdentity.sol:OriginIdentity`
 - add `TicketVendorInterface`
 

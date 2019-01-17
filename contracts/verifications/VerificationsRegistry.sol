@@ -17,12 +17,12 @@
 pragma solidity ^0.4.24;
 
 import "./ERC735.sol";
-import "./ClaimsRegistryLibrary.sol";
+import "./VerificationsRegistryLibrary.sol";
 import "./IdentityHolder.sol";
 
 
-contract ClaimsRegistry is IdentityHolder {
-    function addClaim(
+contract VerificationsRegistry is IdentityHolder {
+    function addVerification(
         bytes32 _identity,
         uint256 _topic,
         uint256 _scheme,
@@ -34,7 +34,7 @@ contract ClaimsRegistry is IdentityHolder {
         public
         returns (bytes32 claimRequestId)
     {
-        return ClaimsRegistryLibrary.addClaim(
+        return VerificationsRegistryLibrary.addVerification(
             identities,
             _identity,
             _topic,
@@ -46,7 +46,7 @@ contract ClaimsRegistry is IdentityHolder {
         );
     }
 
-    function addClaims(
+    function addVerifications(
         bytes32 _identity,
         uint256[] _topic,
         address[] _issuer,
@@ -56,7 +56,7 @@ contract ClaimsRegistry is IdentityHolder {
     )
         public
     {
-        ClaimsRegistryLibrary.addClaims(
+        VerificationsRegistryLibrary.addVerifications(
             identities,
             _identity,
             _topic,
@@ -67,7 +67,7 @@ contract ClaimsRegistry is IdentityHolder {
         );
     }
 
-    function addClaimWithMetadata(
+    function addVerificationWithMetadata(
         bytes32 _identity,
         uint256 _topic,
         uint256 _scheme,
@@ -81,33 +81,33 @@ contract ClaimsRegistry is IdentityHolder {
         public
         returns (bytes32 claimRequestId)
     {
-        bytes32 claimId = addClaim(_identity, _topic, _scheme, _issuer, _signature, _data, _uri);
-        require(ClaimsRegistryLibrary.setClaimDescription(identities, _identity, claimId, _description));
-        require(ClaimsRegistryLibrary.setClaimExpirationDate(identities, _identity, claimId, _expirationDate));
+        bytes32 claimId = addVerification(_identity, _topic, _scheme, _issuer, _signature, _data, _uri);
+        require(VerificationsRegistryLibrary.setVerificationDescription(identities, _identity, claimId, _description));
+        require(VerificationsRegistryLibrary.setVerificationExpirationDate(identities, _identity, claimId, _expirationDate));
         return claimId;
     }
 
-    function approveClaim(bytes32 _identity, bytes32 _claimId) public returns (bool success) {
-        return ClaimsRegistryLibrary.approveClaim(identities, _identity, _claimId);
+    function approveVerification(bytes32 _identity, bytes32 _claimId) public returns (bool success) {
+        return VerificationsRegistryLibrary.approveVerification(identities, _identity, _claimId);
     }
 
-    function removeClaim(bytes32 _identity, bytes32 _claimId) public returns (bool success) {
-        return ClaimsRegistryLibrary.removeClaim(identities, _identity, _claimId);
+    function removeVerification(bytes32 _identity, bytes32 _claimId) public returns (bool success) {
+        return VerificationsRegistryLibrary.removeVerification(identities, _identity, _claimId);
     }
 
-    function rejectClaim(bytes32 _identity, bytes32 _claimId, bytes32 _rejectReason) public returns (bool success) {
-        return ClaimsRegistryLibrary.rejectClaim(identities, _identity, _claimId, _rejectReason);
+    function rejectVerification(bytes32 _identity, bytes32 _claimId, bytes32 _rejectReason) public returns (bool success) {
+        return VerificationsRegistryLibrary.rejectVerification(identities, _identity, _claimId, _rejectReason);
     }
 
     function claimCreationBlock(bytes32 _identity, bytes32 _claimId) public view returns (uint256 block) {
-        return ClaimsRegistryLibrary.claimCreationBlock(identities, _identity, _claimId);
+        return VerificationsRegistryLibrary.claimCreationBlock(identities, _identity, _claimId);
     }
 
     function claimCreationDate(bytes32 _identity, bytes32 _claimId) public view returns (uint256 timestamp) {
-        return ClaimsRegistryLibrary.claimCreationDate(identities, _identity, _claimId);
+        return VerificationsRegistryLibrary.claimCreationDate(identities, _identity, _claimId);
     }
 
-    function getClaim(bytes32 _identity, bytes32 _claimId)
+    function getVerification(bytes32 _identity, bytes32 _claimId)
         public
         view
         returns(
@@ -119,18 +119,18 @@ contract ClaimsRegistry is IdentityHolder {
             string uri
         )
     {
-        return ClaimsRegistryLibrary.getClaim(identities, _identity, _claimId);
+        return VerificationsRegistryLibrary.getVerification(identities, _identity, _claimId);
     }
 
-    function getClaimDescription(bytes32 _identity, bytes32 _claimId) public view returns (bytes32 description) {
-        return ClaimsRegistryLibrary.claimDescription(identities, _identity, _claimId);
+    function getVerificationDescription(bytes32 _identity, bytes32 _claimId) public view returns (bytes32 description) {
+        return VerificationsRegistryLibrary.claimDescription(identities, _identity, _claimId);
     }
 
-    function getClaimExpirationDate(bytes32 _identity, bytes32 _claimId) public view returns (uint256 timestamp) {
-        return ClaimsRegistryLibrary.claimExpirationDate(identities, _identity, _claimId);
+    function getVerificationExpirationDate(bytes32 _identity, bytes32 _claimId) public view returns (uint256 timestamp) {
+        return VerificationsRegistryLibrary.claimExpirationDate(identities, _identity, _claimId);
     }
 
-    function getClaimIdsByTopic(bytes32 _identity, uint256 _topic)
+    function getVerificationIdsByTopic(bytes32 _identity, uint256 _topic)
         public
         view
         returns(bytes32[] claimIds)
@@ -138,11 +138,11 @@ contract ClaimsRegistry is IdentityHolder {
         return identities.byId[_identity].claims.byTopic[_topic];
     }
 
-    function isClaimApproved(bytes32 _identity, bytes32 _claimId) public view returns (bool success) {
-        return ClaimsRegistryLibrary.isClaimApproved(identities, _identity, _claimId);
+    function isVerificationApproved(bytes32 _identity, bytes32 _claimId) public view returns (bool success) {
+        return VerificationsRegistryLibrary.isVerificationApproved(identities, _identity, _claimId);
     }
 
-    function isClaimRejected(bytes32 _identity, bytes32 _claimId) 
+    function isVerificationRejected(bytes32 _identity, bytes32 _claimId) 
         public 
         view 
         returns (
@@ -150,6 +150,6 @@ contract ClaimsRegistry is IdentityHolder {
             bytes32 rejectReason
         )
     {
-        return ClaimsRegistryLibrary.isClaimRejected(identities, _identity, _claimId);
+        return VerificationsRegistryLibrary.isVerificationRejected(identities, _identity, _claimId);
     }
 }

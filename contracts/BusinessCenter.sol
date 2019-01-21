@@ -49,7 +49,7 @@ contract BusinessCenter is BusinessCenterInterface, EnsReader, DSAuth {
     uint8 constant private FACTORY_ROLE = 4;
     mapping(address => bytes32) private profiles;
     bytes32 public rootDomain;
-    DataStoreIndex public db;
+    DataStoreIndexInterface public db;
 
     constructor(bytes32 domain, address ensAddress) public {
         VERSION_ID = 2;
@@ -57,7 +57,7 @@ contract BusinessCenter is BusinessCenterInterface, EnsReader, DSAuth {
         setEns(ensAddress);
     }
 
-    function init(DataStoreIndex oldDb, JoinSchema _joinSchema) public auth {
+    function init(DataStoreIndexInterface oldDb, JoinSchema _joinSchema) public auth {
         if (address(oldDb) != 0x0) {
             db = oldDb;
         } else {
@@ -169,7 +169,7 @@ contract BusinessCenter is BusinessCenterInterface, EnsReader, DSAuth {
     }
 
     function migrateTo(address newBc) public auth {
-        db.transferOwnership(newBc);
+        DataStoreIndex(db).transferOwnership(newBc);
     }
 
     function sendContractEvent(uint eventType, bytes32 contractType, address member) public auth {
@@ -188,16 +188,16 @@ contract BusinessCenter is BusinessCenterInterface, EnsReader, DSAuth {
         joinSchema = _joinSchema;
     }
 
-    function getMyIndex() public constant returns (DataStoreIndex) {
+    function getMyIndex() public constant returns (DataStoreIndexInterface) {
         bytes32 keyForMemberIndex = keccak256(abi.encodePacked(MEMBER_LABEL, keccak256(abi.encodePacked(bytes32(msg.sender)))));
-        return DataStoreIndex(db.indexGet(keyForMemberIndex));
+        return DataStoreIndexInterface(db.indexGet(keyForMemberIndex));
     }
 
     function getProfile(address account) public constant returns (bytes32) {
         return profiles[account];
     }
 
-    function getStorage() public auth constant returns (DataStoreIndex) {
+    function getStorage() public auth constant returns (DataStoreIndexInterface) {
         return db;
     }
 
@@ -254,7 +254,7 @@ contract BusinessCenter is BusinessCenterInterface, EnsReader, DSAuth {
         return EventHubBusinessCenter(getAddr(EVENTHUB_LABEL));
     }
 
-    function getMembersAddressIndex(address member) private constant returns(DataStoreIndex) {
-        return DataStoreIndex(address(db.containerGet(keccak256(abi.encodePacked(MEMBER_LABEL, bytes32(member))))));
+    function getMembersAddressIndex(address member) private constant returns(DataStoreIndexInterface) {
+        return DataStoreIndexInterface(address(db.containerGet(keccak256(abi.encodePacked(MEMBER_LABEL, bytes32(member))))));
     }
 }

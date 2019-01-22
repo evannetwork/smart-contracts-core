@@ -2,6 +2,12 @@
 
 ## Next Version
 ### Features
+- already deployed libraries can be given as property `librariesAddresses` to constructor
+- bytecodes to keep in reduced compiled file can be given as propety `allowedByteCodes` to constructor
+- dependencies between libraries can be given as property `libraryDependencies` to constructor
+- setting property `compileContracts` to `true` now compiles contracts, even if source files have not changed since last compile time
+- update `build-contracts` to deploy missing libraries
+
 ### Fixes
 ### Deprecations
 - `DSRolesPerContract` uses own lib for logic

@@ -26,6 +26,10 @@ contract TestContract {
         setData(newData);
     }
 
+    function chargeFunds() public payable {
+        // do nothing, just accept funds
+    }
+
     function setData(string newData) public {
         data = newData;
     }

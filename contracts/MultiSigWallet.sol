@@ -25,6 +25,7 @@ import "./DSRolesPerContract.sol";
 /// @author Stefan George - <stefan.george@consensys.net>
 /// @author (modifications) Sebastian Wolfram - <sebastian.wolfram@contractus.com>
 ///   - July 2018, use role based permissions for owner management instead of the onlyWallet modifier
+///   - January 2019, add logic for creating contracts via wallet
 contract MultiSigWallet is DSAuth {
 
     /*
@@ -39,6 +40,7 @@ contract MultiSigWallet is DSAuth {
     event OwnerAddition(address indexed owner);
     event OwnerRemoval(address indexed owner);
     event RequirementChange(uint required);
+    event ContractCreated(address indexed sender, uint indexed transactionId, address indexed contractId);
 
     /*
      *  Constants
@@ -86,7 +88,7 @@ contract MultiSigWallet is DSAuth {
     }
 
     modifier transactionExists(uint transactionId) {
-        require(transactions[transactionId].destination != 0);
+        require(transactions[transactionId].destination != 0 || transactions[transactionId].data.length != 0);
         _;
     }
 
@@ -262,11 +264,25 @@ contract MultiSigWallet is DSAuth {
         if (isConfirmed(transactionId)) {
             Transaction storage txn = transactions[transactionId];
             txn.executed = true;
-            if (external_call(txn.destination, txn.value, txn.data.length, txn.data))
+            if (txn.destination != address(0)) {
+                if (external_call(txn.destination, txn.value, txn.data.length, txn.data))
+                    emit Execution(transactionId);
+                else {
+                    emit ExecutionFailure(transactionId);
+                    txn.executed = false;
+                }
+            } else {
+                address addr;
+                bytes memory _code = txn.data;
+
+                assembly {
+                    addr := create(0, add(_code, 0x20), mload(_code))
+                }
+
+                require(addr != 0, "Contract creation failed.");
+
                 emit Execution(transactionId);
-            else {
-                emit ExecutionFailure(transactionId);
-                txn.executed = false;
+                emit ContractCreated(this, transactionId, addr);
             }
         }
     }
@@ -320,7 +336,6 @@ contract MultiSigWallet is DSAuth {
     /// @return Returns transaction ID.
     function addTransaction(address destination, uint value, bytes data)
         internal
-        notNull(destination)
         returns (uint transactionId)
     {
         transactionId = transactionCount;

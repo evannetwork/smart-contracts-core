@@ -61,6 +61,7 @@ contract MultiSigWallet is DSAuth {
         address destination;
         uint value;
         bytes data;
+        bytes32 dataHash;
         bool executed;
     }
 
@@ -284,6 +285,8 @@ contract MultiSigWallet is DSAuth {
                 emit Execution(transactionId);
                 emit ContractCreated(this, transactionId, addr);
             }
+            // if tx has been executed, keep only hash to free up storage
+            delete txn.data;
         }
     }
 
@@ -343,6 +346,7 @@ contract MultiSigWallet is DSAuth {
             destination: destination,
             value: value,
             data: data,
+            dataHash: keccak256(data),
             executed: false
         });
         transactionCount += 1;

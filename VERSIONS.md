@@ -7,6 +7,7 @@
 - dependencies between libraries can be given as property `libraryDependencies` to constructor
 - setting property `compileContracts` to `true` now compiles contracts, even if source files have not changed since last compile time
 - update `build-contracts` to deploy missing libraries
+- add `deployedAt` for libraries in compiled contracts
 
 ### Fixes
 ### Deprecations

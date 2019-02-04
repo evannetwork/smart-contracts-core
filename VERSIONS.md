@@ -2,16 +2,31 @@
 
 ## Next Version
 ### Features
+- already deployed libraries can be given as property `librariesAddresses` to constructor
+- bytecodes to keep in reduced compiled file can be given as propety `allowedByteCodes` to constructor
+- dependencies between libraries can be given as property `libraryDependencies` to constructor
+- setting property `compileContracts` to `true` now compiles contracts, even if source files have not changed since last compile time
+- update `build-contracts` to deploy missing libraries
+- add `deployedAt` for libraries in compiled contracts
+
 ### Fixes
 ### Deprecations
+- `DSRolesPerContract` uses own lib for logic
+- `BaseContractZero` (temporary name) uses own lib for logic but breaks compatibility with regular `BaseContract` inheritance
+- `DataContract` uses own lib for logic, inherits from `BaseContractZero` instead of regular `BaseContract`
+- `EnsReader` contract `getAddr` is now public
+- replace dependency of `DataContractIndex` with `DataContractIndexInterface` in `BusinessCenterInterface`
+
 
 ## 1.5.2 Version
 ### Fixes
 - Fix linking of libraries
 
+
 ## 1.5.1 Version
 ### Fixes
 - Fix linking of libraries
+
 
 ## Version 1.5.0
 ### Features
@@ -22,6 +37,7 @@
 
 ### Fixes
 - remove `OriginIdentity`, as `ClaimHolder` is used for identities
+
 
 ## Version 1.4.0
 ### Features

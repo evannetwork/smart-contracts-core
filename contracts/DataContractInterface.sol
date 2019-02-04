@@ -17,14 +17,14 @@
 */
 
 pragma solidity ^0.4.24;
-import "./BaseContractInterface.sol";
+import "./BaseContractZeroInterface.sol";
 
 
 /// @title Interface contract for generic data storage contracts, that can handle lists and entries
 /// @author contractus GmbH
 /// @notice this is a contract with abstract functions that is used as an interface for DataContracts
 /// @dev implemtation most probably requires calling "init" before usage
-contract DataContractInterface is BaseContractInterface {
+contract DataContractInterface is BaseContractZeroInterface {
     /// @notice add entries to a list
     /// @dev keep in mind that list do not provide a fixed order;
     /// they can be iterated, but deleting entries repositions items

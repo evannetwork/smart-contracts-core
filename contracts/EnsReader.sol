@@ -30,7 +30,7 @@ contract EnsReader {
     // test: 0x04f740db81dc36c853ab4205bddd785f46e79ccedca351fc6dfcbd8cc9a33dd6
     bytes32 rootDomain = 0x01713a3bd6dccc828bbc37b3f42f3bc5555b16438783fabea9faf8c2243a0370;
 
-    function getAddr(bytes32 node) constant internal returns (address) {
+    function getAddr(bytes32 node) constant public returns (address) {
         return AbstractPublicResolver(ens.resolver(keccak256(abi.encodePacked(rootDomain, node))))
             .addr(keccak256(abi.encodePacked(rootDomain, node)));
     }

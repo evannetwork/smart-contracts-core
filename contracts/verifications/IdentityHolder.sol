@@ -16,7 +16,7 @@
 
 pragma solidity ^0.4.24;
 
-import "./ClaimsRegistryLibrary.sol";
+import "./VerificationsRegistryLibrary.sol";
 
 
 /// @title Identity Holder
@@ -25,7 +25,7 @@ import "./ClaimsRegistryLibrary.sol";
 contract IdentityHolder {
     event IdentityCreated(bytes32 indexed identity, address indexed owner);
 
-    ClaimsRegistryLibrary.Identities identities;
+    VerificationsRegistryLibrary.Identities identities;
 
     /// @notice create new identity
     /// @dev emits IdentityCreated event with new identity

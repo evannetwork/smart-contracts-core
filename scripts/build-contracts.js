@@ -73,7 +73,7 @@ async function deployLibrary(contractName, contracts, nonce) {
   console.group('compiling contracts')
   try {
     await solc.ensureCompiled()
-    let contracts = await solc.getContracts()
+    let contracts = await solc.getContracts(null, true)
     const toDeploys = solc.getLibrariesToRedeploy()
     if (toDeploys) {
       console.log(`deploying: ${toDeploys.join(', ')}`)
@@ -83,14 +83,14 @@ async function deployLibrary(contractName, contracts, nonce) {
       let nonce = await web3.eth.getTransactionCount(account)
       for (let toDeploy of toDeploys) {
         // deploy contract
-        const deployed = await deployLibrary(toDeploy.replace(/[^:]+:/, ''), contracts, nonce++)
+        const deployed = await deployLibrary(toDeploy, contracts, nonce++)
         // update compiled contracts
         const toLink = { [toDeploy]: deployed }
         solc.linkLibraries(contracts, toLink)
         Object.assign(libraryUpdates, toLink)
         // re-compile contracts and update compiled files
         await solc.ensureCompiled()
-        contracts = await solc.getContracts()
+        contracts = await solc.getContracts(null, true)
         // (if required, repeat until all contracts have been included in contracts file)
       }
       console.log('deployed new libraries, make sure to update config accordingly')

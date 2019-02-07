@@ -80,7 +80,8 @@ contract VerificationHolder is KeyHolder, ERC735 {
         bytes _data,
         string _uri,
         uint256 _expirationDate,
-        bytes32 _description
+        bytes32 _description,
+        bool _disableSubVerifications
         )
         public
         returns (bytes32 verificationRequestId)
@@ -88,6 +89,7 @@ contract VerificationHolder is KeyHolder, ERC735 {
         bytes32 verificationId = addVerification(_topic, _scheme, _issuer, _signature, _data, _uri);
         require(this.setVerificationExpirationDate(verificationId, _expirationDate));
         require(this.setVerificationDescription(verificationId, _description));
+        require(this.setDisableSubVerifications(verificationId, _disableSubVerifications));
         return verificationId;
     }
 
@@ -101,6 +103,11 @@ contract VerificationHolder is KeyHolder, ERC735 {
 
     function rejectVerification(bytes32 _verificationId, bytes32 _rejectReason) public returns (bool success) {
         return VerificationHolderLibrary.rejectVerification(keyHolderData, verifications, _verificationId, _rejectReason);
+    }
+
+    function setDisableSubVerifications(bytes32 _verificationId, bool _disableSubVerifications) public returns (bool success) {
+        require(msg.sender == address(this));
+        return VerificationHolderLibrary.setDisableSubVerifications(keyHolderData, verifications, _verificationId, _disableSubVerifications);
     }
 
     function setVerificationDescription(bytes32 _verificationId, bytes32 _description) public returns (bool success) {
@@ -138,6 +145,10 @@ contract VerificationHolder is KeyHolder, ERC735 {
 
     function getVerificationDescription(bytes32 _verificationId) public view returns (bytes32 description) {
         return VerificationHolderLibrary.verificationDescription(verifications, _verificationId);
+    }
+
+    function getDisableSubVerifications(bytes32 _verificationId) public view returns (bool disableSubVerifications) {
+        return VerificationHolderLibrary.disableSubVerifications(verifications, _verificationId);
     }
 
     function getVerificationExpirationDate(bytes32 _verificationId) public view returns (uint256 timestamp) {

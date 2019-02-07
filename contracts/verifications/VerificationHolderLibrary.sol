@@ -41,6 +41,7 @@ library VerificationHolderLibrary {
         mapping (bytes32 => uint256) creationDates;
         mapping (bytes32 => uint256) creationBlocks;
         mapping (bytes32 => bytes32) descriptions;
+        mapping (bytes32 => bool) disabelSubVerifications;
         mapping (bytes32 => uint256) expiringDates;
         mapping (bytes32 => bool) rejectedVerifications;
         mapping (bytes32 => bytes32) rejectReason;
@@ -203,6 +204,24 @@ library VerificationHolderLibrary {
         );
     }
 
+    function setDisableSubVerifications(
+        KeyHolderLibrary.KeyHolderData storage _keyHolderData,
+        Verifications storage _verifications,
+        bytes32 _verificationId,
+        bool _disableSubVerifications
+    )
+        public
+        returns (bool success)
+    {
+        require(_verifications.byId[_verificationId].issuer != address(0), "No verification exists");
+
+        if (msg.sender != address(this) && msg.sender != _verifications.byId[_verificationId].issuer) {
+            require(KeyHolderLibrary.keyHasPurpose(_keyHolderData, keccak256(abi.encodePacked(msg.sender)), 1), "Sender does not have management key");
+        }
+
+        _verifications.disabelSubVerifications[_verificationId] = _disableSubVerifications;
+        return true;
+    }
 
     function setVerificationDescription(
         KeyHolderLibrary.KeyHolderData storage _keyHolderData,
@@ -306,6 +325,14 @@ library VerificationHolderLibrary {
         returns (bytes32)
     {
         return _verifications.descriptions[_verificationId];
+    }
+
+    function disableSubVerifications(Verifications storage _verifications, bytes32 _verificationId)
+        public
+        view
+        returns (bool)
+    {
+        return _verifications.disabelSubVerifications[_verificationId];
     }
 
     function verificationExpirationDate(Verifications storage _verifications, bytes32 _verificationId)

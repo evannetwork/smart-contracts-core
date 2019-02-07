@@ -76,13 +76,15 @@ contract VerificationsRegistry is IdentityHolder {
         bytes _data,
         string _uri,
         uint256 _expirationDate,
-        bytes32 _description
+        bytes32 _description,
+        bool _disableSubVerifications
         )
         public
         returns (bytes32 verificationRequestId)
     {
         bytes32 verificationId = addVerification(_identity, _topic, _scheme, _issuer, _signature, _data, _uri);
         require(VerificationsRegistryLibrary.setVerificationDescription(identities, _identity, verificationId, _description));
+        require(VerificationsRegistryLibrary.setDisableSubVerifications(identities, _identity, verificationId, _disableSubVerifications));
         require(VerificationsRegistryLibrary.setVerificationExpirationDate(identities, _identity, verificationId, _expirationDate));
         return verificationId;
     }
@@ -124,6 +126,10 @@ contract VerificationsRegistry is IdentityHolder {
 
     function getVerificationDescription(bytes32 _identity, bytes32 _verificationId) public view returns (bytes32 description) {
         return VerificationsRegistryLibrary.verificationDescription(identities, _identity, _verificationId);
+    }
+
+    function getDisableSubVerifications(bytes32 _identity, bytes32 _verificationId) public view returns (bool disableSubVerifications) {
+        return VerificationsRegistryLibrary.disableSubVerifications(identities, _identity, _verificationId);
     }
 
     function getVerificationExpirationDate(bytes32 _identity, bytes32 _verificationId) public view returns (uint256 timestamp) {

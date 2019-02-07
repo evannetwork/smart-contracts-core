@@ -49,11 +49,11 @@ library VerificationsRegistryLibrary {
         mapping (bytes32 => uint256) creationDates;
         mapping (bytes32 => uint256) creationBlocks;
         mapping (bytes32 => bytes32) descriptions;
+        mapping (bytes32 => bool) disableSubVerificationss;
         mapping (bytes32 => uint256) expiringDates;
         mapping (bytes32 => bool) rejectedVerifications;
         mapping (bytes32 => bytes32) rejectReason;
     }
-
 
     function addVerification(
         Identities storage _identities,
@@ -237,6 +237,27 @@ library VerificationsRegistryLibrary {
         return true;
     }
 
+
+    function setDisableSubVerifications(
+        Identities storage _identities,
+        bytes32 _identity,
+        bytes32 _verificationId,
+        bool _disableSubVerifications
+    )
+        public
+        returns (bool success)
+    {
+        Verifications _verifications = _identities.byId[_identity].verifications;
+        require(_verifications.byId[_verificationId].issuer != address(0), "No verification exists");
+
+        if (msg.sender != address(this) && msg.sender != _verifications.byId[_verificationId].issuer) {
+            require(msg.sender == _identities.byId[_identity].owner, "Sender does not have ownership of identity");
+        }
+
+        _verifications.disableSubVerificationss[_verificationId] = _disableSubVerifications;
+        return true;
+    }
+
     function setVerificationExpirationDate(
         Identities storage _identities,
         bytes32 _identity,
@@ -327,6 +348,15 @@ library VerificationsRegistryLibrary {
     {
         Verifications _verifications = _identities.byId[_identity].verifications;
         return _verifications.descriptions[_verificationId];
+    }
+
+    function disableSubVerifications(Identities storage _identities, bytes32 _identity, bytes32 _verificationId)
+        public
+        view
+        returns (bool)
+    {
+        Verifications _verifications = _identities.byId[_identity].verifications;
+        return _verifications.disableSubVerificationss[_verificationId];
     }
 
     function verificationExpirationDate(Identities storage _identities, bytes32 _identity, bytes32 _verificationId)

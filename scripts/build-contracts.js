@@ -30,14 +30,13 @@ const smartContractsCore = require('../index')
 const  Web3 = require('web3')
 const Tx = require('ethereumjs-tx')
 
-
-if (!process.env.ACCOUNT_ID || !process.env.PRIVATE_KEY) {
-  throw Error('ACCOUNT_ID or PRIVATE_KEY unset, set both as environment variables')
+if (!process.env.ACCOUNTID || !process.env.PRIVATEKEY) {
+  throw Error('ACCOUNTID or PRIVATEKEY unset, set both as environment variables')
 }
 
-const account = process.env.ACCOUNT_ID
-const key = new Buffer(process.env.PRIVATE_KEY, 'hex')
-const gasPrice = process.env.AS_PRICE || '0x4a817c800'  // 20GWei
+const account = process.env.ACCOUNTID
+const key = new Buffer(process.env.PRIVATEKEY, 'hex')
+const gasPrice = process.env.GASPRICE || '0x4a817c800'  // 20GWei
 const gasLimit = '0x7a1200'  // 8000000
 
 let solc = new smartContractsCore.Solc({
@@ -62,7 +61,7 @@ async function deployLibrary(contractName, contracts, nonce) {
 
   const stx = tx.serialize()
   const web3 = new Web3(new Web3.providers.WebsocketProvider(
-    process.env.RPC_WEBSOCKET || 'wss://testcore.evan.network/ws'))
+    process.env.CHAIN_ENDPOINT|| 'wss://testcore.evan.network/ws'))
   const result = await web3.eth.sendSignedTransaction('0x' + stx.toString('hex'))
   console.dir((({ contractAddress, gasUsed, status }) =>
     ({ contractName, contractAddress, gasUsed, status }))(result))

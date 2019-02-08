@@ -19,7 +19,7 @@
 pragma solidity ^0.4.24;
 
 import "./Core.sol";
-import "./DataStoreIndex.sol";
+import "./DataStoreIndexInterface.sol";
 
 
 contract BusinessCenterInterface is Owned {
@@ -35,7 +35,7 @@ contract BusinessCenterInterface is Owned {
         _;
     }
 
-    function init(DataStoreIndex, JoinSchema) public;
+    function init(DataStoreIndexInterface, JoinSchema) public;
 
     function join() public;
     function invite(address) public;
@@ -53,6 +53,6 @@ contract BusinessCenterInterface is Owned {
 
     function isMember(address _member) public constant returns (bool);
     function isContract(address _contract) public constant returns (bool);
-    function getMyIndex() public constant returns (DataStoreIndex);
-    function getStorage() public constant returns (DataStoreIndex);
+    function getMyIndex() public constant returns (DataStoreIndexInterface);
+    function getStorage() public constant returns (DataStoreIndexInterface);
 }

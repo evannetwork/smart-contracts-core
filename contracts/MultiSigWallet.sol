@@ -68,11 +68,6 @@ contract MultiSigWallet is DSAuth {
     /*
      *  Modifiers
      */
-    modifier onlyWallet() {
-        require(msg.sender != address(this));
-        _;
-    }
-
     modifier notFromSelf() {
         require(msg.sender != address(this));
         _;

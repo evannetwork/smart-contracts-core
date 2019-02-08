@@ -26,16 +26,79 @@
   
 */
 
-const smartContractsCore = require('../index');
+const smartContractsCore = require('../index')
+const  Web3 = require('web3')
+const Tx = require('ethereumjs-tx')
 
 
-const solc = new smartContractsCore.Solc({
-  config: { compileContracts: false, },
-  log: console.log,
-});
-
-try {
-  solc.ensureCompiled();
-} catch(ex) {
-  console.error(`building contracts failed with: ${ex.msg || ex}${ex.stack ? '; ' + ex.stack : ''}`);
+if (!process.env.ACCOUNT_ID || !process.env.PRIVATE_KEY) {
+  throw Error('ACCOUNT_ID or PRIVATE_KEY unset, set both as environment variables')
 }
+
+const account = process.env.ACCOUNT_ID
+const key = new Buffer(process.env.PRIVATE_KEY, 'hex')
+const gasPrice = process.env.AS_PRICE || '0x4a817c800'  // 20GWei
+const gasLimit = '0x7a1200'  // 8000000
+
+let solc = new smartContractsCore.Solc({
+  config: { compileContracts: true, },
+  log: console.log,
+})
+
+async function deployLibrary(contractName, contracts, nonce) {
+  const bytecode = contracts[contractName].bytecode
+
+  const tra = {
+    data: `0x${bytecode}`,
+    from: account,
+    gasLimit,
+    gasPrice,
+    nonce: `0x${nonce.toString(16)}`,
+    value: 0,
+  }
+
+  const tx = new Tx(tra)
+  tx.sign(key)
+
+  const stx = tx.serialize()
+  const web3 = new Web3(new Web3.providers.WebsocketProvider(
+    process.env.RPC_WEBSOCKET || 'wss://testcore.evan.network/ws'))
+  const result = await web3.eth.sendSignedTransaction('0x' + stx.toString('hex'))
+  console.dir((({ contractAddress, gasUsed, status }) =>
+    ({ contractName, contractAddress, gasUsed, status }))(result))
+  return result.contractAddress
+}
+
+(async () => {
+  console.group('compiling contracts')
+  try {
+    await solc.ensureCompiled()
+    let contracts = await solc.getContracts(null, true)
+    const toDeploys = solc.getLibrariesToRedeploy()
+    if (toDeploys) {
+      console.log(`deploying: ${toDeploys.join(', ')}`)
+      const libraryUpdates = {}
+      const web3 = new Web3(new Web3.providers.WebsocketProvider(
+        process.env.RPC_WEBSOCKET || 'wss://testcore.evan.network/ws'))
+      let nonce = await web3.eth.getTransactionCount(account)
+      for (let toDeploy of toDeploys) {
+        // deploy contract
+        const deployed = await deployLibrary(toDeploy, contracts, nonce++)
+        // update compiled contracts
+        const toLink = { [toDeploy]: deployed }
+        solc.linkLibraries(contracts, toLink)
+        Object.assign(libraryUpdates, toLink)
+        // re-compile contracts and update compiled files
+        await solc.ensureCompiled()
+        contracts = await solc.getContracts(null, true)
+        // (if required, repeat until all contracts have been included in contracts file)
+      }
+      console.log('deployed new libraries, make sure to update config accordingly')
+      console.dir(libraryUpdates)
+    }
+  } catch(ex) {
+    console.error(`building contracts failed: ${ex.msg || ex}${ex.stack ? '; ' + ex.stack : ''}`)
+  }
+  console.groupEnd('compiling contracts')
+  console.log('done')
+})()

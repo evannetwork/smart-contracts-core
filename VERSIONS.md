@@ -2,26 +2,43 @@
 
 ## Next Version
 ### Features
+- already deployed libraries can be given as property `librariesAddresses` to constructor
+- bytecodes to keep in reduced compiled file can be given as propety `allowedByteCodes` to constructor
+- dependencies between libraries can be given as property `libraryDependencies` to constructor
+- setting property `compileContracts` to `true` now compiles contracts, even if source files have not changed since last compile time
+- update `build-contracts` to deploy missing libraries
+- add `deployedAt` for libraries in compiled contracts
+
 ### Fixes
 ### Deprecations
+- `DSRolesPerContract` uses own lib for logic
+- `BaseContractZero` (temporary name) uses own lib for logic but breaks compatibility with regular `BaseContract` inheritance
+- `DataContract` uses own lib for logic, inherits from `BaseContractZero` instead of regular `BaseContract`
+- `EnsReader` contract `getAddr` is now public
+- replace dependency of `DataContractIndex` with `DataContractIndexInterface` in `BusinessCenterInterface`
+- `KeyHolder` constructor now needs an address argument for settings its owner
+
 
 ## 1.5.2 Version
 ### Fixes
 - Fix linking of libraries
 
+
 ## 1.5.1 Version
 ### Fixes
 - Fix linking of libraries
 
+
 ## Version 1.5.0
 ### Features
-- add contracts for creating claims for contracts
+- add contracts for creating verifications for contracts
 - add function for registering other users identities, that can be used by registry owner, can only be set this way if account to register doesn't already have an identity
 - add missing dbcpVersion to dbcp files
 - add licenses to dbcp files
 
 ### Fixes
-- remove `OriginIdentity`, as `ClaimHolder` is used for identities
+- remove `OriginIdentity`, as `VerificationHolder` is used for identities
+
 
 ## Version 1.4.0
 ### Features
@@ -31,10 +48,10 @@
 
 ## Version 1.3.0
 ### Features
-- add description to claims
-- add `addClaimWithMetadata` function to claims for setting claim and metadata at the same time
-- add creation block data to claim information
-- claims are not overwritten anymore, but a new claim is created per set call
+- add description to verifications
+- add `addVerificationWithMetadata` function to verifications for setting verification and metadata at the same time
+- add creation block data to verification information
+- verifications are not overwritten anymore, but a new verification is created per set call
 - add `Congress.sol` for holding votes on-chain
 
 ### Fixes
@@ -43,8 +60,8 @@
 
 ## Version 1.2.0
 ### Features
-- add ERC725/735 compliant Claims and Identity contracts
-- include bytecode within compiled.js files for `claims/OriginIdentity.sol:OriginIdentity`
+- add ERC725/735 compliant Verifications and Identity contracts
+- include bytecode within compiled.js files for `verifications/OriginIdentity.sol:OriginIdentity`
 - add `TicketVendorInterface`
 
 ### Deprecations

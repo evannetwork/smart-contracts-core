@@ -16,37 +16,37 @@
 
 pragma solidity ^0.4.24;
 
-import "./ClaimHolder.sol";
+import "./VerificationHolder.sol";
 
 
-contract ClaimVerifier {
+contract VerificationVerifier {
 
-    event ClaimValid(ClaimHolder _identity, uint256 topic);
-    event ClaimInvalid(ClaimHolder _identity, uint256 topic);
+    event VerificationValid(VerificationHolder _identity, uint256 topic);
+    event VerificationInvalid(VerificationHolder _identity, uint256 topic);
 
-    ClaimHolder public trustedClaimHolder;
+    VerificationHolder public trustedVerificationHolder;
 
-    constructor(address _trustedClaimHolder) public {
-        trustedClaimHolder = ClaimHolder(_trustedClaimHolder);
+    constructor(address _trustedVerificationHolder) public {
+        trustedVerificationHolder = VerificationHolder(_trustedVerificationHolder);
     }
 
-    function checkClaim(ClaimHolder _identity, uint256 topic)
+    function checkVerification(VerificationHolder _identity, uint256 topic)
         public
-        returns (bool claimValid)
+        returns (bool verificationValid)
     {
-        if (claimIsValid(_identity, topic)) {
-            emit ClaimValid(_identity, topic);
+        if (verificationIsValid(_identity, topic)) {
+            emit VerificationValid(_identity, topic);
             return true;
         } else {
-            emit ClaimInvalid(_identity, topic);
+            emit VerificationInvalid(_identity, topic);
             return false;
         }
     }
 
-    function claimIsValid(ClaimHolder _identity, uint256 topic)
+    function verificationIsValid(VerificationHolder _identity, uint256 topic)
         public
         view
-        returns (bool claimValid)
+        returns (bool verificationValid)
     {
         uint256 foundTopic;
         uint256 scheme;
@@ -54,11 +54,11 @@ contract ClaimVerifier {
         bytes memory sig;
         bytes memory data;
 
-        // Construct claimId (identifier + claim type)
-        bytes32 claimId = keccak256(abi.encodePacked(trustedClaimHolder, topic));
+        // Construct verificationId (identifier + verification type)
+        bytes32 verificationId = keccak256(abi.encodePacked(trustedVerificationHolder, topic));
 
-        // Fetch claim from user
-        ( foundTopic, scheme, issuer, sig, data, ) = _identity.getClaim(claimId);
+        // Fetch verification from user
+        ( foundTopic, scheme, issuer, sig, data, ) = _identity.getVerification(verificationId);
 
         bytes32 dataHash = keccak256(abi.encodePacked(_identity, topic, data));
         bytes32 prefixedHash = keccak256(abi.encodePacked("\x19Ethereum Signed Message:\n32", dataHash));
@@ -69,8 +69,8 @@ contract ClaimVerifier {
         // Take hash of recovered address
         bytes32 hashedAddr = keccak256(abi.encodePacked(recovered));
 
-        // Does the trusted identifier have they key which signed the user's claim?
-        return trustedClaimHolder.keyHasPurpose(hashedAddr, 3);
+        // Does the trusted identifier have they key which signed the user's verification?
+        return trustedVerificationHolder.keyHasPurpose(hashedAddr, 3);
     }
 
     function getRecoveredAddress(bytes sig, bytes32 dataHash)

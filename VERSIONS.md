@@ -8,6 +8,8 @@
 - setting property `compileContracts` to `true` now compiles contracts, even if source files have not changed since last compile time
 - update `build-contracts` to deploy missing libraries
 - add `deployedAt` for libraries in compiled contracts
+- add flag `disableSubVerifications` to verifications
+- wallet only keeps hash of original input and deletes data after executing it
 
 ### Fixes
 ### Deprecations

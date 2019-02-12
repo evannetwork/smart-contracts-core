@@ -2,6 +2,11 @@
 
 ## Next Version
 ### Features
+### Fixes
+### Deprecations
+
+## Version 2.0.0
+### Features
 - already deployed libraries can be given as property `librariesAddresses` to constructor
 - bytecodes to keep in reduced compiled file can be given as propety `allowedByteCodes` to constructor
 - dependencies between libraries can be given as property `libraryDependencies` to constructor
@@ -11,7 +16,6 @@
 - add flag `disableSubVerifications` to verifications
 - wallet only keeps hash of original input and deletes data after executing it
 
-### Fixes
 ### Deprecations
 - `DSRolesPerContract` uses own lib for logic
 - `BaseContractZero` (temporary name) uses own lib for logic but breaks compatibility with regular `BaseContract` inheritance

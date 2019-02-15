@@ -18,16 +18,12 @@
 
 pragma solidity ^0.4.24;
 
-import "./DSRolesPerContract.sol";
-
 
 /// @title Multisignature wallet - Allows multiple parties to agree on transactions before execution.
 /// @author Stefan George - <stefan.george@consensys.net>
 /// @author (modifications) Sebastian Wolfram - <sebastian.wolfram@contractus.com>
-///   - July 2018, use role based permissions for owner management instead of the onlyWallet modifier
 ///   - January 2019, add logic for creating contracts via wallet
-contract MultiSigWallet is DSAuth {
-
+contract MultiSigWalletSG {
     /*
      *  Events
      */
@@ -68,8 +64,8 @@ contract MultiSigWallet is DSAuth {
     /*
      *  Modifiers
      */
-    modifier notFromSelf() {
-        require(msg.sender != address(this));
+    modifier onlyWallet() {
+        require(msg.sender == address(this));
         _;
     }
 
@@ -147,8 +143,7 @@ contract MultiSigWallet is DSAuth {
     /// @param owner Address of new owner.
     function addOwner(address owner)
         public
-        auth
-        notFromSelf
+        onlyWallet
         ownerDoesNotExist(owner)
         notNull(owner)
         validRequirement(owners.length + 1, required)
@@ -162,8 +157,7 @@ contract MultiSigWallet is DSAuth {
     /// @param owner Address of owner.
     function removeOwner(address owner)
         public
-        auth
-        notFromSelf
+        onlyWallet
         ownerExists(owner)
     {
         isOwner[owner] = false;
@@ -183,8 +177,7 @@ contract MultiSigWallet is DSAuth {
     /// @param newOwner Address of new owner.
     function replaceOwner(address owner, address newOwner)
         public
-        auth
-        notFromSelf
+        onlyWallet
         ownerExists(owner)
         ownerDoesNotExist(newOwner)
     {
@@ -203,8 +196,7 @@ contract MultiSigWallet is DSAuth {
     /// @param _required Number of required confirmations.
     function changeRequirement(uint _required)
         public
-        auth
-        notFromSelf
+        onlyWallet
         validRequirement(owners.length, _required)
     {
         required = _required;

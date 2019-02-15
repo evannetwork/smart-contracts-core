@@ -2,8 +2,11 @@
 
 ## Next Version
 ### Features
+- add self governed implementation of multisig wallet
+
 ### Fixes
 ### Deprecations
+
 
 ## Version 2.0.0
 ### Features

@@ -55,5 +55,11 @@ contract BaseContractZeroInterface is Described, Shared {
     function removeConsumer(address, address) public;
 
     function contractState() public view returns (ContractState);
+    function contractType() public view returns (bytes32);
+    function created() public view returns (uint);
+    function consumerCount() public view returns (uint);
+    function index2consumer(uint index) public view returns (address consumer);
+    function consumer2index(address consumer) public view returns (uint index);
     function consumerState(address consumer) public view returns (ConsumerState);
+    function allowConsumerInvite() public view returns (bool);
 }

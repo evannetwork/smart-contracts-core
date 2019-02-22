@@ -5,6 +5,8 @@
 - add self governed implementation of multisig wallet
 
 ### Fixes
+- add getter for former `BaseContract` public properties
+
 ### Deprecations
 
 

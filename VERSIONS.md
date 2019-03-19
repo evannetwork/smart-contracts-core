@@ -3,6 +3,7 @@
 ## Next Version
 ### Features
 - add self governed implementation of multisig wallet
+- add index contracts and container factory for digital identities
 
 ### Fixes
 - add getter for former `BaseContract` public properties

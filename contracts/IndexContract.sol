@@ -41,8 +41,8 @@ contract IndexContract is DSAuth, Described {
     /// @notice set entry, overwrite value if name already exists
     /// @param name entry name, unique in index
     /// @param value entry value as bytes32
-    function setEntry(string name, bytes32 value) public auth {
-        IndexContractLibrary.setEntry(iclData, name, value);
+    function setEntry(string name, bytes32 value, IndexContractLibrary.EntryType entryType) public auth {
+        IndexContractLibrary.setEntry(iclData, name, value, entryType);
     }
 
     /// @notice get all entries as arrays of names and values
@@ -50,6 +50,7 @@ contract IndexContract is DSAuth, Described {
     function getEntries(uint256 offset) public view returns (
             string[10] names,
             bytes32[10] values,
+            IndexContractLibrary.EntryType[10] entryTypes,
             uint256 totalCount
         ) {
         return IndexContractLibrary.getEntries(iclData, offset);
@@ -57,18 +58,7 @@ contract IndexContract is DSAuth, Described {
 
     /// @notice get value of a single entry
     /// @param name name of entry to fetch
-    function getEntry(string name) public view returns (bytes32) {
+    function getEntry(string name) public view returns (bytes32 value, IndexContractLibrary.EntryType entryType) {
         return IndexContractLibrary.getEntry(iclData, name);
     }
-
-    /*
-    /// @notice retrieve a single entry from a mapping
-    /// @param mappingHash keccak256 hash of the mapping name
-    /// @param key keccak256 hash of the mappings entry/property name
-    /// @return value for this mapping entry
-    function getMappingValue(bytes32 mappingHash, bytes32 key) public constant returns(bytes32) {
-        // placeholder for copying comments
-        return 0;
-    }
-    */
 }

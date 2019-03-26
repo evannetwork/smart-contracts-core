@@ -56,10 +56,10 @@ contract ContainerDataContractFactory is BaseContractFactory {
         roles.setRoleCapability(ownerRole, 0, 0xb14f5d7e, true);    // inviteConsumer(address,address)
         roles.setRoleCapability(ownerRole, 0, 0xa7b93d61, true);    // removeConsumer(address,address)
         roles.setRoleCapability(ownerRole, 0, 0xcf82c070, true);    // moveListEntry(bytes32,uint256,bytes32[])
-        roles.setRoleCapability(ownerRole, 0, 0xc0ff8ed5, true);    // removeListEntry(bytes32,uint256)
  
         // role 2 permission (members)
         roles.setRoleCapability(memberRole, 0, 0x6d948f50, true);   // addListEntries(bytes32[],bytes32[])
+        roles.setRoleCapability(memberRole, 0, 0xc0ff8ed5, true);   // removeListEntry(bytes32,uint256)
         roles.setRoleCapability(memberRole, 0, 0x44dd44d6, true);   // setEntry(bytes32,bytes32)
         roles.setRoleCapability(memberRole, 0, 0xb4f64c05, true);   // setMappingValue(bytes32,bytes32,bytes32)
  

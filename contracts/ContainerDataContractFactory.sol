@@ -63,6 +63,92 @@ contract ContainerDataContractFactory is BaseContractFactory {
         roles.setRoleCapability(memberRole, 0, 0x44dd44d6, true);   // setEntry(bytes32,bytes32)
         roles.setRoleCapability(memberRole, 0, 0xb4f64c05, true);   // setMappingValue(bytes32,bytes32,bytes32)
  
+        // contract states
+        bytes32 contractStateLabel = 0xf0af2cee3e7130dfb5ef02ebfaf64a30da17e9c9c26d3d40ece69a2e0ee1d69e;
+        roles.setRoleOperationCapability(
+            ownerRole, 0, hashContractStateChange(
+            contractStateLabel,
+            BaseContractInterface.ContractState.Initial,
+            BaseContractInterface.ContractState.Draft), true);
+        roles.setRoleOperationCapability(
+            ownerRole, 0, hashContractStateChange(
+            contractStateLabel,
+            BaseContractInterface.ContractState.Draft,
+            BaseContractInterface.ContractState.PendingApproval), true);
+        roles.setRoleOperationCapability(
+            ownerRole, 0, hashContractStateChange(
+            contractStateLabel,
+            BaseContractInterface.ContractState.PendingApproval,
+            BaseContractInterface.ContractState.Draft), true);
+        roles.setRoleOperationCapability(
+            ownerRole, 0, hashContractStateChange(
+            contractStateLabel,
+            BaseContractInterface.ContractState.PendingApproval,
+            BaseContractInterface.ContractState.Approved), true);
+        roles.setRoleOperationCapability(
+            ownerRole, 0, hashContractStateChange(
+            contractStateLabel,
+            BaseContractInterface.ContractState.Approved,
+            BaseContractInterface.ContractState.Active), true);
+        roles.setRoleOperationCapability(
+            ownerRole, 0, hashContractStateChange(
+            contractStateLabel,
+            BaseContractInterface.ContractState.Approved,
+            BaseContractInterface.ContractState.Terminated), true);
+        roles.setRoleOperationCapability(
+            ownerRole, 0, hashContractStateChange(
+            contractStateLabel,
+            BaseContractInterface.ContractState.Active,
+            BaseContractInterface.ContractState.VerifyTerminated), true);
+        roles.setRoleOperationCapability(
+            ownerRole, 0, hashContractStateChange(
+            contractStateLabel,
+            BaseContractInterface.ContractState.VerifyTerminated,
+            BaseContractInterface.ContractState.Terminated), true);
+        roles.setRoleOperationCapability(
+            ownerRole, 0, hashContractStateChange(
+            contractStateLabel,
+            BaseContractInterface.ContractState.VerifyTerminated,
+            BaseContractInterface.ContractState.Active), true);
+ 
+        // member states (own)
+        bytes32 ownstateLabel = 0x56ead3438bd16b0aaea9b0b78119b1db8a5382b496db7a1989fe7a32f9890f7c;
+        roles.setRoleOperationCapability(
+            ownerRole, 0, hashConsumerStateChange(
+            ownstateLabel,
+            BaseContractInterface.ConsumerState.Initial,
+            BaseContractInterface.ConsumerState.Draft), true);
+        roles.setRoleOperationCapability(
+            memberRole, 0, hashConsumerStateChange(
+            ownstateLabel,
+            BaseContractInterface.ConsumerState.Draft,
+            BaseContractInterface.ConsumerState.Rejected), true);
+        roles.setRoleOperationCapability(
+            memberRole, 0, hashConsumerStateChange(
+            ownstateLabel,
+            BaseContractInterface.ConsumerState.Draft,
+            BaseContractInterface.ConsumerState.Active), true);
+        roles.setRoleOperationCapability(
+            memberRole, 0, hashConsumerStateChange(
+            ownstateLabel,
+            BaseContractInterface.ConsumerState.Active,
+            BaseContractInterface.ConsumerState.Terminated), true);
+ 
+        // member states (other members)
+        roles.setRoleOperationCapability(
+            ownerRole, 0, hashConsumerStateChange(
+            0xa287c88bf56474b8c2de2568111316e26d1b3572718b1a8cdf0c881a767e4cb7,
+            BaseContractInterface.ConsumerState.Draft,
+            BaseContractInterface.ConsumerState.Terminated), true);
+
         return roles;
+    }
+ 
+    function hashConsumerStateChange(bytes32 label, BaseContractInterface.ConsumerState from, BaseContractInterface.ConsumerState to) private pure returns (bytes32) {
+        return keccak256(abi.encodePacked(keccak256(abi.encodePacked(label, from)), to));
+    }
+ 
+    function hashContractStateChange(bytes32 label, BaseContractInterface.ContractState from, BaseContractInterface.ContractState to) private pure returns (bytes32) {
+        return keccak256(abi.encodePacked(keccak256(abi.encodePacked(label, from)), to));
     }
 }

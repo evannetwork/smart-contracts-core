@@ -19,30 +19,24 @@ pragma experimental ABIEncoderV2;   // add support for string[] return values
 
 import "./ds-auth/auth.sol";
 import "./Described.sol";
-import "./IndexContractLibrary.sol";
+import "./DigitalTwinLibrary.sol";
 
-/// @title index contract, lists entries (bytes32 values)
+/// @title digital twin contract, lists entries (bytes32 values)
 /// @author evan GmbH
-contract IndexContract is DSAuth, Described {
-    IndexContractLibrary.Data iclData;
-
-    // /// @notice create new IndexContractInstance
-    // /// @param description bytes32 hash for contract description
-    // constructor(bytes32 description) public {
-    //     setContractDescription(description);
-    // }
+contract DigitalTwin is DSAuth, Described {
+    DigitalTwinLibrary.Data iclData;
 
     /// @notice remove entry from listing
     /// @param name name of entry to delete
     function removeEntry(string name) public auth {
-        IndexContractLibrary.removeEntry(iclData, name);
+        DigitalTwinLibrary.removeEntry(iclData, name);
     }
 
     /// @notice set entry, overwrite value if name already exists
     /// @param name entry name, unique in index
     /// @param value entry value as bytes32
-    function setEntry(string name, bytes32 value, IndexContractLibrary.EntryType entryType) public auth {
-        IndexContractLibrary.setEntry(iclData, name, value, entryType);
+    function setEntry(string name, bytes32 value, DigitalTwinLibrary.EntryType entryType) public auth {
+        DigitalTwinLibrary.setEntry(iclData, name, value, entryType);
     }
 
     /// @notice get all entries as arrays of names and values
@@ -50,15 +44,15 @@ contract IndexContract is DSAuth, Described {
     function getEntries(uint256 offset) public view returns (
             string[10] names,
             bytes32[10] values,
-            IndexContractLibrary.EntryType[10] entryTypes,
+            DigitalTwinLibrary.EntryType[10] entryTypes,
             uint256 totalCount
         ) {
-        return IndexContractLibrary.getEntries(iclData, offset);
+        return DigitalTwinLibrary.getEntries(iclData, offset);
     }
 
     /// @notice get value of a single entry
     /// @param name name of entry to fetch
-    function getEntry(string name) public view returns (bytes32 value, IndexContractLibrary.EntryType entryType) {
-        return IndexContractLibrary.getEntry(iclData, name);
+    function getEntry(string name) public view returns (bytes32 value, DigitalTwinLibrary.EntryType entryType) {
+        return DigitalTwinLibrary.getEntry(iclData, name);
     }
 }

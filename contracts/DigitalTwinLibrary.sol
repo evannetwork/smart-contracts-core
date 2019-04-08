@@ -18,12 +18,12 @@ pragma solidity ^0.4.24;
 pragma experimental ABIEncoderV2;   // add support for string[] return values
 
 
-library IndexContractLibrary {
+library DigitalTwinLibrary {
     enum EntryType {
         AccountId,
         GenericContract,
-        IndexContract,
-        ContainerContract,
+        DigitalTwin,
+        Container,
         FileHash,
         Hash
     }

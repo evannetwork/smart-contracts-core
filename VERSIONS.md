@@ -2,6 +2,12 @@
 
 ## Next Version
 ### Features
+### Fixes
+### Deprecations
+
+
+## Version 2.1.0
+### Features
 - add self governed implementation of multisig wallet
 - add index contracts and container factory for digital identities
 

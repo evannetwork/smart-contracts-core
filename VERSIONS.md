@@ -5,6 +5,19 @@
 ### Fixes
 ### Deprecations
 
+
+## Version 2.1.0
+### Features
+- add self governed implementation of multisig wallet
+- add index contracts and container factory for digital identities
+
+### Fixes
+- add getter for former `BaseContract` public properties
+
+### Deprecations
+- removed `dbcp.json` and moved it to [ui-core/dapps/smartcontracts](https://github.com/evannetwork/ui-core/tree/master/dapps/smartcontracts))
+
+
 ## Version 2.0.0
 ### Features
 - already deployed libraries can be given as property `librariesAddresses` to constructor

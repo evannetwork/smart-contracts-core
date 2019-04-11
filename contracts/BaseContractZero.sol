@@ -55,14 +55,34 @@ contract BaseContractZero is BaseContractZeroInterface, EnsReader {
         return baseContractZeroLibraryData.contractState;
     }
 
-    // new getter
+    function contractType() public view returns (bytes32) {
+        return baseContractZeroLibraryData.contractType;
+    }
+
+    function created() public view returns (uint) {
+        return baseContractZeroLibraryData.created;
+    }
+
+    function consumerCount() public view returns (uint) {
+        return baseContractZeroLibraryData.consumerCount;
+    }
+
+    function index2consumer(uint index) public view returns (address consumer) {
+        return baseContractZeroLibraryData.index2consumer[index];
+    }
+
+    function consumer2index(address consumer) public view returns (uint index) {
+        return baseContractZeroLibraryData.consumer2index[consumer];
+    }
+
     function consumerState(address consumer) public view returns (ConsumerState) {
         return baseContractZeroLibraryData.consumerState[consumer];
     }
 
-    function contractType() public view returns(bytes32) {
-        return baseContractZeroLibraryData.contractType;
+    function allowConsumerInvite() public view returns (bool) {
+        return baseContractZeroLibraryData.allowConsumerInvite;
     }
+    // /new getter
     
     function setAllowConsumerInvite(bool allowConsumerInvite) public auth {
         baseContractZeroLibraryData.allowConsumerInvite = allowConsumerInvite;

@@ -189,3 +189,7 @@ If used with default soldoc setup, this will most probably fail, as soldoc does 
 if(result.errors)
     reject(new Error(result.errors));
 ```
+
+
+## DApp library
+This project is bundled using browserify and directly loadable from dapps within the evan.network. The dbcp.json can be found in this [wrapping project](https://github.com/evannetwork/ui-core/tree/master/dapps/smartcontracts). 

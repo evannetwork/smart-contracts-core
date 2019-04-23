@@ -6,6 +6,10 @@
 ### Deprecations
 
 
+## Version 2.1.1
+### Fixes
+- remove admin contracts from smart agent config
+
 ## Version 2.1.0
 ### Features
 - add self governed implementation of multisig wallet

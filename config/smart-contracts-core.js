@@ -20,13 +20,11 @@ const projectContracts = '../../../build/contracts'
 //  or in deployments, you want to load the contracts from the contracts directory
 const deployedContracts = '../../../contracts'
 
-const adminContracts = require('@evan.network/smart-contracts-admin')
-
 exports['default'] = {
   smartContractsCore: () => {
     return {
       compileContracts: false,
-      additionalPaths: adminContracts.getContractPaths(),
+      additionalPaths: [],
       // when a list is given, the contructor picks the first directory it finds contracts in,
       // if nothing is found it falls back to the smart-contracts-core contracts
       destinationPath: [projectContracts, deployedContracts]

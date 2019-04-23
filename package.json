@@ -35,5 +35,5 @@
     "build-contracts": "node ./scripts/build-contracts.js",
     "build-docu": "node ./scripts/build-docu.js"
   },
-  "version": "2.1.0"
+  "version": "2.1.1"
 }

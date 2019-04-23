@@ -3,6 +3,7 @@
 ## Next Version
 ### Features
 ### Fixes
+- remove admin contracts from smart agent config
 ### Deprecations
 
 

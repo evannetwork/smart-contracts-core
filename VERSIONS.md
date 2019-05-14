@@ -2,6 +2,8 @@
 
 ## Next Version
 ### Features
+- add `requestOwnerTicket` function to `TicketVendorInterface`
+
 ### Fixes
 ### Deprecations
 

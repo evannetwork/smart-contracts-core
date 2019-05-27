@@ -5,6 +5,8 @@
 - add `requestOwnerTicket` function to `TicketVendorInterface`
 
 ### Fixes
+- build correct `compiled.js` format (remove colons)
+
 ### Deprecations
 
 

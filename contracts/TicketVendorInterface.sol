@@ -4,6 +4,13 @@ pragma solidity ^0.4.20;
 interface TicketVendorInterface {
     event TicketCreated(address indexed requester, uint256 indexed ticketId);
 
+    /// @notice creates new owner ticket; owner tickets are issued with the given price
+    /// @dev callable by owner
+    /// emits TicketCreated
+    /// @param value value to request, must be lte getTicketMinValue()
+    /// @param price ticket will be issued with this price 
+    function requestOwnerTicket(uint256 value, uint256 price) public;
+
     /// @notice creates new ticket
     /// @dev callable by anyone
     /// emits TicketCreated

@@ -2,17 +2,24 @@
 
 ## Next Version
 ### Features
+
+### Fixes
+
+### Deprecations
+
+
+## Version 2.2.0
+### Features
 - add `requestOwnerTicket` function to `TicketVendorInterface`
 
 ### Fixes
 - build correct `compiled.js` format (remove colons)
 
-### Deprecations
-
 
 ## Version 2.1.1
 ### Fixes
 - remove admin contracts from smart agent config
+
 
 ## Version 2.1.0
 ### Features

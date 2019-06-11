@@ -2,6 +2,14 @@
 
 ## Next Version
 ### Features
+
+### Fixes
+
+### Deprecations
+
+
+## Version 2.3.0
+### Features
 - update ``IdentityHolder`` and ``VerificationsRegistryLibrary`` to work with with ``bytes32`` as ``links`` (pseudonyms or addresses) for full 32B pseudonym range support
 - update ``IdentityHolder`` with ``migrateIdentity`` function, that allows to migrate identities into it, as long, as identity is not claimed yet
 
@@ -10,8 +18,6 @@
   - properly returns created identity from ``createIdentity``
   - getter functions uses ``view`` modifier
 - update gas price in contract deploy script to 200GWei
-
-### Deprecations
 
 
 ## Version 2.2.0

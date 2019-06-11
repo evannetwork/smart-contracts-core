@@ -24,7 +24,7 @@ library VerificationsRegistryLibrary {
 
     struct Identity {
       Verifications verifications;
-      address link;
+      bytes32 link;
       address owner;
     }
 

@@ -8,6 +8,18 @@
 ### Deprecations
 
 
+## Version 2.3.0
+### Features
+- update ``IdentityHolder`` and ``VerificationsRegistryLibrary`` to work with with ``bytes32`` as ``links`` (pseudonyms or addresses) for full 32B pseudonym range support
+- update ``IdentityHolder`` with ``migrateIdentity`` function, that allows to migrate identities into it, as long, as identity is not claimed yet
+
+### Fixes
+- update ``IdentityHolder``
+  - properly returns created identity from ``createIdentity``
+  - getter functions uses ``view`` modifier
+- update gas price in contract deploy script to 200GWei
+
+
 ## Version 2.2.0
 ### Features
 - add `requestOwnerTicket` function to `TicketVendorInterface`

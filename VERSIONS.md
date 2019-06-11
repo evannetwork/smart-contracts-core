@@ -2,8 +2,13 @@
 
 ## Next Version
 ### Features
+- update ``IdentityHolder`` and ``VerificationsRegistryLibrary`` to work with with ``bytes32`` as ``links`` (pseudonyms or addresses) for full 32B pseudonym range support
+- update ``IdentityHolder`` with ``migrateIdentity`` function, that allows to migrate identities into it, as long, as identity is not claimed yet
 
 ### Fixes
+- update ``IdentityHolder``
+  - properly returns created identity from ``createIdentity``
+  - getter functions uses ``view`` modifier
 
 ### Deprecations
 

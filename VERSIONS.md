@@ -9,6 +9,7 @@
 - update ``IdentityHolder``
   - properly returns created identity from ``createIdentity``
   - getter functions uses ``view`` modifier
+- update gas price in contract deploy script to 200GWei
 
 ### Deprecations
 

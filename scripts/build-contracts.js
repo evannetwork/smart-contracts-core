@@ -36,7 +36,7 @@ if (!process.env.ACCOUNTID || !process.env.PRIVATEKEY) {
 
 const account = process.env.ACCOUNTID
 const key = new Buffer(process.env.PRIVATEKEY, 'hex')
-const gasPrice = process.env.GASPRICE || '0x4a817c800'  // 20GWei
+const gasPrice = process.env.GASPRICE || '0x2e90edd000'  // 200GWei
 const gasLimit = '0x7a1200'  // 8000000
 
 let solc = new smartContractsCore.Solc({

@@ -129,6 +129,7 @@ library VerificationHolderLibrary {
 
         require(_verifications.byId[_verificationId].issuer != address(0), "No verification exists");
 
+        // owner of identity and issuer can remove
         if (msg.sender != address(this) && msg.sender != _verifications.byId[_verificationId].issuer) {
             require(KeyHolderLibrary.keyHasPurpose(_keyHolderData, keccak256(abi.encodePacked(msg.sender)), 1), "Sender does not have management key");
         }
@@ -167,6 +168,7 @@ library VerificationHolderLibrary {
 
         require(_verifications.byId[_verificationId].issuer != address(0), "No verification exists");
         require(_verifications.rejectedVerifications[_verificationId] == false, "Verification already rejected");
+        // owner of identity and issuer can reject
         if (msg.sender != address(this) && msg.sender != _verifications.byId[_verificationId].issuer) {
             require(KeyHolderLibrary.keyHasPurpose(_keyHolderData, keccak256(abi.encodePacked(msg.sender)), 1), "Sender does not have management key");
         }
@@ -188,7 +190,8 @@ library VerificationHolderLibrary {
 
         require(_verifications.byId[_verificationId].issuer != address(0), "No verification exists");
         require(_verifications.rejectedVerifications[_verificationId] == false, "Verification already rejected");
-        if (msg.sender != address(this) && msg.sender != _verifications.byId[_verificationId].issuer) {
+        // owner of identity can approve
+        if (msg.sender != address(this)) {
             require(KeyHolderLibrary.keyHasPurpose(_keyHolderData, keccak256(abi.encodePacked(msg.sender)), 1), "Sender does not have management key");
         }
 

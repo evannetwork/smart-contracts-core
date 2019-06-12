@@ -4,6 +4,7 @@
 ### Features
 
 ### Fixes
+- update ``VerificationHolderLibrary`` to allow only subject to approve
 
 ### Deprecations
 

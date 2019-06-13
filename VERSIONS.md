@@ -6,6 +6,7 @@
 ### Fixes
 - update ``VerificationHolderLibrary`` to allow only subject to approve
 - remove obsolite ``build-docu`` scripts
+- add scripts folder to npm publishing
 
 ### Deprecations
 

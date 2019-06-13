@@ -10,9 +10,6 @@
     "web3": "1.0.0-beta.37"
   },
   "description": "evan.network core smart contracts",
-  "devDependencies": {
-    "@soldoc/soldoc": "^0.4.0"
-  },
   "engines": {
     "node": ">=8.0.0"
   },
@@ -32,8 +29,7 @@
     "url": "git@github.com:evannetwork/smart-contracts-core.git"
   },
   "scripts": {
-    "build-contracts": "node ./scripts/build-contracts.js",
-    "build-docu": "node ./scripts/build-docu.js"
+    "build-contracts": "node ./scripts/build-contracts.js"
   },
-  "version": "2.3.0"
+  "version": "2.3.1"
 }

@@ -4,11 +4,15 @@
 ### Features
 
 ### Fixes
+
+### Deprecations
+
+
+## Version 2.3.1
+### Fixes
 - update ``VerificationHolderLibrary`` to allow only subject to approve
 - remove obsolite ``build-docu`` scripts
 - add scripts folder to npm publishing
-
-### Deprecations
 
 
 ## Version 2.3.0

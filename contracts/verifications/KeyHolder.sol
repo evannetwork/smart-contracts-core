@@ -27,6 +27,14 @@ contract KeyHolder is ERC725 {
         KeyHolderLibrary.init(_keyHolderOwner, keyHolderData);
     }
 
+    function getExecutionNonce()
+        public
+        view
+        returns(uint256)
+    {
+        return keyHolderData.executionNonce;
+    }
+
     function getKey(bytes32 _key)
         public
         view
@@ -70,6 +78,13 @@ contract KeyHolder is ERC725 {
         returns (uint256 executionId)
     {
         return KeyHolderLibrary.execute(keyHolderData, _to, _value, _data);
+    }
+
+    function executeDelegated(address _to, uint256 _value, bytes _data, bytes _signedTransactionInfo)
+        public
+        returns (uint256 executionId)
+    {
+        return KeyHolderLibrary.executeDelegated(keyHolderData, _to, _value, _data, _signedTransactionInfo);
     }
 
     function removeKey(bytes32 _key, uint256 _purpose)

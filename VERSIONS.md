@@ -1,11 +1,18 @@
 # smart-contracts-core
 
 ## Next Version
-### Features
+### Features=
 
 ### Fixes
 
 ### Deprecations
+
+
+## Version 2.4.0
+### Features
+- add delegation support to ``KeyHolder``
+  + delegated calls require a signed hash, that is built from transaction input, identity address and its transaction nonce
+  + delegated calls can be executed by anyone, but require the signer to have correct keys
 
 
 ## Version 2.3.1

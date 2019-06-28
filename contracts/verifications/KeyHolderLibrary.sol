@@ -110,8 +110,14 @@ library KeyHolderLibrary {
         returns (bool success)
     {
         require(keyHasPurpose(_keyHolderData, keccak256(abi.encodePacked(msg.sender)), 2), "Sender does not have action key");
-        require(!_keyHolderData.executions[_id].executed, "Already executed");
+        return handleApprove(_keyHolderData, _id, _approve);
+    }
 
+    function handleApprove(KeyHolderData storage _keyHolderData, uint256 _id, bool _approve)
+        private
+        returns (bool success)
+    {   
+        require(!_keyHolderData.executions[_id].executed, "Already executed");
         emit Approved(_id, _approve);
 
         if (_approve == true) {
@@ -154,6 +160,38 @@ library KeyHolderLibrary {
 
         if (keyHasPurpose(_keyHolderData, keccak256(abi.encodePacked(msg.sender)),1) || keyHasPurpose(_keyHolderData, keccak256(abi.encodePacked(msg.sender)),2)) {
             approve(_keyHolderData, _keyHolderData.executionNonce, true);
+        }
+
+        _keyHolderData.executionNonce++;
+        return _keyHolderData.executionNonce-1;
+    }
+
+    function executeDelegated(KeyHolderData storage _keyHolderData, address _to, uint256 _value, bytes _data, bytes _signedTransactionInfo)
+        public
+        returns (uint256 executionId)
+    {
+        require(!_keyHolderData.executions[_keyHolderData.executionNonce].executed, "Already executed");
+        _keyHolderData.executions[_keyHolderData.executionNonce].to = _to;
+        _keyHolderData.executions[_keyHolderData.executionNonce].value = _value;
+        _keyHolderData.executions[_keyHolderData.executionNonce].data = _data;
+
+        emit ExecutionRequested(_keyHolderData.executionNonce, _to, _value, _data);
+        
+        // get signed message from this' address and nonce;
+        // include other arguments as well to prevent using signed message for other tx
+        bytes32 message = keccak256(abi.encodePacked(
+            address(this),
+            _keyHolderData.executionNonce,
+            _to,
+            _value,
+            _data
+        ));
+        // recover _signedTransactionInfos signer
+        bytes32 prefixedHash = keccak256(abi.encodePacked("\x19Ethereum Signed Message:\n32", message));
+        address recovered = getRecoveredAddress(_signedTransactionInfo, prefixedHash);
+        // allow tx if signer === recovered
+        if (keyHasPurpose(_keyHolderData, keccak256(abi.encodePacked(recovered)),1) || keyHasPurpose(_keyHolderData, keccak256(abi.encodePacked(recovered)),2)) {
+            handleApprove(_keyHolderData, _keyHolderData.executionNonce, true);
         }
 
         _keyHolderData.executionNonce++;
@@ -219,5 +257,35 @@ library KeyHolderLibrary {
             }
         }
         return isThere;
+    }
+
+    function getRecoveredAddress(bytes sig, bytes32 dataHash)
+        public
+        pure
+        returns (address addr)
+    {
+        bytes32 ra;
+        bytes32 sa;
+        uint8 va;
+
+        // Check the signature length
+        if (sig.length != 65) {
+            return (0);
+        }
+
+        // Divide the signature in r, s and v variables
+        assembly {
+            ra := mload(add(sig, 32))
+            sa := mload(add(sig, 64))
+            va := byte(0, mload(add(sig, 96)))
+        }
+
+        if (va < 27) {
+            va += 27;
+        }
+
+        address recoveredAddress = ecrecover(dataHash, va, ra, sa);
+
+        return (recoveredAddress);
     }
 }

@@ -30,15 +30,11 @@ const smartContractsCore = require('../index')
 const  Web3 = require('web3')
 const Tx = require('ethereumjs-tx')
 
-if (!process.env.ACCOUNTID || !process.env.PRIVATEKEY) {
-  throw Error('ACCOUNTID or PRIVATEKEY unset, set both as environment variables')
-}
 
-const account = process.env.ACCOUNTID
-const key = new Buffer(process.env.PRIVATEKEY, 'hex')
-const gasPrice = process.env.GASPRICE || '0x2e90edd000'  // 200GWei
-const gasLimit = '0x7a1200'  // 8000000
-
+let account;
+let key;
+let gasPrice;
+let gasLimit;
 let solc = new smartContractsCore.Solc({
   config: { compileContracts: true, },
   log: console.log,
@@ -76,6 +72,14 @@ async function deployLibrary(contractName, contracts, nonce) {
     const toDeploys = solc.getLibrariesToRedeploy()
     if (toDeploys && toDeploys.length > 0) {
       console.log(`deploying: ${toDeploys.join(', ')}`)
+      if (!process.env.ACCOUNTID || !process.env.PRIVATEKEY) {
+        throw Error('ACCOUNTID or PRIVATEKEY unset, set both as environment variables')
+      }
+
+      account = process.env.ACCOUNTID
+      key = new Buffer(process.env.PRIVATEKEY, 'hex')
+      gasPrice = process.env.GASPRICE || '0x2e90edd000'  // 200GWei
+      gasLimit = '0x7a1200'  // 8000000
       const libraryUpdates = {}
       const web3 = new Web3(new Web3.providers.WebsocketProvider(
         process.env.RPC_WEBSOCKET || 'wss://testcore.evan.network/ws'))
@@ -96,6 +100,7 @@ async function deployLibrary(contractName, contracts, nonce) {
       console.dir(libraryUpdates)
     }
   } catch(ex) {
+    console.dir(ex)
     console.error(`building contracts failed: ${ex.msg || ex}${ex.stack ? '; ' + ex.stack : ''}`)
   }
   console.groupEnd('compiling contracts')

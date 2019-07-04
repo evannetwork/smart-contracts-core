@@ -40,7 +40,8 @@ let solc = new smartContractsCore.Solc({
   log: console.log,
 })
 
-async function deployLibrary(contractName, contracts, nonce) {
+async function deployLibrary(_contractName, contracts, nonce) {
+  const [ _, contractName ] = /:(.*)$/.exec(_contractName);
   const bytecode = contracts[contractName].bytecode
 
   const tra = {

@@ -73,17 +73,17 @@ async function deployLibrary(_contractName, contracts, nonce) {
     const toDeploys = solc.getLibrariesToRedeploy()
     if (toDeploys && toDeploys.length > 0) {
       console.log(`deploying: ${toDeploys.join(', ')}`)
-      if (!process.env.ACCOUNTID || !process.env.PRIVATEKEY) {
-        throw Error('ACCOUNTID or PRIVATEKEY unset, set both as environment variables')
+      if (!process.env.ACCOUNT_ID || !process.env.PRIVATE_KEY) {
+        throw Error('ACCOUNT_ID or PRIVATE_KEY unset, set both as environment variables')
       }
 
-      account = process.env.ACCOUNTID
-      key = new Buffer(process.env.PRIVATEKEY, 'hex')
-      gasPrice = process.env.GASPRICE || '0x2e90edd000'  // 200GWei
+      account = process.env.ACCOUNT_ID
+      key = new Buffer(process.env.PRIVATE_KEY, 'hex')
+      gasPrice = process.env.GAS_PRICE || '0x2e90edd000'  // 200GWei
       gasLimit = '0x7a1200'  // 8000000
       const libraryUpdates = {}
       const web3 = new Web3(new Web3.providers.WebsocketProvider(
-        process.env.RPC_WEBSOCKET || 'wss://testcore.evan.network/ws'))
+        process.env.CHAIN_ENDPOINT || 'wss://testcore.evan.network/ws'))
       let nonce = await web3.eth.getTransactionCount(account)
       for (let toDeploy of toDeploys) {
         // deploy contract

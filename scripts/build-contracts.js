@@ -106,4 +106,5 @@ async function deployLibrary(_contractName, contracts, nonce) {
   }
   console.groupEnd('compiling contracts')
   console.log('done')
+  process.exit()
 })()

@@ -1,11 +1,16 @@
 # smart-contracts-core
 
 ## Next Version
-### Features=
+### Features
 
 ### Fixes
 
 ### Deprecations
+
+
+## Version 2.4.1
+### Fixes
+- update for `web3` version `1.0.0-beta.55` support (for `build-contracts` script)
 
 
 ## Version 2.4.0

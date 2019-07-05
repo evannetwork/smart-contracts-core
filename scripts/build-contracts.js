@@ -57,8 +57,11 @@ async function deployLibrary(_contractName, contracts, nonce) {
   tx.sign(key)
 
   const stx = tx.serialize()
-  const web3 = new Web3(new Web3.providers.WebsocketProvider(
-    process.env.CHAIN_ENDPOINT|| 'wss://testcore.evan.network/ws'))
+  const web3 = new Web3(
+    process.env.CHAIN_ENDPOINT || 'wss://testcore.evan.network/ws',
+    null,
+    { transactionConfirmationBlocks: 1 },
+  );
   const result = await web3.eth.sendSignedTransaction('0x' + stx.toString('hex'))
   console.dir((({ contractAddress, gasUsed, status }) =>
     ({ contractName, contractAddress, gasUsed, status }))(result))
@@ -82,8 +85,8 @@ async function deployLibrary(_contractName, contracts, nonce) {
       gasPrice = process.env.GAS_PRICE || '0x2e90edd000'  // 200GWei
       gasLimit = '0x7a1200'  // 8000000
       const libraryUpdates = {}
-      const web3 = new Web3(new Web3.providers.WebsocketProvider(
-        process.env.CHAIN_ENDPOINT || 'wss://testcore.evan.network/ws'))
+      const web3 = new Web3(
+        process.env.CHAIN_ENDPOINT, null, { transactionConfirmationBlocks: 1 });
       let nonce = await web3.eth.getTransactionCount(account)
       for (let toDeploy of toDeploys) {
         // deploy contract

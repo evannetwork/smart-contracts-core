@@ -4,6 +4,7 @@
 ### Features
 
 ### Fixes
+- fix `"web3": "1.0.0-beta.55"` transaction resolval behavior for `build-contracts`
 
 ### Deprecations
 

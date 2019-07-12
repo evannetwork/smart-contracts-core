@@ -40,6 +40,37 @@ let solc = new smartContractsCore.Solc({
   log: console.log,
 })
 
+async function executeTransaction (web3, signedTx) {
+  return new Promise((s, r) => {  
+    let resolved = false;
+    web3.eth.sendSignedTransaction(signedTx)
+      .on('transactionHash', async (txHash) => {
+        if (resolved) {
+          // return if already resolved
+          return;
+        }
+        const receipt = await web3.eth.getTransactionReceipt(txHash);
+
+        if (resolved) {
+          // return if resolved while waiting for getTransactionReceipt
+          return;
+        }
+        if (receipt) {
+          resolved = true;
+          s(receipt);
+        }
+      })
+      .on('receipt', (receipt) => {
+        if (resolved) {
+          // return if already resolved
+          return;
+        }
+        resolved = true;
+        s(null, receipt); })
+      .on('error', (error) => { r(error); })
+  });
+}
+
 async function deployLibrary(_contractName, contracts, nonce) {
   const [ _, contractName ] = /:(.*)$/.exec(_contractName);
   const bytecode = contracts[contractName].bytecode
@@ -62,7 +93,7 @@ async function deployLibrary(_contractName, contracts, nonce) {
     null,
     { transactionConfirmationBlocks: 1 },
   );
-  const result = await web3.eth.sendSignedTransaction('0x' + stx.toString('hex'))
+  const result = await executeTransaction(web3, '0x' + stx.toString('hex'))
   console.dir((({ contractAddress, gasUsed, status }) =>
     ({ contractName, contractAddress, gasUsed, status }))(result))
   return result.contractAddress
@@ -86,7 +117,7 @@ async function deployLibrary(_contractName, contracts, nonce) {
       gasLimit = '0x7a1200'  // 8000000
       const libraryUpdates = {}
       const web3 = new Web3(
-        process.env.CHAIN_ENDPOINT, null, { transactionConfirmationBlocks: 1 });
+        process.env.CHAIN_ENDPOINT || 'wss://testcore.evan.network/ws', null, { transactionConfirmationBlocks: 1 });
       let nonce = await web3.eth.getTransactionCount(account)
       for (let toDeploy of toDeploys) {
         // deploy contract

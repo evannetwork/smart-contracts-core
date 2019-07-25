@@ -4,10 +4,14 @@
 ### Features
 
 ### Fixes
-- reduce data returned from contract compilation to restore pre-update behavior
-- improve ens contract path resolval logic
 
 ### Deprecations
+
+
+## Version 2.4.3
+### Fixes
+- reduce data returned from contract compilation to restore pre-update behavior
+- improve ens contract path resolval logic
 
 
 ## Version 2.4.2

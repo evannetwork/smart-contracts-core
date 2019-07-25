@@ -5,6 +5,7 @@
 
 ### Fixes
 - reduce data returned from contract compilation to restore pre-update behavior
+- improve ens contract path resolval logic
 
 ### Deprecations
 

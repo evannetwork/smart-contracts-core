@@ -4,6 +4,7 @@
 ### Features
 
 ### Fixes
+- reduce data returned from contract compilation to restore pre-update behavior
 
 ### Deprecations
 

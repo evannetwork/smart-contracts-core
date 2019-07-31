@@ -9,7 +9,7 @@
   },
   "description": "evan.network core smart contracts",
   "devDependencies": {
-    "web3": "1.2.0"
+    "web3-eth-abi": "2.0.0-alpha"
   },
   "engines": {
     "node": ">=8.0.0"

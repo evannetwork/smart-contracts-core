@@ -2,15 +2,14 @@
   "license": "Apache-2.0",
   "author": "evan GmbH",
   "dependencies": {
-    "ens": "github:ethereum/ens#6c0cf08eab71b41d54ac516138d4e1f2c32ff5c9",
-    "ethereumjs-tx": "1.3.1",
-    "findup-sync": "^2.0.0",
+    "ethereumjs-tx": "1.3.4",
+    "findup-sync": "^4.0.0",
     "fs-readdir-recursive": "^1.1.0",
-    "solc": "0.5.4"
+    "solc": "^0.5.10"
   },
   "description": "evan.network core smart contracts",
   "devDependencies": {
-    "web3": "1.0.0-beta.55"
+    "web3": "1.2.0"
   },
   "engines": {
     "node": ">=8.0.0"

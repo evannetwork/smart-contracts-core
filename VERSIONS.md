@@ -8,6 +8,11 @@
 ### Deprecations
 
 
+## Version 2.5.0
+### Features
+- update versions of dependencies
+
+
 ## Version 2.4.3
 ### Fixes
 - reduce data returned from contract compilation to restore pre-update behavior

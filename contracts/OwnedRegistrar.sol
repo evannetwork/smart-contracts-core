@@ -18,14 +18,14 @@
 
 pragma solidity ^0.4.24;
 
-import './ENS.sol';
+import './AbstractENS.sol';
 import './Core.sol';
 
 /**
  * A registrar that allocates subdomains to the first person to claim them.
  */
 contract OwnedRegistrar is Owned {
-    ENS ens;
+    AbstractENS ens;
     bytes32 rootNode;
 
     /**
@@ -33,7 +33,7 @@ contract OwnedRegistrar is Owned {
      * @param ensAddr The address of the ENS registry.
      * @param node The node that this registrar administers.
      */
-    constructor(ENS ensAddr, bytes32 node) public {
+    constructor(AbstractENS ensAddr, bytes32 node) public {
         ens = ensAddr;
         rootNode = node;
     }

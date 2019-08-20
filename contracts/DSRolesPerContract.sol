@@ -146,6 +146,22 @@ contract DSRolesPerContract is DSAuth, DSAuthority
         data._public_operation_capabilities[operation] = enabled;
     }
  
+    function setRoleCapabilities(uint8[] roles, bytes4[] sigs, bool enabled)
+        public
+        auth
+    {
+        require(roles.length == sigs.length);
+        for (uint256 i = 0; i < roles.length; i++) {
+            bytes32 last_roles = data._capability_roles[sigs[i]];
+            bytes32 shifted = bytes32(uint256(uint256(2) ** uint256(roles[i])));
+            if( enabled ) {
+                data._capability_roles[sigs[i]] = last_roles | shifted;
+            } else {
+                data._capability_roles[sigs[i]] = last_roles & BITNOT(shifted);
+            }
+        }
+    }
+ 
     function setRoleCapability(uint8 role, address targetAddress, bytes4 sig, bool enabled)
         public
         auth
@@ -156,6 +172,22 @@ contract DSRolesPerContract is DSAuth, DSAuthority
             data._capability_roles[sig] = last_roles | shifted;
         } else {
             data._capability_roles[sig] = last_roles & BITNOT(shifted);
+        }
+    }
+ 
+    function setRoleOperationCapabilities(uint8[] roles, bytes32[] operations, bool enabled)
+        public
+        auth
+    {
+        require(roles.length == operations.length);
+        for (uint256 i = 0; i < roles.length; i++) {
+            bytes32 last_roles = data._operation_capability_roles[operations[i]];
+            bytes32 shifted = bytes32(uint256(uint256(2) ** uint256(roles[i])));
+            if( enabled ) {
+                data._operation_capability_roles[operations[i]] = last_roles | shifted;
+            } else {
+                data._operation_capability_roles[operations[i]] = last_roles & BITNOT(shifted);
+            }
         }
     }
  

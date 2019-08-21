@@ -5,6 +5,7 @@
 - performance/cost optimizations for `ContainerDataContractFactory`
   + set permissions with fewer transactions
   + remove default contract state flow of `DataContract` instances
+  + add identity creation
 - (smaller) performance/cost optimization for `BaseContractFactory`
   + use pregenerated hashes for permissions
 

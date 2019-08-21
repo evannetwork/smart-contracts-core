@@ -22,9 +22,27 @@ import "./BaseContractFactory.sol";
 import "./BaseContractInterface.sol";
 import "./DSRolesPerContract.sol";
 import "./DataContract.sol";
- 
+import "./EnsReader.sol";
 
-contract ContainerDataContractFactory is BaseContractFactory {
+ 
+interface IdentityHolderInterface {
+    /// @notice create new identity
+    /// @dev emits IdentityCreated event with new identity
+    /// @return new identity
+    function createIdentity() public returns(bytes32 newIdentity);
+ 
+    /// @notice change linked address
+    /// @param _identity identity in IdentityHolder
+    /// @param _link address/pseudonym will be linked to given identity
+    function linkIdentity(bytes32 _identity, bytes32 _link);
+ 
+    /// @notice transfer ownership of identity to another account
+    /// @param _identity identity in IdentityHolder
+    /// @param _newOwner account that becomes new owner
+    function transferIdentity(bytes32 _identity, address _newOwner);
+}
+
+contract ContainerDataContractFactory is BaseContractFactory, EnsReader {
     uint public constant VERSION_ID = 1;
  
     function createContract(address businessCenter, address provider, bytes32 _contractDescription, address ensAddress
@@ -37,6 +55,15 @@ contract ContainerDataContractFactory is BaseContractFactory {
         newContract.setOwner(provider);
         roles.setAuthority(roles);
         roles.setOwner(provider);
+ 
+        // create identity and link contract to it
+        // bcc.nameResolver.namehash('contractidentities.evan')
+        IdentityHolderInterface identityHolder = IdentityHolderInterface(getAddr(0xaca561d654b9355e105c347c1b404d12052bd568ed9c53ede94e3e2a3123cc3c));
+        bytes32 newIdentity = identityHolder.createIdentity();
+        identityHolder.linkIdentity(newIdentity, bytes32(address(newContract)));
+        // transfer ownership of identity and contract to caller
+        identityHolder.transferIdentity(newIdentity, provider);
+ 
         emit ContractCreated(keccak256("ContainerDataContractFactory"), newContract);
         return newContract;
     }

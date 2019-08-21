@@ -24,7 +24,7 @@ import "./AbstractPublicResolver.sol";
 
 contract EnsReader {
     // AbstractENS ens = AbstractENS($ENS_ADDRESS);
-    AbstractENS ens = AbstractENS(0xd9b054d2FFA8Cf301885Af53db86971881E2EA54);
+    AbstractENS ens = AbstractENS(0x937bbC1d3874961CA38726E9cD07317ba81eD2e1);
     // bytes32 rootDomain = $NAMEHASH_ROOT_DOMAIN;
     // evan: 0x01713a3bd6dccc828bbc37b3f42f3bc5555b16438783fabea9faf8c2243a0370
     // test: 0x04f740db81dc36c853ab4205bddd785f46e79ccedca351fc6dfcbd8cc9a33dd6

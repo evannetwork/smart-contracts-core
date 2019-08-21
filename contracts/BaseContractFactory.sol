@@ -44,14 +44,14 @@ contract BaseContractFactory is BaseContractFactoryInterface {
         roles.setUserRole(owner, memberRole, true);
         
         // owner
-        roles.setRoleCapability(ownerRole, nullAddress, 
-            bytes4(keccak256("changeContractState(uint8)")), true);
-        roles.setRoleCapability(ownerRole, nullAddress,
-            bytes4(keccak256("removeConsumer(address,address)")), true);
+        // bytes4(keccak256("changeContractState(uint8)"))
+        roles.setRoleCapability(ownerRole, nullAddress, 0xf6330107, true);
+        // bytes4(keccak256("removeConsumer(address,address)")
+        roles.setRoleCapability(ownerRole, nullAddress, 0xa7b93d61, true);
 
-        // member           
-        roles.setRoleCapability(memberRole, nullAddress, 
-            bytes4(keccak256("changeConsumerState(address,uint8)")), true);
+        // member
+        // bytes4(keccak256("changeConsumerState(address,uint8)"))
+        roles.setRoleCapability(memberRole, nullAddress, 0xeeef4590, true);
 
         
         return roles;

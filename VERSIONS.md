@@ -8,6 +8,11 @@
 ### Deprecations
 
 
+## Version 2.6.1
+### Fixes
+- fix container factory permissions
+
+
 ## Version 2.6.0
 ### Features
 - performance/cost optimizations for `ContainerDataContractFactory`

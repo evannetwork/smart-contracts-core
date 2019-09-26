@@ -4,6 +4,7 @@
 ### Features
 
 ### Fixes
+- align license of tool script with rest of project
 
 ### Deprecations
 

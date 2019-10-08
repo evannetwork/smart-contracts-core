@@ -8,6 +8,11 @@
 ### Deprecations
 
 
+## Version 2.6.2
+### Fixes
+- align license of tool script with rest of project
+
+
 ## Version 2.6.1
 ### Fixes
 - fix container factory permissions

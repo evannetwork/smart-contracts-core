@@ -122,7 +122,10 @@ library KeyHolderLibrary {
 
         if (_approve == true) {
             _keyHolderData.executions[_id].approved = true;
-            success = _keyHolderData.executions[_id].to.call(_keyHolderData.executions[_id].data, 0);
+            require(_keyHolderData.executions[_id].value == msg.value, "Transaction value missmatch");
+            success = _keyHolderData.executions[_id].to
+              .call.value(_keyHolderData.executions[_id].value)
+              (_keyHolderData.executions[_id].data, 0);
             if (success) {
                 _keyHolderData.executions[_id].executed = true;
                 emit Executed(
@@ -133,6 +136,7 @@ library KeyHolderLibrary {
                 );
                 return;
             } else {
+                msg.sender.transfer(msg.value);
                 emit ExecutionFailed(
                     _id,
                     _keyHolderData.executions[_id].to,

@@ -2,6 +2,7 @@
 
 ## Next Version
 ### Features
+- add support for making generic transactions via identities
 
 ### Fixes
 

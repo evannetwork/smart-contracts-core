@@ -5,6 +5,7 @@
 - add support for making generic transactions via identities
 
 ### Fixes
+- fix `build-contract` helper script
 
 ### Deprecations
 

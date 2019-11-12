@@ -3,6 +3,7 @@
 ## Next Version
 ### Features
 - add support for making generic transactions via identities
+- add event `ContractCreated` to identity
 
 ### Fixes
 - fix `build-contract` helper script

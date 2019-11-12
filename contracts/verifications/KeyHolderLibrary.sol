@@ -24,6 +24,7 @@ library KeyHolderLibrary {
     event ExecutionFailed(uint256 indexed executionId, address indexed to, uint256 indexed value, bytes data);
     event Executed(uint256 indexed executionId, address indexed to, uint256 indexed value, bytes data);
     event Approved(uint256 indexed executionId, bool approved);
+    event ContractCreated(uint256 indexed executionId, address indexed contractId);
 
     struct Key {
         uint256[] purposes; //e.g., MANAGEMENT_KEY = 1, ACTION_KEY = 2, etc.
@@ -123,9 +124,22 @@ library KeyHolderLibrary {
         if (_approve == true) {
             _keyHolderData.executions[_id].approved = true;
             require(_keyHolderData.executions[_id].value == msg.value, "Transaction value missmatch");
-            success = _keyHolderData.executions[_id].to
-              .call.value(_keyHolderData.executions[_id].value)
-              (_keyHolderData.executions[_id].data, 0);
+            
+            if (_keyHolderData.executions[_id].to != address(0)) {
+                success = _keyHolderData.executions[_id].to
+                  .call.value(_keyHolderData.executions[_id].value)
+                  (_keyHolderData.executions[_id].data, 0);
+            } else {
+                address addr;
+                bytes memory _code = _keyHolderData.executions[_id].data;
+                assembly {
+                    addr := create(0, add(_code, 0x20), mload(_code))
+                }
+                require(addr != 0, "Contract creation failed.");
+                emit ContractCreated(_id, addr);
+                success = true;
+            }
+
             if (success) {
                 _keyHolderData.executions[_id].executed = true;
                 emit Executed(

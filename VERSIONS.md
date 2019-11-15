@@ -4,6 +4,7 @@
 ### Features
 - add support for making generic transactions via identities
 - add event `ContractCreated` to identity
+- add ability to receive funds to identities
 
 ### Fixes
 - fix `build-contract` helper script

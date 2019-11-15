@@ -27,6 +27,10 @@ contract KeyHolder is ERC725 {
         KeyHolderLibrary.init(_keyHolderOwner, keyHolderData);
     }
 
+    function () public payable {
+        // accept funds
+    }
+
     function getExecutionNonce()
         public
         view

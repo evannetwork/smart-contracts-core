@@ -36,5 +36,5 @@ contract ERC725 {
     function addKey(bytes32 _key, uint256 _purpose, uint256 _keyType) public returns (bool success);
     function removeKey(bytes32 _key, uint256 _purpose) public returns (bool success);
     function execute(address _to, uint256 _value, bytes _data) public payable returns (uint256 executionId);
-    function approve(uint256 _id, bool _approve, bytes _data) public returns (bool success);
+    function approve(uint256 _id, bool _approve) public returns (bool success);
 }

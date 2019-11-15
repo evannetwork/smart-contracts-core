@@ -106,8 +106,17 @@ library KeyHolderLibrary {
         return true;
     }
 
-    function approve(KeyHolderData storage _keyHolderData, uint256 _id, bool _approve, bytes _data)
+    function approve(KeyHolderData storage _keyHolderData, uint256 _id, bool _approve)
         public
+        returns (bool success)
+    {
+        require(keyHasPurpose(_keyHolderData, keccak256(abi.encodePacked(msg.sender)), 2), "Sender does not have action key");
+        return handleApprove(_keyHolderData, _id, _approve, _keyHolderData.executions[_id].data);
+    }
+
+
+    function approve(KeyHolderData storage _keyHolderData, uint256 _id, bool _approve, bytes _data)
+        private
         returns (bool success)
     {
         require(keyHasPurpose(_keyHolderData, keccak256(abi.encodePacked(msg.sender)), 2), "Sender does not have action key");

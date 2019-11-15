@@ -66,11 +66,11 @@ contract KeyHolder is ERC725 {
         return KeyHolderLibrary.addKey(keyHolderData, _key, _purpose, _type);
     }
 
-    function approve(uint256 _id, bool _approve, bytes _data)
+    function approve(uint256 _id, bool _approve)
         public
         returns (bool success)
     {
-        return KeyHolderLibrary.approve(keyHolderData, _id, _approve, _data);
+        return KeyHolderLibrary.approve(keyHolderData, _id, _approve);
     }
 
     function execute(address _to, uint256 _value, bytes _data)

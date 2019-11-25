@@ -21,8 +21,13 @@ pragma solidity ^0.4.24;
 
 contract TestContractEvent {
     event EventFired(bool fired);
+    event StringEvent(string text);
 
     function fireEvent() public {
         emit EventFired(true);
+    }
+
+    function fireStringEvent(string text) public {
+        emit StringEvent(text);
     }
 }

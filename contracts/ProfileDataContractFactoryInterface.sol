@@ -18,10 +18,28 @@
 
 pragma solidity ^0.4.24;
 
+/// @title Interface contract for creating new profiles via factory
+/// @author evan GmbH
+/// @dev list of entry names and list of list names, which are to be configured to be accessible by respective groups
 contract ProfileDataContractFactoryInterface {
   uint public VERSION_ID;
 
   event ContractCreated(bytes32 contractInfo, address newAddress);
 
-  function createContract(address businessCenter, address provider, bytes32 contractDescription, address ensAddress, bytes32[] entries, bytes32[] lists) public returns (address);
+  /// @notice create new DataContract to be used as a profile
+  /// @param businessCenter if required, dedicated business center for profile
+  /// @param provider owner of new profile
+  /// @param contractDescription DBCP definition of the contract
+  /// @param ensAddress address of the ENS contract
+  /// @param entries name of entries in profile to be accessible by respective groups
+  /// @param lists name of lists in profile to be accessible by respective groups
+  /// @return address of new profile
+  function createContract(
+      address businessCenter,
+      address provider,
+      bytes32 contractDescription,
+      address ensAddress,
+      bytes32[] entries,
+      bytes32[] lists
+  ) public returns (address);
 }

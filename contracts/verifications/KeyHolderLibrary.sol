@@ -24,6 +24,7 @@ library KeyHolderLibrary {
     event ExecutionFailed(uint256 indexed executionId, address indexed to, uint256 indexed value, bytes data);
     event Executed(uint256 indexed executionId, address indexed to, uint256 indexed value, bytes data);
     event Approved(uint256 indexed executionId, bool approved);
+    event ContractCreated(uint256 indexed executionId, address indexed contractId);
 
     struct Key {
         uint256[] purposes; //e.g., MANAGEMENT_KEY = 1, ACTION_KEY = 2, etc.
@@ -110,10 +111,19 @@ library KeyHolderLibrary {
         returns (bool success)
     {
         require(keyHasPurpose(_keyHolderData, keccak256(abi.encodePacked(msg.sender)), 2), "Sender does not have action key");
-        return handleApprove(_keyHolderData, _id, _approve);
+        return handleApprove(_keyHolderData, _id, _approve, _keyHolderData.executions[_id].data);
     }
 
-    function handleApprove(KeyHolderData storage _keyHolderData, uint256 _id, bool _approve)
+
+    function approve(KeyHolderData storage _keyHolderData, uint256 _id, bool _approve, bytes _data)
+        private
+        returns (bool success)
+    {
+        require(keyHasPurpose(_keyHolderData, keccak256(abi.encodePacked(msg.sender)), 2), "Sender does not have action key");
+        return handleApprove(_keyHolderData, _id, _approve, _data);
+    }
+
+    function handleApprove(KeyHolderData storage _keyHolderData, uint256 _id, bool _approve, bytes _data)
         private
         returns (bool success)
     {   
@@ -122,7 +132,23 @@ library KeyHolderLibrary {
 
         if (_approve == true) {
             _keyHolderData.executions[_id].approved = true;
-            success = _keyHolderData.executions[_id].to.call(_keyHolderData.executions[_id].data, 0);
+            require(_keyHolderData.executions[_id].value == msg.value, "Transaction value missmatch");
+            
+            if (_keyHolderData.executions[_id].to != address(0)) {
+                success = _keyHolderData.executions[_id].to
+                  .call.value(_keyHolderData.executions[_id].value)
+                  (_data, 0);
+            } else {
+                address addr;
+                bytes memory _code = _data;
+                assembly {
+                    addr := create(0, add(_code, 0x20), mload(_code))
+                }
+                require(addr != 0, "Contract creation failed.");
+                emit ContractCreated(_id, addr);
+                success = true;
+            }
+
             if (success) {
                 _keyHolderData.executions[_id].executed = true;
                 emit Executed(
@@ -133,6 +159,7 @@ library KeyHolderLibrary {
                 );
                 return;
             } else {
+                msg.sender.transfer(msg.value);
                 emit ExecutionFailed(
                     _id,
                     _keyHolderData.executions[_id].to,
@@ -154,12 +181,12 @@ library KeyHolderLibrary {
         require(!_keyHolderData.executions[_keyHolderData.executionNonce].executed, "Already executed");
         _keyHolderData.executions[_keyHolderData.executionNonce].to = _to;
         _keyHolderData.executions[_keyHolderData.executionNonce].value = _value;
-        _keyHolderData.executions[_keyHolderData.executionNonce].data = _data;
+        _keyHolderData.executions[_keyHolderData.executionNonce].data = abi.encodePacked(keccak256(abi.encodePacked(_data)));
 
-        emit ExecutionRequested(_keyHolderData.executionNonce, _to, _value, _data);
+        emit ExecutionRequested(_keyHolderData.executionNonce, _to, _value, _keyHolderData.executions[_keyHolderData.executionNonce].data);
 
         if (keyHasPurpose(_keyHolderData, keccak256(abi.encodePacked(msg.sender)),1) || keyHasPurpose(_keyHolderData, keccak256(abi.encodePacked(msg.sender)),2)) {
-            approve(_keyHolderData, _keyHolderData.executionNonce, true);
+            approve(_keyHolderData, _keyHolderData.executionNonce, true, _data);
         }
 
         _keyHolderData.executionNonce++;
@@ -191,7 +218,7 @@ library KeyHolderLibrary {
         address recovered = getRecoveredAddress(_signedTransactionInfo, prefixedHash);
         // allow tx if signer === recovered
         if (keyHasPurpose(_keyHolderData, keccak256(abi.encodePacked(recovered)),1) || keyHasPurpose(_keyHolderData, keccak256(abi.encodePacked(recovered)),2)) {
-            handleApprove(_keyHolderData, _keyHolderData.executionNonce, true);
+            handleApprove(_keyHolderData, _keyHolderData.executionNonce, true, _data);
         }
 
         _keyHolderData.executionNonce++;

@@ -14,9 +14,10 @@
   limitations under the License.
 */
 
-const smartContractsCore = require('../index')
-const  Web3 = require('web3')
 const Tx = require('ethereumjs-tx')
+const Web3 = require('web3')
+
+const smartContractsCore = require('../index')
 
 
 let account;
@@ -54,12 +55,13 @@ async function executeTransaction (web3, signedTx) {
           return;
         }
         resolved = true;
-        s(null, receipt); })
+        s(receipt); })
       .on('error', (error) => { r(error); })
   });
 }
 
 async function deployLibrary(_contractName, contracts, nonce) {
+  console.log(`deploying ${_contractName}`)
   const [ _, contractName ] = /:(.*)$/.exec(_contractName);
   const bytecode = contracts[contractName].bytecode
 

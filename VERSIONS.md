@@ -2,14 +2,20 @@
 
 ## Next Version
 ### Features
+
+### Fixes
+
+### Deprecations
+
+
+## Version 2.7.0
+### Features
 - add support for making generic transactions via identities
 - add event `ContractCreated` to identity
 - add ability to receive funds to identities
 
 ### Fixes
 - fix `build-contract` helper script
-
-### Deprecations
 
 
 ## Version 2.6.2

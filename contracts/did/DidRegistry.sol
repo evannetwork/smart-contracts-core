@@ -46,7 +46,7 @@ contract DidRegistry is Owned, EnsReader {
     /// @notice retrieve a single entry from a mapping
     /// @param node ens namehash of contractidentities registry
     function setContractRegistryNodeHash(bytes32 node) public only_owner {
-        contractRegistryDomain = node;
+        contractRegistryNode = node;
     }
 
     /// @notice set value ENS registry

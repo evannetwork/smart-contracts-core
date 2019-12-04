@@ -2,6 +2,7 @@
 
 ## Next Version
 ### Features
+- add `DidRegistry` for storing DID document hashes
 
 ### Fixes
 

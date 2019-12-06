@@ -2,6 +2,9 @@
 
 ## Next Version
 ### Features
+- update libraries for core
+  - `verifications/KeyHolderLibrary.sol:KeyHolderLibrary`
+  - `verifications/VerificationHolderLibrary.sol:VerificationHolderLibrary`
 - add `DidRegistry` for storing DID document hashes
 
 ### Fixes

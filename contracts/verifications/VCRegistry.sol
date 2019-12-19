@@ -24,6 +24,7 @@ import "./IdentityHolder.sol";
 /// @title Registry for VC documents
 /// @author evan GmbH
 contract VCRegistry is Owned, EnsReader {
+    event VCIdRegistered(bytes32 indexed vcId, address indexed owner);
 
     mapping(bytes32 => bytes32) public vcStore;
     mapping(bytes32 => address) public vcOwner;
@@ -38,6 +39,7 @@ contract VCRegistry is Owned, EnsReader {
         } while (vcOwner[newId] != address(0));
         vcOwner[newId] = msg.sender;
 
+        emit VCIdRegistered(newId, msg.sender);
         return newId;
     }
 

@@ -18,16 +18,15 @@ pragma solidity ^0.4.24;
 
 import "../Core.sol";
 import "../EnsReader.sol";
-import "./IdentityHolder.sol";
 
 
 /// @title Registry for VC documents
 /// @author evan GmbH
-contract VCRegistry is Owned, EnsReader {
-    event VCIdRegistered(bytes32 indexed vcId, address indexed owner);
+contract VcRegistry is Owned, EnsReader {
+    event VcIdRegistered(bytes32 indexed vcId, address indexed owner);
 
-    mapping(bytes32 => bytes32) public vcStore;
     mapping(bytes32 => address) public vcOwner;
+    mapping(bytes32 => bytes32) public vcStore;
 
     /// @notice create new id
     /// @return new identity
@@ -39,23 +38,23 @@ contract VCRegistry is Owned, EnsReader {
         } while (vcOwner[newId] != address(0));
         vcOwner[newId] = msg.sender;
 
-        emit VCIdRegistered(newId, msg.sender);
+        emit VcIdRegistered(newId, msg.sender);
         return newId;
-    }
-
-    /// @notice set VC for a VC ID
-    /// @param vcId Hashed ID of the VC
-    /// @param value The VC document to be stored
-    function setVC(bytes32 vcId, bytes32 value) public {
-      require(msg.sender == vcOwner[vcId],
-        'Not allowed to write VC');
-
-      vcStore[vcId] = value;
     }
 
     /// @notice set value ENS registry
     /// @param ensAddress address of ENS registry
     function setEnsRegistry(address ensAddress) public only_owner {
         super.setEns(ensAddress);
+    }
+
+    /// @notice set VC for a VC ID
+    /// @param vcId Hashed ID of the VC
+    /// @param value The VC document to be stored
+    function setVc(bytes32 vcId, bytes32 value) public {
+      require(msg.sender == vcOwner[vcId],
+        'Not allowed to write VC');
+
+      vcStore[vcId] = value;
     }
 }

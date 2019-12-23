@@ -27,6 +27,7 @@ contract VcRegistry is Owned, EnsReader {
 
     mapping(bytes32 => address) public vcOwner;
     mapping(bytes32 => bytes32) public vcStore;
+    mapping(bytes32 => bool)    public vcRevoke;
 
     /// @notice create new id
     /// @return new identity
@@ -56,5 +57,12 @@ contract VcRegistry is Owned, EnsReader {
         'Not allowed to write VC');
 
       vcStore[vcId] = value;
+    }
+
+    /// @notice revoke VC for VC ID
+    /// @param vcId Hashed ID of the VC ID
+    function revokeVC(bytes32 vcId) public {
+      require(msg.sender == vcOwner[vcId]);
+        vcRevoke[vcId] = True;
     }
 }

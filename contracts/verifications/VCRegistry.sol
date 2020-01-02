@@ -63,6 +63,6 @@ contract VcRegistry is Owned, EnsReader {
     /// @param vcId Hashed ID of the VC ID
     function revokeVC(bytes32 vcId) public {
       require(msg.sender == vcOwner[vcId]);
-        vcRevoke[vcId] = True;
+      vcRevoke[vcId] = true;
     }
 }

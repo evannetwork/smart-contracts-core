@@ -192,4 +192,4 @@ if(result.errors)
 
 
 ## DApp library
-This project is bundled using browserify and directly loadable from dapps within the evan.network. The dbcp.json can be found in this [wrapping project](https://github.com/evannetwork/ui-core/tree/master/dapps/smartcontracts). 
+This project is bundled using browserify and directly loadable from dapps within the evan.network. The dbcp.json can be found in this [wrapping project](https://github.com/evannetwork/ui-dapps/tree/master/evan-libs/smartcontracts). 

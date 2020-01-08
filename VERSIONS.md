@@ -111,7 +111,7 @@
 - add getter for former `BaseContract` public properties
 
 ### Deprecations
-- removed `dbcp.json` and moved it to [ui-core/dapps/smartcontracts](https://github.com/evannetwork/ui-core/tree/master/dapps/smartcontracts))
+- removed `dbcp.json` and moved it to [ui-dapps/dapps/smartcontracts](https://github.com/evannetwork/ui-dapps/tree/master/evan-libs/smartcontracts))
 
 
 ## Version 2.0.0

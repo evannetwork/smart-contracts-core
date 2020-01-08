@@ -8,6 +8,15 @@
 ### Deprecations
 
 
+## Version 2.8.0
+### Features
+- update libraries for core
+  - `verifications/KeyHolderLibrary.sol:KeyHolderLibrary`
+  - `verifications/VerificationHolderLibrary.sol:VerificationHolderLibrary`
+- add `DidRegistry` for storing DID document hashes
+- add `VcRegistry` for storing VC documents and keep track of revocation
+
+
 ## Version 2.7.0
 ### Features
 - add support for making generic transactions via identities
@@ -107,7 +116,7 @@
 - add getter for former `BaseContract` public properties
 
 ### Deprecations
-- removed `dbcp.json` and moved it to [ui-core/dapps/smartcontracts](https://github.com/evannetwork/ui-core/tree/master/dapps/smartcontracts))
+- removed `dbcp.json` and moved it to [ui-dapps/dapps/smartcontracts](https://github.com/evannetwork/ui-dapps/tree/master/evan-libs/smartcontracts))
 
 
 ## Version 2.0.0

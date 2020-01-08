@@ -2,14 +2,19 @@
 
 ## Next Version
 ### Features
-- update libraries for core
-  - `verifications/KeyHolderLibrary.sol:KeyHolderLibrary`
-  - `verifications/VerificationHolderLibrary.sol:VerificationHolderLibrary`
-- add `DidRegistry` for storing DID document hashes
 
 ### Fixes
 
 ### Deprecations
+
+
+## Version 2.8.0
+### Features
+- update libraries for core
+  - `verifications/KeyHolderLibrary.sol:KeyHolderLibrary`
+  - `verifications/VerificationHolderLibrary.sol:VerificationHolderLibrary`
+- add `DidRegistry` for storing DID document hashes
+- add `VcRegistry` for storing VC documents and keep track of revocation
 
 
 ## Version 2.7.0

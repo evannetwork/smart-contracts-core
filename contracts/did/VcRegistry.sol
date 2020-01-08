@@ -43,6 +43,13 @@ contract VcRegistry is Owned, EnsReader {
         return newId;
     }
 
+    /// @notice revoke VC for VC ID
+    /// @param vcId Hashed ID of the VC ID
+    function revokeVC(bytes32 vcId) public {
+      require(msg.sender == vcOwner[vcId]);
+      vcRevoke[vcId] = true;
+    }
+
     /// @notice set value ENS registry
     /// @param ensAddress address of ENS registry
     function setEnsRegistry(address ensAddress) public only_owner {
@@ -57,12 +64,5 @@ contract VcRegistry is Owned, EnsReader {
         'Not allowed to write VC');
 
       vcStore[vcId] = value;
-    }
-
-    /// @notice revoke VC for VC ID
-    /// @param vcId Hashed ID of the VC ID
-    function revokeVC(bytes32 vcId) public {
-      require(msg.sender == vcOwner[vcId]);
-      vcRevoke[vcId] = true;
     }
 }

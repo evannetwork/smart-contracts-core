@@ -46,7 +46,7 @@ contract V00_UserRegistry is Owned {
     * Public functions
     */
 
-    /// @dev registerUser(): Add an user to the registry
+    /// @dev registerUser(): Add a user to the registry
     function registerUser(address _identity)
         public
     {

@@ -17,6 +17,7 @@
 pragma solidity ^0.4.24;
 
 import "../Core.sol";
+import "./VerificationHolder.sol";
 
 
 /// @title UserRegistry
@@ -45,10 +46,13 @@ contract V00_UserRegistry is Owned {
     * Public functions
     */
 
-    /// @dev registerUser(): Add a user to the registry
+    /// @dev registerUser(): Add an user to the registry
     function registerUser(address _identity)
         public
     {
+        // Only owner is allowed to register identity
+        require(VerificationHolder(_identity).keyHasPurpose(keccak256(abi.encodePacked(msg.sender)), 1),
+            'Account is not allowed to register identity');
         users[msg.sender] = _identity;
         owners[_identity] = msg.sender;
         emit NewUser(msg.sender, _identity);
@@ -58,7 +62,10 @@ contract V00_UserRegistry is Owned {
     function registerOtherAccount(address _identity, address _otherAccount) only_owner
         public
     {
-        require(users[_otherAccount] == 0, 'Account is already associated to an identity');
+        require(users[_otherAccount] == 0, 'Account is already associated with an identity');
+        // Only owner is allowed to register identity
+        require(VerificationHolder(_identity).keyHasPurpose(keccak256(abi.encodePacked(_otherAccount)), 1),
+            'Account is not allowed to register identity');
         users[_otherAccount] = _identity;
         owners[_identity] = _otherAccount;
         emit NewUser(_otherAccount, _identity);

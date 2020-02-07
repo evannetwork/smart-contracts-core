@@ -42,6 +42,7 @@ contract DidRegistry is Owned, EnsReader {
             IdentityHolder(getAddr(contractRegistryNode)).getOwner(targetHash) == msg.sender
         , 'lacking permissions to update DID document');
         require(value != 0x0, 'Invalid value. For deactivating DIDs, please use the dedicated method.');
+        require(!deactivatedDids[targetHash], 'Cannot set DID document for deactivated DID.');
         didDocuments[targetHash] = value;
     }
 

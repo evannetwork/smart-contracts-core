@@ -2,12 +2,17 @@
 
 ## Next Version
 ### Features
-- Added owner => identity mapping to `V00_UserRegistry`
 - Added deactivation feature for `DidRegistry`
+
 
 ### Fixes
 
 ### Deprecations
+
+
+## Version 2.9.0
+### Features
+- Added owner => identity mapping to `V00_UserRegistry`
 
 
 ## Version 2.8.0

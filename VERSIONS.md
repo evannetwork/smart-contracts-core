@@ -3,6 +3,7 @@
 ## Next Version
 ### Features
 - Added owner => identity mapping to `V00_UserRegistry`
+- Added deactivation feature for `DidRegistry`
 
 ### Fixes
 

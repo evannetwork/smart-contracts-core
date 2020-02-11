@@ -28,6 +28,7 @@ contract DidRegistry is Owned, EnsReader {
     bytes32 public contractRegistryNode = 0xaca561d654b9355e105c347c1b404d12052bd568ed9c53ede94e3e2a3123cc3c;
     mapping(bytes32 => bytes32) public didDocuments;
     mapping(bytes32 => bool) public deactivatedDids;
+    bytes32[] public registeredHashes;
 
     /// @notice set DID document for a DID hash
     /// @param targetHash hash identity reference to set DID document hash for
@@ -43,6 +44,10 @@ contract DidRegistry is Owned, EnsReader {
         , 'lacking permissions to update DID document');
         require(value != 0x0, 'Invalid value. For deactivating DIDs, please use the dedicated method.');
         require(!deactivatedDids[targetHash], 'Cannot set DID document for deactivated DID.');
+
+        if (didDocuments[targetHash] == 0x0 && !deactivatedDids[targetHash]) { // For migration scenarios
+            registeredHashes.push(targetHash);
+        }
         didDocuments[targetHash] = value;
     }
 

@@ -62,7 +62,10 @@ contract DidRegistry is Owned, EnsReader {
             // allow if msg.sender is owner of a contract/alias identity
             IdentityHolder(getAddr(contractRegistryNode)).getOwner(targetHash) == msg.sender
         , 'lacking permissions to deactivate DID document');
-        require(didDocuments[targetHash] != 0x0, 'Did is not yet activated or has already been deactivated');
+        require(
+            didDocuments[targetHash] != 0x0 ||
+            msg.sender == owner,  // migration
+        'Did is not yet activated or has already been deactivated');
         deactivatedDids[targetHash] = true;
         didDocuments[targetHash] = 0x0;
     }

@@ -2,6 +2,8 @@
 
 ## Next Version
 ### Features
+- Added deactivation feature for `DidRegistry`
+
 
 ### Fixes
 

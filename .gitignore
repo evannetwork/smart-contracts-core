@@ -1,8 +1,6 @@
 *.suo
 .DS_Store
 .idea/*
-contracts/compiled.json
-contracts/compiled.js
 docs/*
 node_modules/
 npm-debug.log

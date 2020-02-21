@@ -3,6 +3,10 @@
 ## Next Version
 ### Features
 - Added deactivation feature for `DidRegistry`
+- Added precompiled contracts
+  - setting now NODE_ENV or EVAN_CHAIN to `testcore`or `core` the `getContracts()` will return the respective bytecode
+  - in the browser you have to set window.process.env.EVAN_CHAIN to `core` or `testcore` then
+  - when nothing set, `testcore` is the default
 
 
 ### Fixes

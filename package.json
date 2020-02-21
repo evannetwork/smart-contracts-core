@@ -21,6 +21,7 @@
     "smart-contracts"
   ],
   "main": "index.js",
+  "browser": "/contracts/compiled.js",
   "name": "@evan.network/smart-contracts-core",
   "peerDependencies": {
     "actionhero": "^18.1.0"

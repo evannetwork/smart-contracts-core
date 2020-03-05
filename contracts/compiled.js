@@ -54,18 +54,21 @@
         .filter(key => libraries[key])
         // build object with links
         .forEach((key) => { toLink[key] = libraries[key]; });
+      const ensRegex = new RegExp(libraries.testcore['AbstractENS.sol:AbstractENS'].replace('0x', ''), 'i');
       Object.keys(contracts).map((contract) => {
         if(contracts[contract].bytecode){
           contracts[contract].bytecode = linkBytecode(
             contracts[contract].bytecode,
             toLink,
           )
+          .replace(ensRegex, libraries[chain]['AbstractENS.sol:AbstractENS'].replace('0x', ''));
         }
       });
       for (let lib of Object.keys(toLink)) {
         const libContract = lib.split(':');
         contracts[libContract[1]].deployedAt = toLink[lib];
       }
+
       return contracts;
     }
 

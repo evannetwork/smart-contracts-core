@@ -66,6 +66,7 @@
         const libContract = lib.split(':');
         contracts[libContract[1]].deployedAt = toLink[lib];
       }
+      return contracts;
     }
 
     var getGlobal = function () {

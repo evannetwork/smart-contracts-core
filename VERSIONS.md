@@ -8,6 +8,19 @@
 ### Deprecations
 
 
+## Version 2.10.0
+### Features
+- Added deactivation feature for `DidRegistry`
+- Added precompiled contracts
+  - setting now NODE_ENV or EVAN_CHAIN to `testcore`or `core` the `getContracts()` will return the respective bytecode
+  - in the browser you have to set window.process.env.EVAN_CHAIN to `core` or `testcore` then
+  - when nothing set, `testcore` is the default
+
+
+### Fixes
+- add missing return to compiled.js and solc.js compiled.js building
+
+
 ## Version 2.9.0
 ### Features
 - Added owner => identity mapping to `V00_UserRegistry`

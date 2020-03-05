@@ -10,6 +10,7 @@
 
 
 ### Fixes
+- add missing return to compiled.js and solc.js compiled.js building
 
 ### Deprecations
 

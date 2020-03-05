@@ -2,6 +2,14 @@
 
 ## Next Version
 ### Features
+
+### Fixes
+
+### Deprecations
+
+
+## Version 2.10.0
+### Features
 - Added deactivation feature for `DidRegistry`
 - Added precompiled contracts
   - setting now NODE_ENV or EVAN_CHAIN to `testcore`or `core` the `getContracts()` will return the respective bytecode
@@ -11,8 +19,6 @@
 
 ### Fixes
 - add missing return to compiled.js and solc.js compiled.js building
-
-### Deprecations
 
 
 ## Version 2.9.0

@@ -27,7 +27,7 @@ library KeyHolderLibrary {
     event ContractCreated(uint256 indexed executionId, address indexed contractId);
 
     struct Key {
-        uint256[] purposes; //e.g., MANAGEMENT_KEY = 1, ACTION_KEY = 2, MANAGE_KEYS = 3, etc.
+        uint256[] purposes; //e.g., MANAGEMENT_KEY = 1, ACTION_KEY = 2, RECOVERY = 3, etc.
         uint256 keyType; // e.g. 1 = ECDSA, 2 = RSA, etc.
         bytes32 key;
     }
@@ -54,14 +54,11 @@ library KeyHolderLibrary {
         _keyHolderData.keys[_key].key = _key;
         _keyHolderData.keys[_key].purposes.push(1);
         _keyHolderData.keys[_key].purposes.push(2);
-        _keyHolderData.keys[_key].purposes.push(3);
         _keyHolderData.keys[_key].keyType = 1;
         _keyHolderData.keysByPurpose[1].push(_key);
         _keyHolderData.keysByPurpose[2].push(_key);
-        _keyHolderData.keysByPurpose[3].push(_key);
         emit KeyAdded(_key, 1, 1);
         emit KeyAdded(_key, 2, 1);
-        emit KeyAdded(_key, 3, 1);
     }
 
     function getKey(KeyHolderData storage _keyHolderData, bytes32 _key)
@@ -97,7 +94,8 @@ library KeyHolderLibrary {
         returns (bool success)
     {
         require(_keyHolderData.keys[_key].key != _key, "Key already exists"); // Key should not already exist
-        require(keyHasPurpose(_keyHolderData, keccak256(abi.encodePacked(msg.sender)), 3), "Sender does not have key management key");
+        require(keyHasPurpose(_keyHolderData, keccak256(abi.encodePacked(msg.sender)), 1), "Sender does not have key management key");
+        require(_purpose != 3 || _keyHolderData.keysByPurpose[3][0] == bytes32(0), "recovery key already registered");
 
         _keyHolderData.keys[_key].key = _key;
         _keyHolderData.keys[_key].purposes.push(_purpose);
@@ -115,12 +113,13 @@ library KeyHolderLibrary {
         returns (bool success)
     {
         require(_keyHolderData.keys[_key].key != _key, "Key already exists"); // Key should not already exist
-        require(keyHasPurpose(_keyHolderData, keccak256(abi.encodePacked(msg.sender)), 3), "Sender does not have key management key");
+        require(keyHasPurpose(_keyHolderData, keccak256(abi.encodePacked(msg.sender)), 1), "Sender does not have key management key");
 
         _keyHolderData.keys[_key].key = _key;
         _keyHolderData.keys[_key].keyType = _type;
         for (uint256 i = 0; i < _purposes.length; i++) {
             uint256 purpose = _purposes[i];
+            require(purpose != 3 || _keyHolderData.keysByPurpose[3][0] == bytes32(0), "recovery key already registered");
             _keyHolderData.keys[_key].purposes.push(purpose);
             _keyHolderData.keysByPurpose[purpose].push(_key[i]);
             emit KeyAdded(_key, purpose, _type);
@@ -252,7 +251,8 @@ library KeyHolderLibrary {
         public
         returns (bool success)
     {
-        require(keyHasPurpose(_keyHolderData, keccak256(abi.encodePacked(msg.sender)), 3), "Sender does not have key management key");
+        require(keyHasPurpose(_keyHolderData, keccak256(abi.encodePacked(msg.sender)), 1), "Sender does not have key management key");
+        require(!keyHasPurpose(_keyHolderData, _key, 3) || keccak256(abi.encodePacked(msg.sender)) == _key, "keys with purpose 3 can only be removed by themselves");
 
         require(_keyHolderData.keys[_key].key == _key, "No such key");
         emit KeyRemoved(_key, _purpose, _keyHolderData.keys[_key].keyType);
@@ -291,14 +291,15 @@ library KeyHolderLibrary {
         public
         returns (bool success)
     {
-        require(keyHasPurpose(_keyHolderData, keccak256(abi.encodePacked(msg.sender)), 3), "Sender does not have key management key");
+        require(keyHasPurpose(_keyHolderData, keccak256(abi.encodePacked(msg.sender)), 1), "Sender does not have key management key");
+        require(!keyHasPurpose(_keyHolderData, _key, 3) || keccak256(abi.encodePacked(msg.sender)) == _key, "keys with purpose 3 can only be removed by themselves");
 
         require(_keyHolderData.keys[_key].key == _key, "No such key");
 
         // Remove purpose from key
         uint256[] storage purposes = _keyHolderData.keys[_key].purposes;
         for (uint i = 0; i < purposes.length; i++) {
-            for (uint argi = 0; argi < purposes.length; argi++) { 
+            for (uint argi = 0; argi < _purposes.length; argi++) { 
                 if (purposes[i] == _purposes[argi]) {
                     purposes[i] = purposes[purposes.length - 1];
                     delete purposes[purposes.length - 1];

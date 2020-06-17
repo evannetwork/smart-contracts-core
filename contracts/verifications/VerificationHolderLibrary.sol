@@ -131,7 +131,7 @@ library VerificationHolderLibrary {
 
         // owner of identity and issuer can remove
         if (msg.sender != address(this) && msg.sender != _verifications.byId[_verificationId].issuer) {
-            require(KeyHolderLibrary.keyHasPurpose(_keyHolderData, keccak256(abi.encodePacked(msg.sender)), 1), "Sender does not have management key");
+            require(KeyHolderLibrary.keyHasPurpose(_keyHolderData, keccak256(abi.encodePacked(msg.sender)), 2), "Sender does not have action key");
         }
 
         emit VerificationRemoved(

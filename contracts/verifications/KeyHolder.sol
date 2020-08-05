@@ -21,6 +21,7 @@ import "./KeyHolderLibrary.sol";
 
 
 contract KeyHolder is ERC725 {
+    uint256 public VERSION_ID = 1;
     KeyHolderLibrary.KeyHolderData keyHolderData;
 
     constructor(address _keyHolderOwner) public {
@@ -70,6 +71,13 @@ contract KeyHolder is ERC725 {
         return KeyHolderLibrary.addKey(keyHolderData, _key, _purpose, _type);
     }
 
+    function addMultiPurposeKey(bytes32 _key, uint256[] _purposes, uint256 _type)
+        public
+        returns (bool success)
+    {
+        return KeyHolderLibrary.addMultiPurposeKey(keyHolderData, _key, _purposes, _type);
+    }
+
     function approve(uint256 _id, bool _approve)
         public
         returns (bool success)
@@ -98,6 +106,13 @@ contract KeyHolder is ERC725 {
         returns (bool success)
     {
         return KeyHolderLibrary.removeKey(keyHolderData, _key, _purpose);
+    }
+
+    function removeMultiPurposeKey(bytes32 _key, uint256[] _purposes)
+        public
+        returns (bool success)
+    {
+        return KeyHolderLibrary.removeMultiPurposeKey(keyHolderData, _key, _purposes);
     }
 
     function keyHasPurpose(bytes32 _key, uint256 _purpose)

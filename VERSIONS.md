@@ -2,6 +2,14 @@
 
 ## Next Version
 ### Features
+
+### Fixes
+
+### Deprecations
+
+
+## Version 2.11.0
+### Features
 - update identity contracts' purpose handling
   - to match updated purpose handling
   - `VERSION_ID` can be used to decide which version to use
@@ -10,10 +18,6 @@
   - keys can be added and removed with multiple purposes at once (`addMultiPurposeKey`, `removeMultiPurposeKey`)
   - accounts with purpose 3 can only be removed by themselves
   - only one account with purpose 3 is allowed per identity
-
-### Fixes
-
-### Deprecations
 
 
 ## Version 2.10.0
